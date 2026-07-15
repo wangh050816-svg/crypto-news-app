@@ -19,7 +19,11 @@ jobs:
 
       - run: pip install -r requirements.txt
 
-      - run: python fetch_news.py
+      - name: Run crawler
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python fetch_news.py
 
       - name: Commit updated crypto_news.json
         run: |
