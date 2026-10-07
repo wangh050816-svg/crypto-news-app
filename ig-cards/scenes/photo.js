@@ -10,7 +10,10 @@ function phRidge(seed,base,amp,rough=.55,w=960,h=470){
 const phSky=(id,stops)=>`<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">${stops.map(([o,c])=>`<stop offset="${o}" stop-color="${c}"/>`).join('')}</linearGradient><rect width="960" height="470" fill="url(#${id})"/>`;
 const phGlow=(id,x,y,r,c,op=.8)=>`<radialGradient id="${id}"><stop offset="0" stop-color="${c}" stop-opacity="${op}"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient><circle cx="${x}" cy="${y}" r="${r}" fill="url(#${id})"/>`;
 // 雲／霧：feTurbulence 雜訊，透過 alpha 控制濃淡
-const phClouds=(id,c,op=.5,freq='0.006 0.02',seed=3,y=0,h=470)=>`<filter id="${id}" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="${freq}" numOctaves="5" seed="${seed}"/><feColorMatrix values="0 0 0 0 ${c[0]}  0 0 0 0 ${c[1]}  0 0 0 0 ${c[2]}  0 0 0 2.2 -1.1"/></filter><rect y="${y}" width="960" height="${h}" filter="url(#${id})" opacity="${op}"/>`;
+const phClouds=(id,c,op=.5,freq='0.006 0.02',seed=3,y=0,h=470)=>{
+  // 有指定範圍時，上下邊緣用漸層遮罩淡出，避免出現長方形硬邊
+  const fade=(y>0||h<470)?`<linearGradient id="${id}k" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="${y>0?0:1}"/><stop offset=".3" stop-color="#fff"/><stop offset=".7" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="${y+h<470?0:1}"/></linearGradient><mask id="${id}m" maskContentUnits="userSpaceOnUse"><rect y="${y}" width="960" height="${h}" fill="url(#${id}k)"/></mask>`:'';
+  return `<filter id="${id}" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="${freq}" numOctaves="5" seed="${seed}"/><feColorMatrix values="0 0 0 0 ${c[0]}  0 0 0 0 ${c[1]}  0 0 0 0 ${c[2]}  0 0 0 2.2 -1.1"/></filter>${fade}<rect y="${y}" width="960" height="${h}" filter="url(#${id})" opacity="${op}"${fade?` mask="url(#${id}m)"`:''}/>`};
 const phGrain=id=>`<filter id="${id}"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="7"/><feColorMatrix values="0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 .08 0"/></filter><rect width="960" height="470" filter="url(#${id})"/>`;
 function phCity(seed,base,minH,maxH,fill,winLit,winDark,litOdds=.04,sky=0){
   const r=phRand(seed);let x=-10,s='';

@@ -69,12 +69,21 @@ ${phGrain('lo6n')}
 `);
 
 // 4 想一次想清楚：濃霧吞掉的山路 → 清晨只看得見前一段的亮路
-const loRoad=(fill,edge)=>`<path d="M380,470 C420,400 560,380 520,330 C490,295 420,290 470,260 L478,260 C440,292 520,300 548,332 C590,384 470,410 600,470 Z" fill="${fill}"/><path d="M490,470 C500,420 560,380 530,332" stroke="${edge}" stroke-width="3" stroke-dasharray="14 12" fill="none"/>`;
+// 有透視的 S 形公路：t=0 在畫面底部，t=1 在地平線 hy；越遠越窄
+const loRoad=(hy,fill,edge,line)=>{
+  const N=60,L=[],R=[],C=[];
+  for(let i=0;i<=N;i++){const t=i/N,k=Math.pow(1-t,1.6),y=470-(470-hy)*(1-Math.pow(1-t,2.2)),cx=470+150*Math.sin(t*Math.PI*1.6)*(1-t)+20*t,w=150*k+1.5;L.push([cx-w,y]);R.push([cx+w,y]);C.push([cx,y,w])}
+  const f=a=>a.map(([x,y])=>`${x.toFixed(1)},${y.toFixed(1)}`).join(' L');
+  let s=`<path d="M${f(L)} L${f(R.reverse())} Z" fill="${fill}"/>`;
+  s+=`<path d="M${f(L.slice(0,N))}" stroke="${edge}" stroke-width="2" fill="none" opacity=".5"/>`;
+  for(let i=0;i<N-6;i+=3){const [x1,y1,w]=C[i],[x2,y2]=C[i+1];s+=`<path d="M${x1.toFixed(1)},${y1.toFixed(1)} L${x2.toFixed(1)},${y2.toFixed(1)}" stroke="${line}" stroke-width="${(w/30+.6).toFixed(1)}" stroke-linecap="round"/>`}
+  return s};
 S.loRoadTop=()=>clip('lo7',`
 ${phSky('lo7s',[[0,'#0c1020'],[1,'#252c40']])}
 <path d="${phRidge(341,170,120)}" fill="#1a2030"/>
 <path d="${phRidge(342,240,90)}" fill="#141a28"/>
-${loRoad('#2a2f3c','#4a4f5c')}
+<path d="M0,470 L0,268 Q480,252 960,268 L960,470 Z" fill="#181d2a"/>
+${loRoad(262,'#2c3140','#454b5a','#5a6070')}
 ${phClouds('lo7f',[.3,.33,.4],.9,'0.003 0.01',36,120,250)}
 ${phGrain('lo7n')}
 `);
@@ -84,7 +93,7 @@ ${phGlow('lo8g',620,150,300,'#fff2c8',.85)}
 <path d="${phRidge(351,190,110)}" fill="#c4b4b8" opacity=".75"/>
 <path d="${phRidge(352,250,80)}" fill="#8fa080"/>
 <path d="M0,470 L0,300 Q480,270 960,300 L960,470 Z" fill="#7a9a62"/>
-${loRoad('#d8c8a8','#fff')}
+${loRoad(298,'#d9c9a6','#b8a684','#fffaf0')}
 ${phClouds('lo8m',[1,.97,.92],.75,'0.003 0.03',37,240,70)}
 ${phGrain('lo8n')}
 `);
