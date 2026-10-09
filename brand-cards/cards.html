@@ -1,0 +1,188 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700;900&family=Cormorant+Garamond:ital,wght@1,500&display=swap" rel="stylesheet">
+<style>
+  /* 纏道漫長 品牌色 */
+  :root{
+    --ink:#0f0e0c; --ink2:#181613; --line:#2c2823;
+    --paper:#f1ebdf; --mute:#9a9183; --gold:#c9a45c; --gold2:#e3c98d; --seal:#c23a2b;
+  }
+  body{margin:0;background:#000;font-family:"Noto Sans TC","WenQuanYi Zen Hei",sans-serif;color:var(--paper)}
+  .card{width:1080px;height:1350px;background:var(--ink);position:relative;overflow:hidden;box-sizing:border-box;padding:84px 88px;margin-bottom:20px;display:flex;flex-direction:column}
+  .card::before{content:"";position:absolute;inset:0;background:
+      radial-gradient(900px 700px at 85% -10%,rgba(201,164,92,.10),transparent 60%),
+      radial-gradient(700px 600px at -10% 110%,rgba(194,58,43,.08),transparent 60%);pointer-events:none}
+  .card>*{position:relative}
+  .frame{position:absolute;inset:36px;border:1px solid var(--line);pointer-events:none}
+  .bgline{position:absolute;left:0;right:0;pointer-events:none}
+
+  .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:48px}
+  .brand{display:flex;align-items:center;gap:18px;font-family:"Noto Serif TC",serif;font-weight:700;font-size:30px;letter-spacing:8px}
+  .seal{width:58px;height:58px;background:var(--seal);border-radius:6px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;place-items:center;
+        font-family:"Noto Serif TC",serif;font-weight:900;font-size:21px;line-height:1;color:#fbeee6;padding:6px;box-sizing:border-box;letter-spacing:0}
+  .pg{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:34px;color:var(--mute)}
+  .pg b{color:var(--gold2);font-weight:500}
+
+  .kicker{font-size:28px;letter-spacing:10px;color:var(--gold);font-weight:700;margin-bottom:22px}
+  h1{font-family:"Noto Serif TC",serif;font-weight:900;font-size:96px;line-height:1.18;margin:0;letter-spacing:4px}
+  h1 em{font-style:normal;color:var(--gold2)}
+  .sub{font-size:34px;color:var(--mute);margin-top:22px;letter-spacing:2px;line-height:1.6}
+  .rule{width:120px;height:4px;background:var(--seal);margin:46px 0}
+
+  .foot{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;font-size:24px;color:var(--mute);letter-spacing:3px;border-top:1px solid var(--line);padding-top:28px}
+  .foot b{color:var(--paper);font-weight:500;letter-spacing:1px}
+
+  /* 封面 */
+  .cover h1{font-size:200px;line-height:1.05;letter-spacing:18px}
+  .cover .tag{display:flex;gap:16px;margin-top:40px}
+  .chip{border:1.5px solid var(--gold);color:var(--gold2);padding:12px 26px;font-size:28px;letter-spacing:4px;border-radius:999px}
+
+  /* 三件事 */
+  .pillar{display:grid;grid-template-columns:120px 1fr;gap:28px;padding:20px 0;border-bottom:1px solid var(--line);align-items:start}
+  .pillar:first-of-type{border-top:1px solid var(--line)}
+  .pillar .n{font-family:"Noto Serif TC",serif;font-weight:900;font-size:84px;color:var(--seal);line-height:1}
+  .pillar h3{margin:0 0 10px;font-family:"Noto Serif TC",serif;font-size:52px;font-weight:900;letter-spacing:3px}
+  .pillar p{margin:0;font-size:30px;color:var(--mute);line-height:1.55}
+  .goal{margin-top:36px;background:var(--ink2);border-left:6px solid var(--gold);padding:30px 36px;font-size:36px;line-height:1.5}
+  .goal b{color:var(--gold2)}
+
+  /* 板塊 */
+  .board-head{display:flex;align-items:baseline;gap:24px}
+  .badge{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:140px;color:var(--gold);line-height:.8}
+  .pill{display:inline-block;background:var(--seal);color:#fff;font-size:26px;letter-spacing:4px;padding:8px 20px;border-radius:4px;font-weight:700;vertical-align:middle}
+  .pill.ghost{background:none;border:1.5px solid var(--mute);color:var(--paper)}
+  .items{margin-top:44px;display:grid;gap:18px}
+  .items.two{grid-template-columns:1fr 1fr}
+  .item{background:var(--ink2);border:1px solid var(--line);padding:28px 34px;display:flex;align-items:center;gap:24px;font-size:38px;font-weight:700;letter-spacing:2px}
+  .items.two .item{flex-direction:column;align-items:flex-start;gap:16px;font-size:36px;padding:28px 32px;min-height:0;box-sizing:border-box}
+  .item i{font-style:normal;font-family:"Cormorant Garamond",serif;font-size:40px;color:var(--gold);width:48px;flex:none}
+  .item small{display:block;font-size:24px;color:var(--mute);font-weight:400;letter-spacing:1px;margin-top:8px}
+
+  /* 直播 */
+  .ep{display:grid;grid-template-columns:280px 1fr;gap:34px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line)}
+  .thumb{width:280px;height:150px;background:#0a0a09;border:1px solid var(--line);position:relative;overflow:hidden}
+  .thumb .dur{position:absolute;right:10px;bottom:10px;background:rgba(0,0,0,.75);font-size:22px;padding:4px 10px;border-radius:4px;font-weight:700;letter-spacing:1px}
+  .ep h3{margin:0;font-size:38px;line-height:1.35;font-weight:900;letter-spacing:1px}
+  .ep span{display:block;margin-top:10px;font-size:24px;color:var(--gold);letter-spacing:3px}
+
+  /* CTA */
+  .quote{font-family:"Noto Serif TC",serif;font-weight:700;font-size:62px;line-height:1.55;letter-spacing:3px}
+  .quote .mark{font-family:"Cormorant Garamond",serif;color:var(--seal);font-size:200px;line-height:.5;display:block;height:90px}
+  .cta{margin-top:60px;border:2px solid var(--gold);padding:40px 44px;display:flex;align-items:center;justify-content:space-between;gap:30px}
+  .cta .t{font-size:40px;font-weight:900;line-height:1.45;letter-spacing:2px}
+  .cta .t small{display:block;font-size:28px;color:var(--mute);font-weight:400;margin-top:8px}
+  .cta .arrow{flex:none;width:120px;height:120px;border-radius:50%;background:var(--seal);display:grid;place-items:center;font-size:44px;font-weight:900}
+  .disc{font-size:22px;color:#6d665b;margin-top:34px;letter-spacing:1px}
+</style></head><body>
+
+<!-- 1 封面 -->
+<div class="card cover">
+  <div class="frame"></div>
+  <div class="top"><div class="brand"><div class="seal"><span>纏</span><span>道</span><span>漫</span><span>長</span></div>纏道漫長</div><div class="pg"><b>01</b> / 06</div></div>
+  <div class="kicker">TRADING COMMUNITY</div>
+  <h1>纏道<br><em>漫長</em></h1>
+  <div class="sub">交易之路很漫長，<br>但你不必一個人走。</div>
+  <div class="tag"><span class="chip">交易邏輯</span><span class="chip">市場心態</span><span class="chip">實戰技術</span></div>
+  <svg class="bgline" data-zig="cover" style="bottom:150px" width="1080" height="260"></svg>
+  <div class="foot"><span>建立屬於自己的交易系統</span><b>@zqqnc</b></div>
+</div>
+
+<!-- 2 我們在做什麼 -->
+<div class="card">
+  <div class="frame"></div>
+  <div class="top"><div class="brand"><div class="seal"><span>纏</span><span>道</span><span>漫</span><span>長</span></div>纏道漫長</div><div class="pg"><b>02</b> / 06</div></div>
+  <div class="kicker">ABOUT US</div>
+  <h1 style="font-size:84px">我們專注的<em>三件事</em></h1>
+  <div style="margin-top:40px">
+    <div class="pillar"><div class="n">一</div><div><h3>正確的交易邏輯</h3><p>不追消息、不靠感覺，<br>每一筆進出都說得出理由。</p></div></div>
+    <div class="pillar"><div class="n">二</div><div><h3>市場心態</h3><p>虧損時不亂、獲利時不飄，<br>心態穩，系統才跑得下去。</p></div></div>
+    <div class="pillar"><div class="n">三</div><div><h3>實戰技術</h3><p>以纏論為核心，從筆、線段到中樞，<br>一步步學會看懂走勢。</p></div></div>
+  </div>
+  <div class="goal">最終目標：協助你建立<b>屬於自己的交易系統</b>。</div>
+  <div class="foot"><span>纏道漫長 · 交易社群</span><b>@zqqnc</b></div>
+</div>
+
+<!-- 3 華語群 -->
+<div class="card">
+  <div class="frame"></div>
+  <div class="top"><div class="brand"><div class="seal"><span>纏</span><span>道</span><span>漫</span><span>長</span></div>纏道漫長</div><div class="pg"><b>03</b> / 06</div></div>
+  <div class="kicker">板塊 ONE</div>
+  <div class="board-head"><span class="badge">01</span><h1>華語群</h1></div>
+  <div class="sub" style="margin-top:30px"><span class="pill">本群</span>&nbsp;&nbsp;交流與基礎建立</div>
+  <div class="items">
+    <div class="item"><i>i.</i><div>行情簡析與觀點分享<small>每天的盤面，大家一起拆解</small></div></div>
+    <div class="item"><i>ii.</i><div>交易心態與觀念<small>比技術更難，也更重要</small></div></div>
+    <div class="item"><i>iii.</i><div>日常討論與問題解答<small>不懂就問，沒有笨問題</small></div></div>
+    <div class="item"><i>iv.</i><div>不定期公開直播<small>實際看盤，邊看邊講</small></div></div>
+  </div>
+  <div class="foot"><span>開放交流 · 新手友善</span><b>@zqqnc</b></div>
+</div>
+
+<!-- 4 分析群 -->
+<div class="card">
+  <div class="frame"></div>
+  <div class="top"><div class="brand"><div class="seal"><span>纏</span><span>道</span><span>漫</span><span>長</span></div>纏道漫長</div><div class="pg"><b>04</b> / 06</div></div>
+  <div class="kicker">板塊 TWO</div>
+  <div class="board-head"><span class="badge">02</span><h1>分析群</h1></div>
+  <div class="sub" style="margin-top:30px"><span class="pill ghost">禁言</span>&nbsp;&nbsp;深度學習與策略資源</div>
+  <div class="items two">
+    <div class="item"><i>01</i>策略觀點與<br>進出場思路</div>
+    <div class="item"><i>02</i>美股盤前<br>熱點日報</div>
+    <div class="item"><i>03</i>傳統技術分析<br>初階</div>
+    <div class="item"><i>04</i>纏論<br>系統化教學</div>
+    <div class="item"><i>05</i>宏觀數據<br>解析</div>
+    <div class="item"><i>06</i>高階直播<br>回放</div>
+  </div>
+  <div class="foot"><span>純資訊 · 不洗版</span><b>@zqqnc</b></div>
+</div>
+
+<!-- 5 直播 -->
+<div class="card">
+  <div class="frame"></div>
+  <div class="top"><div class="brand"><div class="seal"><span>纏</span><span>道</span><span>漫</span><span>長</span></div>纏道漫長</div><div class="pg"><b>05</b> / 06</div></div>
+  <div class="kicker">LIVE &amp; REPLAY</div>
+  <h1 style="font-size:80px">實戰直播 <em>實盤解析</em></h1>
+  <div style="margin-top:30px">
+    <div class="ep"><div class="thumb"><svg data-thumb="seg" width="280" height="150" viewBox="0 0 300 170" preserveAspectRatio="none"></svg><span class="dur">41:53</span></div><div><h3>線段的組成與推演<br>＋線段終結</h3><span>纏論教學</span></div></div>
+    <div class="ep"><div class="thumb"><svg data-thumb="bi" width="280" height="150" viewBox="0 0 300 170" preserveAspectRatio="none"></svg><span class="dur">42:07</span></div><div><h3>筆的定義與判斷</h3><span>纏論教學</span></div></div>
+    <div class="ep"><div class="thumb"><svg data-thumb="live" width="280" height="150" viewBox="0 0 300 170" preserveAspectRatio="none"></svg><span class="dur">52:14</span></div><div><h3>9/18 實盤分析 AMA</h3><span>實盤解析</span></div></div>
+    <div class="ep" style="border-bottom:0"><div class="thumb"><svg data-thumb="k" width="280" height="150" viewBox="0 0 300 170" preserveAspectRatio="none"></svg><span class="dur">1:05:57</span></div><div><h3>認識纏論＋K線包含處理<br>＋頂底分型</h3><span>入門必看</span></div></div>
+  </div>
+  <div class="foot"><span>直播回放 · 隨時複習</span><b>@zqqnc</b></div>
+</div>
+
+<!-- 6 CTA -->
+<div class="card">
+  <div class="frame"></div>
+  <div class="top"><div class="brand"><div class="seal"><span>纏</span><span>道</span><span>漫</span><span>長</span></div>纏道漫長</div><div class="pg"><b>06</b> / 06</div></div>
+  <div class="quote" style="margin-top:60px"><span class="mark">“</span>孤軍奮戰的交易之路<br>很漫長。<br>有一群同路人<br>並肩作戰，<br>感覺就<em style="font-style:normal;color:var(--gold2)">完全不同了。</em></div>
+  <div class="cta"><div class="t">想一起走這條路？<small>在底下留言打聲招呼，<br>我會親自把交流方式傳給你。</small></div><div class="arrow">→</div></div>
+  <div class="disc">※ 社群內容僅供學習交流，不構成任何投資建議。投資有風險，請自行評估。</div>
+  <div class="foot"><span>纏道漫長 · 交易社群</span><b>@zqqnc</b></div>
+</div>
+
+<script>
+// 纏論「筆」的折線：頂底交替，向右上推進
+const NS='http://www.w3.org/2000/svg';
+function zigPts(w,h,n,seed,up){let s=seed;const r=()=>(s=(s*9301+49297)%233280)/233280;
+  const pts=[];for(let i=0;i<=n;i++){const x=w*i/n, trend=up?(1-i/n)*h*.55:h*.3, amp=h*(.18+r()*.2);
+    pts.push([x, trend+(i%2? -amp:amp)+h*.25])}return pts}
+document.querySelectorAll('svg[data-zig]').forEach(svg=>{
+  const w=1080,h=260,pts=zigPts(w,h,9,7,true);
+  svg.innerHTML=`<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#c9a45c" stroke-opacity=".55" stroke-width="3"/>`+
+    pts.slice(1,-1).map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="7" fill="${i%2?'#c23a2b':'#0f0e0c'}" stroke="#c9a45c" stroke-width="2.5"/>`).join('');
+});
+function candles(w,h,n,seed,trend){let s=seed;const r=()=>(s=(s*9301+49297)%233280)/233280;let v=h*.6,out='';const cw=w/n;
+  for(let i=0;i<n;i++){const o=v,c=Math.max(h*.2,Math.min(h*.8,v+((r()-.5)*.22-trend*.03*Math.cos(i/n*Math.PI*2))*h));
+    const hi=Math.min(o,c)-r()*h*.04-2,lo=Math.max(o,c)+r()*h*.04+2,up=c<o,col=up?'#3fa37a':'#c23a2b',x=i*cw+cw/2;
+    out+=`<line x1="${x}" x2="${x}" y1="${hi}" y2="${lo}" stroke="${col}" stroke-width="1.5"/><rect x="${x-cw*.3}" y="${Math.min(o,c)}" width="${cw*.6}" height="${Math.max(2,Math.abs(c-o))}" fill="${col}"/>`;
+    v=c}return out}
+const T={
+  seg:()=>{const p=[[20,130],[80,60],[120,100],[170,35],[210,85],[280,140]];return `<polyline points="${p.join(' ')}" fill="none" stroke="#e3c98d" stroke-width="3"/>`+p.map(q=>`<circle cx="${q[0]}" cy="${q[1]}" r="4" fill="#c23a2b"/>`).join('')},
+  bi:()=>candles(300,170,16,3,0)+`<polyline points="30,130 95,50 160,120 230,40 280,90" fill="none" stroke="#e3c98d" stroke-width="2.5" stroke-dasharray="6 5"/>`,
+  live:()=>candles(300,170,28,11,1)+`<rect x="180" y="40" width="80" height="60" fill="none" stroke="#5aa0ff" stroke-width="2"/>`,
+  k:()=>candles(300,170,10,5,.4)+`<text x="14" y="28" fill="#e3c98d" font-size="18" font-family="Noto Sans TC" font-weight="700">頂底分型</text>`
+};
+document.querySelectorAll('svg[data-thumb]').forEach(s=>s.innerHTML=T[s.dataset.thumb]());
+</script>
+</body></html>
