@@ -73,12 +73,29 @@
   .cta .t small{display:block;font-size:28px;color:var(--mute);font-weight:400;margin-top:8px}
   .cta .arrow{flex:none;width:120px;height:120px;border-radius:50%;background:var(--seal);display:grid;place-items:center;font-size:44px;font-weight:900}
   .disc{font-size:22px;color:#6d665b;margin-top:34px;letter-spacing:1px}
+
+  /* 講師 */
+  .tbd{color:#e07a5f;border-bottom:2px dashed #e07a5f}
+  .prof{display:flex;align-items:center;gap:48px;margin-top:44px}
+  .ava{width:300px;height:300px;border-radius:50%;padding:8px;background:linear-gradient(140deg,#f0dca6,#c9a45c 45%,#8a6a2e 75%,#e3c98d);flex:none;box-shadow:0 0 60px rgba(201,164,92,.25)}
+  .ava div{width:100%;height:100%;border-radius:50%;overflow:hidden;border:6px solid var(--ink)}
+  .ava img{width:100%;height:100%;object-fit:cover;transform:scale(1.12)}
+  .role{font-size:26px;letter-spacing:5px;color:var(--gold);font-weight:700}
+  .pname{font-family:"Noto Serif TC",serif;font-weight:900;font-size:96px;line-height:1.1;margin:10px 0 6px}
+  .pname span{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:500;color:var(--gold2);font-size:90px;margin-left:10px}
+  .ptitle{font-size:30px;color:var(--mute);letter-spacing:3px}
+  .stat{display:flex;align-items:baseline;gap:28px;padding:40px 0;margin-top:48px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .stat b{font-family:"Noto Serif TC",serif;font-size:110px;font-weight:900;color:var(--gold2);line-height:1}
+  .stat span{font-size:28px;color:var(--mute);line-height:1.5}
+  .exp{list-style:none;padding:0;margin:34px 0 0;display:grid;gap:24px}
+  .exp li{position:relative;padding-left:40px;font-size:33px;line-height:1.5}
+  .exp li::before{content:"";position:absolute;left:4px;top:18px;width:14px;height:14px;background:var(--seal);transform:rotate(45deg)}
 </style></head><body>
 
 <!-- 1 封面 -->
 <div class="card cover">
   <div class="frame"></div>
-  <div class="top"><div class="brand"><div class="seal"><span>纏</span><span>道</span><span>漫</span><span>長</span></div>纏道漫長</div><div class="pg"><b>01</b> / 06</div></div>
+  <div class="top"><div class="brand"><div class="seal"><span>纏</span><span>道</span><span>漫</span><span>長</span></div>纏道漫長</div><div class="pg"></div></div>
   <div class="kicker">TRADING COMMUNITY</div>
   <h1>纏道<br><em>漫長</em></h1>
   <div class="sub">交易之路很漫長，<br>但你不必一個人走。</div>
@@ -87,10 +104,33 @@
   <div class="foot"><span>建立屬於自己的交易系統</span><b>@zqqnc</b></div>
 </div>
 
+<!-- 講師介紹 -->
+<div class="card">
+  <div class="frame"></div>
+  <div class="top"><div class="brand"><div class="seal"><span>纏</span><span>道</span><span>漫</span><span>長</span></div>纏道漫長</div><div class="pg"></div></div>
+  <div class="kicker">LECTURER · 講師介紹</div>
+  <div class="prof">
+    <div class="ava"><div><img src="assets/yi.png"></div></div>
+    <div>
+      <div class="role">TRADER / 纏論分析師</div>
+      <div class="pname">小益<span>Yi</span></div>
+      <div class="ptitle">脆上分析師 · @zqqnc</div>
+    </div>
+  </div>
+  <div class="stat"><b class="tbd">〔數字〕</b><span class="tbd">〔這個數字代表什麼〕</span></div>
+  <ul class="exp">
+    <li class="tbd">〔經歷 1：交易年資／專長市場〕</li>
+    <li class="tbd">〔經歷 2：代表成績或作品〕</li>
+    <li class="tbd">〔經歷 3：講師／合作經歷〕</li>
+    <li class="tbd">〔經歷 4：社群規模／內容觸及〕</li>
+  </ul>
+  <div class="foot"><span>纏道漫長 · 講師陣容</span><b>@zqqnc</b></div>
+</div>
+
 <!-- 2 我們在做什麼 -->
 <div class="card">
   <div class="frame"></div>
-  <div class="top"><div class="brand"><div class="seal"><span>纏</span><span>道</span><span>漫</span><span>長</span></div>纏道漫長</div><div class="pg"><b>02</b> / 06</div></div>
+  <div class="top"><div class="brand"><div class="seal"><span>纏</span><span>道</span><span>漫</span><span>長</span></div>纏道漫長</div><div class="pg"></div></div>
   <div class="kicker">ABOUT US</div>
   <h1 style="font-size:84px">我們專注的<em>三件事</em></h1>
   <div style="margin-top:40px">
@@ -105,7 +145,7 @@
 <!-- 3 華語群 -->
 <div class="card">
   <div class="frame"></div>
-  <div class="top"><div class="brand"><div class="seal"><span>纏</span><span>道</span><span>漫</span><span>長</span></div>纏道漫長</div><div class="pg"><b>03</b> / 06</div></div>
+  <div class="top"><div class="brand"><div class="seal"><span>纏</span><span>道</span><span>漫</span><span>長</span></div>纏道漫長</div><div class="pg"></div></div>
   <div class="kicker">板塊 ONE</div>
   <div class="board-head"><span class="badge">01</span><h1>華語群</h1></div>
   <div class="sub" style="margin-top:30px"><span class="pill">本群</span>&nbsp;&nbsp;交流與基礎建立</div>
@@ -121,7 +161,7 @@
 <!-- 4 分析群 -->
 <div class="card">
   <div class="frame"></div>
-  <div class="top"><div class="brand"><div class="seal"><span>纏</span><span>道</span><span>漫</span><span>長</span></div>纏道漫長</div><div class="pg"><b>04</b> / 06</div></div>
+  <div class="top"><div class="brand"><div class="seal"><span>纏</span><span>道</span><span>漫</span><span>長</span></div>纏道漫長</div><div class="pg"></div></div>
   <div class="kicker">板塊 TWO</div>
   <div class="board-head"><span class="badge">02</span><h1>分析群</h1></div>
   <div class="sub" style="margin-top:30px"><span class="pill ghost">禁言</span>&nbsp;&nbsp;深度學習與策略資源</div>
@@ -139,7 +179,7 @@
 <!-- 5 直播 -->
 <div class="card">
   <div class="frame"></div>
-  <div class="top"><div class="brand"><div class="seal"><span>纏</span><span>道</span><span>漫</span><span>長</span></div>纏道漫長</div><div class="pg"><b>05</b> / 06</div></div>
+  <div class="top"><div class="brand"><div class="seal"><span>纏</span><span>道</span><span>漫</span><span>長</span></div>纏道漫長</div><div class="pg"></div></div>
   <div class="kicker">LIVE &amp; REPLAY</div>
   <h1 style="font-size:80px">實戰直播 <em>實盤解析</em></h1>
   <div style="margin-top:30px">
@@ -154,7 +194,7 @@
 <!-- 6 CTA -->
 <div class="card">
   <div class="frame"></div>
-  <div class="top"><div class="brand"><div class="seal"><span>纏</span><span>道</span><span>漫</span><span>長</span></div>纏道漫長</div><div class="pg"><b>06</b> / 06</div></div>
+  <div class="top"><div class="brand"><div class="seal"><span>纏</span><span>道</span><span>漫</span><span>長</span></div>纏道漫長</div><div class="pg"></div></div>
   <div class="quote" style="margin-top:60px"><span class="mark">“</span>孤軍奮戰的交易之路<br>很漫長。<br>有一群同路人<br>並肩作戰，<br>感覺就<em style="font-style:normal;color:var(--gold2)">完全不同了。</em></div>
   <div class="cta"><div class="t">想一起走這條路？<small>在底下留言打聲招呼，<br>我會親自把交流方式傳給你。</small></div><div class="arrow">→</div></div>
   <div class="disc">※ 社群內容僅供學習交流，不構成任何投資建議。投資有風險，請自行評估。</div>
@@ -162,6 +202,8 @@
 </div>
 
 <script>
+const cards=document.querySelectorAll('.card'),tot=String(cards.length).padStart(2,'0');
+cards.forEach((c,i)=>c.querySelector('.pg').innerHTML=`<b>${String(i+1).padStart(2,'0')}</b> / ${tot}`);
 // 纏論「筆」的折線：頂底交替，向右上推進
 const NS='http://www.w3.org/2000/svg';
 function zigPts(w,h,n,seed,up){let s=seed;const r=()=>(s=(s*9301+49297)%233280)/233280;
