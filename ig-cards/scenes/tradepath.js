@@ -145,3 +145,95 @@ ${[0,1,2,3,4].map(i=>{const y=330+i*i*6+i*14;return `<path d="M0,${y} Q160,${y+1
 <path d="M0,322 Q480,306 960,322 L960,334 Q480,318 0,334 Z" fill="#f4ece0" opacity=".7"/>
 ${phGrain('tp12n')}
 `);
+
+// ---- 第二版 1–4 張 ----
+const tpBuoy=(x,y,k,c)=>`<path d="M${x-6*k},${y} L${x-3*k},${y-26*k} L${x+3*k},${y-26*k} L${x+6*k},${y} Z" fill="${c}"/><rect x="${x-7*k}" y="${y-2*k}" width="${14*k}" height="${5*k}" fill="#2a2a30"/>`;
+const tpLighthouse=(x,y,h,body,lamp)=>`<path d="M${x-h*.09},${y} L${x-h*.05},${y-h} L${x+h*.05},${y-h} L${x+h*.09},${y} Z" fill="${body}"/><path d="M${x-h*.075},${y-h*.33} h${h*.15} M${x-h*.065},${y-h*.66} h${h*.13}" stroke="#c84a4a" stroke-width="${h*.07}"/><rect x="${x-h*.06}" y="${y-h*1.14}" width="${h*.12}" height="${h*.14}" fill="${lamp}"/><path d="M${x-h*.08},${y-h*1.14} L${x},${y-h*1.26} L${x+h*.08},${y-h*1.14} Z" fill="${body}"/>`;
+
+// 1 說不出進場理由：漆黑海面 → 有燈塔與航道浮標的清晨港口
+S.tpExitTop=()=>clip('tp13',`
+${phSky('tp13s',[[0,'#05080f'],[1,'#141c2a']])}
+${phClouds('tp13c',[.16,.19,.25],.8,'0.004 0.012',82,0,240)}
+<rect y="250" width="960" height="220" fill="#0c1420"/>
+${loWaves(821,252,10,'#121c2c','#0c1420')}
+<path d="M680,262 L720,230 L780,240 L830,210 L900,236 L960,226 L960,300 L680,300 Z" fill="#06080e"/>
+${phGrain('tp13n')}
+`);
+S.tpExitBot=()=>clip('tp14',`
+${phSky('tp14s',[[0,'#8cb8e0'],[.6,'#ffd9b0'],[1,'#f6e2c8']])}
+${phGlow('tp14g',300,240,300,'#fff2d0',.9)}<path d="M276,250 a24,24 0 0 1 48,0 Z" fill="#fffbe8"/>
+${phClouds('tp14c',[1,.92,.85],.5,'0.003 0.03',83,30,170)}
+<rect y="250" width="960" height="220" fill="#7aa4c4"/>
+${[...Array(30)].map((_,i)=>`<path d="M${(i*131)%940},${262+i*7} h${20+(i*17)%50}" stroke="#e6f2fa" stroke-width="1.5" opacity=".55"/>`).join('')}
+<path d="M640,252 L700,220 L800,214 L900,228 L960,224 L960,300 L640,300 Z" fill="#5a6070"/>
+${tpLighthouse(800,218,110,'#f4f0e6','#ffe6a0')}${phGlow('tp14l',800,90,90,'#fff2b0',.7)}
+<path d="M800,90 L560,60 L560,120 Z" fill="#fff6c8" opacity=".25"/>
+${[0,1,2,3,4,5].map(i=>{const t=i/5,y=440-t*180,k=1.4-t*1.05,sp=150-t*110;return tpBuoy(560-sp,y,k,'#d84a4a')+tpBuoy(560+sp,y,k,'#4aa86a')}).join('')}
+${phGrain('tp14n')}
+`);
+
+// 2 一直攤平：越走裂痕越多的冰湖 → 雪地上掉頭回岸的腳印
+const tpIceLake=(hy,ice,shore)=>`<path d="${phRidge(841,hy-20,40,.5)}" fill="${shore}"/><rect y="${hy}" width="960" height="${470-hy}" fill="${ice}"/>`;
+S.tpIceTop=()=>clip('tp15',`
+${phSky('tp15s',[[0,'#0a0e1a'],[1,'#22304a']])}
+${phClouds('tp15c',[.3,.35,.45],.6,'0.004 0.015',84,0,200)}
+${tpIceLake(250,'#3a4a62','#121826')}
+${phClouds('tp15i',[.55,.65,.8],.35,'0.01 0.03',85,250,220)}
+<clipPath id="tp15k"><rect y="252" width="960" height="220"/></clipPath><g clip-path="url(#tp15k)"><g transform="translate(480,400) scale(1.3,.42) translate(-480,-400)">${[0,45,90,135,180,225,270,315].map((ang,i)=>txBranch(950+i,480,400,90+(i%3)*30,ang+10,4,'#d6e4f6',3)).join('')}</g></g>
+<ellipse cx="480" cy="400" rx="10" ry="4" fill="#e6f0fc" opacity=".8"/>
+${phGrain('tp15n')}
+`);
+S.tpIceBot=()=>clip('tp16',`
+${phSky('tp16s',[[0,'#9cc8ec'],[.7,'#f6e8d8'],[1,'#fff4e6']])}
+${phGlow('tp16g',700,150,300,'#fff6d6',.9)}<circle cx="700" cy="150" r="26" fill="#fffbe8"/>
+${tpIceLake(240,'#b8d0e4','#8a9ab0')}
+<path d="M0,470 L0,330 Q300,300 600,330 Q800,350 960,320 L960,470 Z" fill="#f6f4f0"/>
+<path d="M0,330 Q300,300 600,330 Q800,350 960,320" stroke="#d8e2ee" stroke-width="3" fill="none"/>
+${(()=>{let s='';const pts=[[420,460],[440,430],[452,402],[468,378],[478,356],[486,338]];pts.forEach(([x,y],i)=>{const k=1-i*.11;s+=`<ellipse cx="${x-8*k}" cy="${y}" rx="${7*k}" ry="${4*k}" fill="#c8d4e2"/><ellipse cx="${x+10*k}" cy="${y-10*k}" rx="${7*k}" ry="${4*k}" fill="#c8d4e2"/>`});
+  const back=[[520,346],[540,368],[566,392],[596,418],[630,446]];back.forEach(([x,y],i)=>{const k=.5+i*.12;s+=`<ellipse cx="${x-8*k}" cy="${y}" rx="${7*k}" ry="${4*k}" fill="#b8c8da"/><ellipse cx="${x+10*k}" cy="${y-8*k}" rx="${7*k}" ry="${4*k}" fill="#b8c8da"/>`});return s})()}
+<path d="M496,334 q16,-8 22,8" stroke="#b8c8da" stroke-width="2" fill="none" stroke-dasharray="3 4"/>
+${phTree(843,120,330,.5,'#4a6a54')}${phTree(844,880,320,.45,'#4a6a54')}
+${phGrain('tp16n')}
+`);
+
+// 3 一直盯帳戶：閃爍的電子看板 → 結滿果實的果園
+S.tpFocusTop=()=>clip('tp17',`
+${phSky('tp17s',[[0,'#07080f'],[1,'#141826']])}
+${phCity(851,470,120,330,'#0c0e18','#ffd98a','#121624',.03)}
+<rect x="250" y="60" width="460" height="220" fill="#05060a" stroke="#1c2030" stroke-width="8"/>
+${phBlur('tp17b',4)}
+${(()=>{const rows=[['-3.2%','#ff4a4a'],['+1.8%','#3ddc84'],['-5.7%','#ff4a4a'],['+0.4%','#3ddc84']];return rows.map(([t,c],i)=>`<text x="${290+(i%2)*220}" y="${130+Math.floor(i/2)*100}" font-size="62" font-weight="900" font-family="monospace" fill="${c}" filter="url(#tp17b)" opacity=".8">${t}</text><text x="${290+(i%2)*220}" y="${130+Math.floor(i/2)*100}" font-size="62" font-weight="900" font-family="monospace" fill="${c}">${t}</text>`).join('')})()}
+${phGlow('tp17g',480,170,320,'#ff6a6a',.15)}
+${phGrain('tp17n')}
+`);
+S.tpFocusBot=()=>clip('tp18',`
+${phSky('tp18s',[[0,'#9ccbec'],[.7,'#f6ecd0'],[1,'#f2e2bc']])}
+${phGlow('tp18g',160,110,280,'#fff6d6',.9)}
+${phClouds('tp18c',[1,1,1],.5,'0.004 0.015',86,0,160)}
+<path d="${phRidge(861,230,50,.5)}" fill="#8fb27a"/>
+<path d="M0,470 L0,250 L960,250 L960,470 Z" fill="#7ea862"/>
+${(()=>{let s='';[[0,.35],[1,.55],[2,.8],[3,1.1]].forEach(([row,k])=>{const y=250+row*row*14+row*20+30,n=Math.round(9/k);for(let i=0;i<=n;i++){const x=-40+i*(1040/n)+(row%2)*30*k;s+=phTree(870+row*20+i,x,y,k*.6,'#4f8a3a');const r=phRand(900+row*20+i);for(let j=0;j<10;j++){const a=r()*Math.PI*2,d=Math.sqrt(r())*40*k;s+=`<circle cx="${(x+Math.cos(a)*d*1.2).toFixed(0)}" cy="${(y-90*k*.6+Math.sin(a)*d*.8).toFixed(0)}" r="${(4.5*k).toFixed(1)}" fill="${j%3?'#ff7a3a':'#ffb03a'}"/>`}}});return s})()}
+${phGrain('tp18n')}
+`);
+
+// 4 想抓每一波：亂打的夜浪 → 日出時一道完整的浪
+S.tpWaveTop=()=>clip('tp19',`
+${phSky('tp19s',[[0,'#080c16'],[1,'#1c2434']])}
+${phClouds('tp19c',[.2,.23,.3],.8,'0.004 0.012',87,0,220)}
+<rect y="220" width="960" height="250" fill="#0e1828"/>
+${(()=>{const r=phRand(871);let s='';for(let i=0;i<14;i++){const y=230+i*17,x0=(r()-.5)*200;s+=`<path d="${phRidge(880+i,y,20+i*4,.7)}" fill="${i%2?'#142236':'#101c2e'}"/>`;for(let j=0;j<6;j++){const x=r()*960;s+=`<path d="M${x.toFixed(0)},${(y+4).toFixed(0)} q${(10+i*2).toFixed(0)},-${(6+i).toFixed(0)} ${(24+i*4).toFixed(0)},0" stroke="#c8d6e8" stroke-width="${(1+i*.12).toFixed(1)}" fill="none" opacity=".55"/>`}}return s})()}
+${phGrain('tp19n')}
+`);
+S.tpWaveBot=()=>clip('tp20',`
+${phSky('tp20s',[[0,'#7aa8e0'],[.5,'#ffc890'],[.62,'#ffe0b0'],[1,'#e8c8a0']])}
+${phGlow('tp20g',680,250,320,'#fff0c0',.95)}<path d="M650,250 a30,30 0 0 1 60,0 Z" fill="#fffbe8"/>
+${phClouds('tp20c',[1,.85,.75],.45,'0.003 0.03',88,30,170)}
+<rect y="250" width="960" height="220" fill="#4a8aa8"/>
+<path d="M-20,470 L-20,370 Q120,350 260,290 Q380,230 470,250 Q540,268 520,320 Q490,300 460,310 Q430,330 470,370 Q560,420 980,400 L980,470 Z" fill="#3aa0b8"/>
+<path d="M260,290 Q380,230 470,250 Q540,268 520,320" stroke="#f4fbff" stroke-width="5" fill="none"/>
+<path d="M300,300 Q380,262 460,268" stroke="#9ce0ec" stroke-width="3" fill="none" opacity=".8"/>
+${phBlur('tp20b',4)}<path d="M440,250 Q545,262 522,322" stroke="#fff" stroke-width="14" fill="none" filter="url(#tp20b)" opacity=".55"/>
+<path d="M0,440 Q480,410 960,440 L960,470 L0,470 Z" fill="#e8d0a8"/>
+<path d="M0,440 Q480,410 960,440" stroke="#fff" stroke-width="3" fill="none" opacity=".8"/>
+${phGrain('tp20n')}
+`);

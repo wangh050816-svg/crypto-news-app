@@ -2,10 +2,10 @@
 SET({
   title:'交易路上的6個體悟',
   cards:[
-    ['tpSeason','想要每一筆都賺錢時','When you want every trade to win.','那就接受虧損是交易的成本','Then accept losses as the cost of trading.'],
-    ['tpWait','行情很悶、手很癢時',"When the market's dull and you're itching to trade.",'那就別動，等待也是交易的一部分','Sit tight. Waiting is part of trading.'],
-    ['tpPlan','看到別人賺得比你多時','When you see others making more than you.','那就回頭看自己的計畫','Then go back to your own plan.'],
-    ['tpWind','想證明自己是對的時',"When you want to prove you're right.",'那就別跟市場爭，風向不會為你改變',"Don't fight the market. The wind won't change for you."],
+    ['tpExit','進場時說不出為什麼時',"When you can't explain why you're entering.",'那就先寫好出場條件再下單','Then write your exit before you enter.'],
+    ['tpIce','虧損時一直想攤平時','When you keep averaging down on a loser.','那就別再加碼，錯的部位不會因為加碼變對',"Stop adding. More money won't make a bad trade right."],
+    ['tpFocus','一直盯著帳戶數字時',"When you can't stop staring at your P&L.",'那就專注把事做對，結果自然會跟上','Focus on doing it right. Results will follow.'],
+    ['tpWave','想抓住每一波行情時','When you want to catch every move.','那就別貪，只吃屬於你的那一段',"Don't be greedy. Take only the part that's yours."],
     ['tpPanic','市場大跌、人心恐慌時','When the market crashes and panic spreads.','那就先深呼吸，再做決定','Then take a deep breath before you decide.'],
     ['tpCycle','覺得「這次不一樣」時','When you think "this time is different."','那就別忘了，歷史總是很相似','Remember, history often rhymes.'],
   ],
