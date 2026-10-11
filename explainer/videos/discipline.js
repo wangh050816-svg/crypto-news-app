@@ -4,7 +4,7 @@ const loss=[10,20,30,50,70,90].map(l=>({l,r:100/(100-l)*100-100}));
 const PATH=(()=>{const R=rand(11),v=[100];for(let i=1;i<80;i++)v.push(v[i-1]+(i<20?.25:-.62)+(R()-.5)*2.4);return v})();
 const ENTRY=10,STOP=PATH[ENTRY]*.95,HIT=PATH.findIndex((v,i)=>i>ENTRY&&v<STOP);
 
-VIDEO({title:'交易紀律',music:{chords:['Am','F','C','G'],bpm:72},scenes:[
+VIDEO({title:'交易紀律',music:{style:'beat',chords:['F','C','Dm','Bb'],bpm:113},scenes:[
 
 // 1. 鉤子：虧 50% 要賺 100% 才回本
 {dur:6,caps:[

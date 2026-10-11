@@ -1,9 +1,11 @@
 // 用法：node explainer/render.js explainer/videos/compound.js [--preview]
 // 輸出：explainer/out/<名稱>.mp4（1920×1080, 30fps）和 <名稱>-sheet.png（每秒一格的總覽圖）
-// --preview 只輸出總覽圖，不做影片，用來快速檢查版面。--mute 不做聲音。
+// --preview 只輸出總覽圖，不做影片，用來快速檢查版面。--mute 不做聲音。--music <檔案> 用自己的音樂當背景（要有使用權）。
 // 聲音：場景 caps 的旁白用離線中文語音（先跑 explainer/audio/setup-voice.sh），加上合成的背景音樂和音效。
 const fs=require('fs'),path=require('path'),os=require('os'),{spawn,execFileSync}=require('child_process');
 const PY=process.env.EXPLAINER_TTS_PY||path.join(os.homedir(),'.cache/explainer-tts/bin/python'),mute=process.argv.includes('--mute');
+const mi=process.argv.indexOf('--music'),musicFile=mi>0?path.resolve(process.argv[mi+1]||''):null;
+if(musicFile&&!fs.existsSync(musicFile)){console.error('找不到音樂檔 '+musicFile);process.exit(1)}
 let chromium;
 try{({chromium}=require('playwright'))}catch(e){({chromium}=require('/opt/node22/lib/node_modules/playwright'))}
 const dir=__dirname,vidFile=path.resolve(process.argv[2]||''),preview=process.argv.includes('--preview');
@@ -38,6 +40,7 @@ const tmp=path.join(out,`_${name}.html`);fs.writeFileSync(tmp,html);
     const voice=lines.length?JSON.parse(execFileSync(PY,[path.join(dir,'audio/tts.py'),lf,path.join(out,'voice')],{stdio:['ignore','pipe','ignore']}).toString()):{};
     fs.unlinkSync(lf);await p.evaluate(v=>setVoice(v),voice);
     audioPlan=await p.evaluate(()=>audioPlan());audioPlan.voice.forEach(v=>v.file=voice[v.id].file);
+    if(musicFile) audioPlan.music={file:musicFile};
   }
   const {dur,fps}=await p.evaluate(()=>({dur:window.DURATION,fps:window.FPS}));
   const shot=async t=>{await p.evaluate(t=>renderFrame(t),t);if(errs.length)throw new Error(errs.join('\n'));return p.screenshot({type:'jpeg',quality:92})};
