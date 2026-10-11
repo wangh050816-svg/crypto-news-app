@@ -31,6 +31,7 @@ def hp(x, fc):
     b, a = butter(2, fc / (SR / 2), "high"); return lfilter(b, a, x)
 
 SFX = {
+    "key":    lambda: hp(lp(rng.standard_normal(int(.018 * SR)), 5000), 1800) * np.exp(-np.arange(int(.018 * SR)) / 180) * .35,
     "tick":   lambda: tone(2200, .03, decay=.006) * .5,
     "pop":    lambda: tone(np.linspace(500, 1300, int(.06 * SR)), .06, (1, .3)) * env(int(.06 * SR), 40, 900) * .6,
     "whoosh": lambda: hp(lp(rng.standard_normal(int(.5 * SR)), 2500), 300) * np.hanning(int(.5 * SR)) * .35,
@@ -127,7 +128,8 @@ def main():
     for e in plan["sfx"]:
         w = SFX[e["name"]]() * e.get("gain", 1); s = int(e["t"] * SR)
         if s < n: fx[s: s + len(w)] += w[: n - s]
-    m = plan.get("music") or {}
+    m = plan.get("music", {})
+    if m is None: m = {}
     if m is False: bg = np.zeros(n)
     elif m.get("file"): bg = music_file(m["file"], dur, m.get("gain", 1.0)) / .32
     elif m.get("style") == "beat": bg = beat(dur, m.get("chords", ["F", "C", "Dm", "Bb"]), m.get("bpm", 112)) * .8 * m.get("gain", 1.0)
@@ -135,6 +137,9 @@ def main():
     act = lp((np.abs(voice) > .02).astype(float), 3)  # 有人聲時把音樂壓低（ducking）
     duck = 1 - .55 * np.clip(act * 1.6, 0, 1)
     mix = voice * .95 + fx * .7 + bg * .32 * duck
+    if m is not False:  # 有音樂時把整體響度拉到約 -15 dBFS（短影音平台常見音量），再用 tanh 柔性限幅
+        mix *= 10 ** (-15 / 20) / (np.sqrt(np.mean(mix ** 2)) + 1e-9)
+        mix = np.tanh(mix * 1.1) / 1.1
     mix /= max(1, np.abs(mix).max() / .95)
     st = np.stack([mix, mix], 1)
     wavfile.write(sys.argv[2], SR, (st * 32767).astype(np.int16))

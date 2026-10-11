@@ -9,5 +9,5 @@ node explainer/render.js explainer/videos/compound.js --preview  # 只出總覽�
 
 - `engine.js`：時間軸、字幕 `cap()`、文字 `txt()`、角色 `coin()`、緩動 `ease`、進度 `prog()`。
 - `videos/*.js`：一支影片 = `VIDEO({scenes:[{dur, draw(lt){...}}]})`，`lt` 是該場景內的秒數。
-- 聲音：場景寫 `caps:[{zh,en,say?}]`，會自動配上中文旁白（離線語音 zhtts），字幕跟著旁白逐字出現，場景長度依旁白自動拉長；`sfx(cue)` 回傳 `[[秒,'tick'|'pop'|'ding'|'down'|'thud'|'error'|'rise'|'whoosh',音量]]`；背景音樂由 `audio/mix.py` 合成：`VIDEO({music:{style:'beat',chords,bpm}})` 是有鼓的節奏版（預設 calm 是輕柔版）；用自己的音樂檔加 `--music 檔案.mp3`（要有使用權），會自動循環、淡出、旁白時壓低。第一次用先跑 `explainer/audio/setup-voice.sh`，不要聲音加 `--mute`。
+- 聲音：預設沒有人聲，`caps:[{zh,en}]` 的字幕每秒打 8 個字並配打字音效，場景長度依字數自動拉長；加 `--voice` 才配中文旁白（離線語音 zhtts，`say` 可寫念法）；`--no-music` 輸出不含背景音樂的版本；`sfx(cue)` 回傳 `[[秒,'tick'|'pop'|'ding'|'down'|'thud'|'error'|'rise'|'whoosh',音量]]`；背景音樂由 `audio/mix.py` 合成：`VIDEO({music:{style:'beat',chords,bpm}})` 是有鼓的節奏版（預設 calm 是輕柔版）；用自己的音樂檔加 `--music 檔案.mp3`（要有使用權），會自動循環、淡出、旁白時壓低。第一次用先跑 `explainer/audio/setup-voice.sh`，不要聲音加 `--mute`。
 - 字幕標記：`{y:黃字}`、`{r:紅字}`。

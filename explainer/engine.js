@@ -52,11 +52,12 @@ function coin(x,y,s=1,mood='smile',o={}){
 // capAt（第一句開始秒數，預設 .4）、gap（句間空檔）、tail（最後一句後留白）、sfx(cue,d)→[[秒,'音效名',音量?]]。
 // cue(i) = 第 i 句字幕在場景內開始的秒數，畫面動畫可以對齊旁白。
 let VID=null,VOICE={};
+const TYPE_CPS=8;  // 沒有旁白時，字幕每秒打出幾個字
 const plain=s=>s.replace(/\{\w:([^}]*)\}/g,'$1');
 function layout(){
   let t=0;VID.scenes.forEach((s,si)=>{
     s.start=t;s.cueT=[];let c=s.capAt??.4;
-    (s.caps||[]).forEach((cp,i)=>{const v=VOICE[`s${si}c${i}`];cp.vdur=v?v.dur:[...plain(cp.zh)].length/6;s.cueT.push(c);c+=cp.vdur+(s.gap??.35)});
+    (s.caps||[]).forEach((cp,i)=>{const v=VOICE[`s${si}c${i}`],n=[...plain(cp.zh)].length;cp.rdur=v?Math.max(.3,v.dur*.85):n/TYPE_CPS;cp.vdur=v?v.dur:cp.rdur+1+n*.05;s.cueT.push(c);c+=cp.vdur+(s.gap??.35)});
     const end=s.caps?.length?s.cueT.at(-1)+s.caps.at(-1).vdur+(s.tail??.9):0;
     s.d=Math.max(s.dur||0,end);s.cue=i=>s.cueT[i]??0;t+=s.d});
   VID.duration=t;window.DURATION=t;
@@ -66,12 +67,14 @@ window.voiceLines=()=>VID.scenes.flatMap((s,si)=>(s.caps||[]).map((c,i)=>({id:`s
 window.setVoice=v=>{VOICE=v;layout();return window.DURATION};
 window.audioPlan=()=>{const voice=[],sfx=[];
   VID.scenes.forEach((s,si)=>{(s.caps||[]).forEach((c,i)=>{if(VOICE[`s${si}c${i}`])voice.push({id:`s${si}c${i}`,t:s.start+s.cueT[i]})});
+    if(VID.typeSound!==false&&!Object.keys(VOICE).length)(s.caps||[]).forEach((c,i)=>{const n=[...plain(c.zh)].length;
+      for(let k=0;k<n;k++){const ch=[...plain(c.zh)][k];if(ch.trim()&&!'，。、？！：；'.includes(ch))sfx.push({name:'key',t:s.start+s.cueT[i]+k*c.rdur/n,gain:.35})}});
     (s.sfx?s.sfx(s.cue,s.d):[]).forEach(([t,name,gain])=>sfx.push({name,t:s.start+t,gain:gain??1}));
     if(si>0&&s.whoosh!==false) sfx.push({name:'whoosh',t:s.start-.15,gain:.6})});
   return {dur:VID.duration,voice,sfx,music:VID.music??{}}};
 function autoCap(s,lt){
   if(!s.caps?.length) return '';let i=-1;s.cueT.forEach((c,k)=>{if(lt>=c-.05)i=k});if(i<0) return '';
-  const cp=s.caps[i],r=prog(lt,s.cueT[i],s.cueT[i]+Math.max(.3,cp.vdur*.85)),eo=prog(lt,s.cueT[i]+cp.vdur*.4,s.cueT[i]+cp.vdur*.4+.4);
+  const cp=s.caps[i],r=prog(lt,s.cueT[i],s.cueT[i]+cp.rdur),eo=prog(lt,s.cueT[i]+cp.rdur*.5,s.cueT[i]+cp.rdur*.5+.4);
   return `<div class="cap" style="top:${s.capY||860}px"><b>${rich(cp.zh,r)}</b><i style="opacity:${eo}">${cp.en}</i></div>`;
 }
 window.renderFrame=function(t){

@@ -1,9 +1,10 @@
 // 用法：node explainer/render.js explainer/videos/compound.js [--preview]
 // 輸出：explainer/out/<名稱>.mp4（1920×1080, 30fps）和 <名稱>-sheet.png（每秒一格的總覽圖）
-// --preview 只輸出總覽圖，不做影片，用來快速檢查版面。--mute 不做聲音。--music <檔案> 用自己的音樂當背景（要有使用權）。
+// --preview 只輸出總覽圖，不做影片，用來快速檢查版面。--mute 完全沒聲音。--voice 加中文旁白（預設不加，字幕逐字打出配打字音效）。
+// --music <檔案> 用自己的音樂當背景（要有使用權）。--no-music 不放背景音樂（上傳平台時再從音樂庫套歌）。
 // 聲音：場景 caps 的旁白用離線中文語音（先跑 explainer/audio/setup-voice.sh），加上合成的背景音樂和音效。
 const fs=require('fs'),path=require('path'),os=require('os'),{spawn,execFileSync}=require('child_process');
-const PY=process.env.EXPLAINER_TTS_PY||path.join(os.homedir(),'.cache/explainer-tts/bin/python'),mute=process.argv.includes('--mute');
+const PY=process.env.EXPLAINER_TTS_PY||path.join(os.homedir(),'.cache/explainer-tts/bin/python'),mute=process.argv.includes('--mute'),useVoice=process.argv.includes('--voice'),noMusic=process.argv.includes('--no-music');
 const mi=process.argv.indexOf('--music'),musicFile=mi>0?path.resolve(process.argv[mi+1]||''):null;
 if(musicFile&&!fs.existsSync(musicFile)){console.error('找不到音樂檔 '+musicFile);process.exit(1)}
 let chromium;
@@ -35,12 +36,13 @@ const tmp=path.join(out,`_${name}.html`);fs.writeFileSync(tmp,html);
   // 旁白：先合成語音，拿到每句長度再重排時間軸
   let audioPlan=null;
   if(!mute){
-    if(!fs.existsSync(PY)){console.error('找不到語音環境，先執行 explainer/audio/setup-voice.sh（或加 --mute）');process.exit(1)}
-    const lines=await p.evaluate(()=>voiceLines()),lf=path.join(out,`_${name}-lines.json`);fs.writeFileSync(lf,JSON.stringify(lines));
+    if(!fs.existsSync(PY)){console.error('找不到音訊環境，先執行 explainer/audio/setup-voice.sh（或加 --mute）');process.exit(1)}
+    const lines=useVoice?await p.evaluate(()=>voiceLines()):[],lf=path.join(out,`_${name}-lines.json`);fs.writeFileSync(lf,JSON.stringify(lines));
     const voice=lines.length?JSON.parse(execFileSync(PY,[path.join(dir,'audio/tts.py'),lf,path.join(out,'voice')],{stdio:['ignore','pipe','ignore']}).toString()):{};
     fs.unlinkSync(lf);await p.evaluate(v=>setVoice(v),voice);
     audioPlan=await p.evaluate(()=>audioPlan());audioPlan.voice.forEach(v=>v.file=voice[v.id].file);
     if(musicFile) audioPlan.music={file:musicFile};
+    if(noMusic) audioPlan.music=false;
   }
   const {dur,fps}=await p.evaluate(()=>({dur:window.DURATION,fps:window.FPS}));
   const shot=async t=>{await p.evaluate(t=>renderFrame(t),t);if(errs.length)throw new Error(errs.join('\n'));return p.screenshot({type:'jpeg',quality:92})};
@@ -50,7 +52,7 @@ const tmp=path.join(out,`_${name}.html`);fs.writeFileSync(tmp,html);
   await sp.setContent(`<body style="margin:0;background:#000;display:grid;grid-template-columns:repeat(5,382px);gap:4px;width:1926px">${thumbs.map(s=>`<img src="${s}" width="382">`).join('')}</body>`);
   await sp.screenshot({path:path.join(out,name+'-sheet.png'),fullPage:true});
   if(!preview){
-    const mp4=path.join(out,name+'.mp4'),n=Math.round(dur*fps),wav=path.join(out,`_${name}.wav`);let aIn=[];
+    const mp4=path.join(out,name+(noMusic?'-nomusic':'')+'.mp4'),n=Math.round(dur*fps),wav=path.join(out,`_${name}.wav`);let aIn=[];
     if(audioPlan){const pf=path.join(out,`_${name}-plan.json`);fs.writeFileSync(pf,JSON.stringify(audioPlan));
       execFileSync(PY,[path.join(dir,'audio/mix.py'),pf,wav],{stdio:'inherit'});fs.unlinkSync(pf);aIn=['-i',wav,'-c:a','aac','-b:a','192k','-shortest']}
     const ff=spawn('ffmpeg',['-y','-v','error','-f','image2pipe','-framerate',String(fps),'-i','-',...aIn,'-c:v','libx264','-pix_fmt','yuv420p','-crf','18','-preset','medium','-movflags','+faststart',mp4],{stdio:['pipe','inherit','inherit']});

@@ -7,7 +7,7 @@ description: 製作黑底極簡知識動畫短影片（1920×1080 mp4，大數�
 
 程式在 `explainer/`，範例：`videos/discipline.js`（有配音、音效、音樂，新影片照這支寫）、`videos/compound.js`（舊版無聲）。先讀 engine.js、README 和 discipline.js 再動手。
 
-聲音：先跑 `explainer/audio/setup-voice.sh`（離線中文語音，線上 TTS 被網路政策擋）。旁白寫在場景的 `caps`，數字要在 `say` 裡寫成中文念法（百分之五十），否則可能念錯。
+聲音：使用者不要人聲旁白。預設是「字幕逐字打出＋打字音效＋背景音樂」。先跑 `explainer/audio/setup-voice.sh`（音訊用的 python 環境）。每次輸出兩版：一般版（合成的 beat 音樂）和 `--no-music` 版（讓使用者在抖音用原聲/拍同款套原曲）。不要從參考影片擷取音樂放進成品（版權）。`--voice` 才會加旁白。
 
 ## 風格規則
 - 黑底 #0d0c0e，線條白，重點黃 #f5b83d、負面紅 #e8423f，英文灰。
