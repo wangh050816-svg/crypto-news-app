@@ -5,7 +5,9 @@ description: 製作黑底極簡知識動畫短影片（1920×1080 mp4，大數�
 
 # 知識動畫短影片
 
-程式在 `explainer/`，範例是 `explainer/videos/compound.js`（複利效應）。先讀 engine.js 和範例再動手。
+程式在 `explainer/`，範例：`videos/discipline.js`（有配音、音效、音樂，新影片照這支寫）、`videos/compound.js`（舊版無聲）。先讀 engine.js、README 和 discipline.js 再動手。
+
+聲音：先跑 `explainer/audio/setup-voice.sh`（離線中文語音，線上 TTS 被網路政策擋）。旁白寫在場景的 `caps`，數字要在 `say` 裡寫成中文念法（百分之五十），否則可能念錯。
 
 ## 風格規則
 - 黑底 #0d0c0e，線條白，重點黃 #f5b83d、負面紅 #e8423f，英文灰。
@@ -18,5 +20,5 @@ description: 製作黑底極簡知識動畫短影片（1920×1080 mp4，大數�
 1. 先列出場景表（每場景：秒數、畫面、中英字幕）給使用者確認；說「直接做」就跳過。
 2. 新增 `explainer/videos/<英文名>.js`，可以共用 engine.js 的工具；需要的新工具加進 engine.js。
 3. `node explainer/render.js explainer/videos/<名>.js --preview`，用 Read 看 `explainer/out/<名>-sheet.png`，檢查重疊、出界、字幕被擋。修好再跑完整版。
-4. 用 SendUserFile 傳 mp4，附上抖音/IG 文案（3 行＋5 個 hashtag）。提醒影片沒有聲音，可以在剪映加配樂和配音。
+4. 用 SendUserFile 傳 mp4，附上抖音/IG 文案（3 行＋5 個 hashtag）。
 5. out/ 已 gitignore；新的影片腳本 commit 起來。
