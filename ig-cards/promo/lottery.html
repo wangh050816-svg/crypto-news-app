@@ -30,14 +30,13 @@
       <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
       <linearGradient id="rim" x1="0" y1=".2" x2=".6" y2=".8"><stop offset="0" stop-color="#fff" stop-opacity="1"/><stop offset=".25" stop-color="#fff" stop-opacity=".55"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient>
       <filter id="tex" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".09" numOctaves="3" seed="11"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .14 -.02"/></filter>
-      <clipPath id="moonclip"><circle cx="930" cy="560" r="330"/></clipPath>
+      <clipPath id="moonclip"><circle cx="860" cy="520" r="350"/></clipPath>
       <radialGradient id="shade" cx="25%" cy="30%" r="80%"><stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset=".45" stop-color="#000" stop-opacity=".6"/><stop offset="1" stop-color="#000" stop-opacity=".95"/></radialGradient>
     </defs>
-    <circle cx="930" cy="560" r="330" fill="url(#moon)"/><g clip-path="url(#moonclip)"><rect x="600" y="230" width="660" height="660" filter="url(#tex)"/><circle cx="930" cy="560" r="330" fill="url(#shade)"/></g>
-    <circle cx="930" cy="560" r="330" fill="none" stroke="url(#rim)" stroke-width="8" filter="url(#glow)"/>
-    <circle cx="930" cy="560" r="330" fill="none" stroke="url(#rim)" stroke-width="1.5"/>
-    <g id="candles"></g>
-    <rect width="1080" height="1080" filter="url(#grain)"/>
+    <circle cx="860" cy="520" r="350" fill="url(#moon)"/><g clip-path="url(#moonclip)"><rect x="510" y="170" width="700" height="700" filter="url(#tex)"/><circle cx="860" cy="520" r="350" fill="url(#shade)"/></g>
+    <circle cx="860" cy="520" r="350" fill="none" stroke="url(#rim)" stroke-width="8" filter="url(#glow)"/>
+    <circle cx="860" cy="520" r="350" fill="none" stroke="url(#rim)" stroke-width="1.5"/>
+        <rect width="1080" height="1080" filter="url(#grain)"/>
   </svg>
   <div class="brand">纏道漫長</div>
   <div class="rule" style="top:124px;width:70px"></div>
@@ -51,17 +50,4 @@
   </div>
   <div class="foot">曬單抽獎<i>|</i>交易紀律<i>|</i>一起成長</div>
 </div>
-<script>
-  // 銀色 K 線：從右下往右上攀升，排在月亮前面
-  let s='',seed=7;const r=()=>(seed=(seed*16807)%2147483647)/2147483647;
-  let price=700;
-  for(let i=0;i<22;i++){
-    const x=820+i*12.5, o=price, c=price-(8+r()*30)*(r()<.72?1:-0.6);
-    const hi=Math.min(o,c)-6-r()*16, lo=Math.max(o,c)+6+r()*16, up=c<o;
-    s+=`<path d="M${x},${hi} V${lo}" stroke="#e8e8e8" stroke-width="1.6" opacity=".85"/>`;
-    s+=`<rect x="${x-4}" y="${Math.min(o,c)}" width="8" height="${Math.max(3,Math.abs(c-o))}" fill="${up?'#f6f6f6':'#6a6a6e'}" stroke="#f0f0f0" stroke-width="1"/>`;
-    price=c;
-  }
-  document.getElementById('candles').innerHTML=`<g filter="url(#glow)" opacity=".5">${s}</g>${s}`;
-</script>
 </body></html>
