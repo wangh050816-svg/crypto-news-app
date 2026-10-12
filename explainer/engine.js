@@ -47,6 +47,23 @@ function coin(x,y,s=1,mood='smile',o={}){
     <circle r="45" fill="none" stroke="${o.ring||C.dim}" stroke-width="${sw*.7}" stroke-dasharray="3 7"/>${f}</g>`;
 }
 
+// ---- 舞台：聚光燈、人群小人 ----
+// spot：從畫面上方打到地面的光錐。id 在同一個 svg 裡要唯一。
+function spot(id,x,floorY,rx,op=1,top=-40,topW=26){
+  return `<defs><linearGradient id="sg${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="${.02*op}"/><stop offset="1" stop-color="#fff" stop-opacity="${.2*op}"/></linearGradient>
+    <radialGradient id="sf${id}"><stop offset="0" stop-color="#fff" stop-opacity="${.32*op}"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>
+    <path d="M${x-topW},${top} L${x+topW},${top} L${x+rx},${floorY} L${x-rx},${floorY}Z" fill="url(#sg${id})"/>
+    <ellipse cx="${x}" cy="${floorY}" rx="${rx*1.05}" ry="${rx*.22}" fill="url(#sf${id})"/>`;
+}
+// pawn：人群裡的小人（頭＋身體）。look=[dx,dy] 眼睛看的方向，lit 0..1 被照亮的程度。
+function pawn(x,y,s=1,o={}){
+  const lit=o.lit??0,col=lit>0?`rgba(242,239,233,${.35+.65*lit})`:C.dim,[lx,ly]=o.look||[0,0];
+  return `<g transform="translate(${x},${y}) scale(${s})" opacity="${o.op??1}">
+    <path d="M-26,0 Q-28,-46 0,-50 Q28,-46 26,0Z" fill="${C.bg}" stroke="${col}" stroke-width="3"/>
+    <circle cx="0" cy="-74" r="20" fill="${C.bg}" stroke="${col}" stroke-width="3"/>
+    <circle cx="${-7+lx*6}" cy="${-75+ly*5}" r="2.6" fill="${col}"/><circle cx="${7+lx*6}" cy="${-75+ly*5}" r="2.6" fill="${col}"/></g>`;
+}
+
 // ---- 時間軸 ----
 // 場景欄位：dur（最短秒數）、draw(lt,d,cue)、caps:[{zh,en,say?}]（字幕＋配音，依序播放）、
 // capAt（第一句開始秒數，預設 .4）、gap（句間空檔）、tail（最後一句後留白）、sfx(cue,d)→[[秒,'音效名',音量?]]。
