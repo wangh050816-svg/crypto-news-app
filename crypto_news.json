@@ -1,43 +1,75 @@
 [
   {
     "source": "動區動趨 BlockTempo",
-    "title": "泰國 SEC 發布加密 ETF 規範：比特幣、以太坊基金 10/16 生效",
-    "link": "https://www.blocktempo.com/thailand-sec-bitcoin-ethereum-etf-rules-october-2026-framework/",
-    "published": "Sun, 11 Oct 2026 03:58:12 +0000",
-    "summary": "<p>泰國證券暨交易委員會（SEC）正式發布加密資產 ETF 規範，首批僅開放比特幣與以太坊，規則定於 10 月 1 [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/thailand-s...",
-    "category": "Bitcoin"
-  },
-  {
-    "source": "動區動趨 BlockTempo",
-    "title": "波場 TRON 亮相國際刑警組織新技術論壇，展示戀上安全與合規建設新進展",
-    "link": "https://www.blocktempo.com/tron-interpol-new-technologies-forum-global-compliance-blockchain-security-financial-crime-investigation-vienna-regulatory/",
-    "published": "Sun, 11 Oct 2026 03:52:48 +0000",
-    "summary": "<p>波場TRON近期接連參與國際刑警組織新技術論壇、CoinDesk政策大會及巴西數位資產培訓，強調公鏈合規與安全 [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/tron-inter...",
-    "category": "非加密貨幣"
-  },
-  {
-    "source": "動區動趨 BlockTempo",
-    "title": "川普：不改稱 AI 為「SI，超級智慧」就是白宮的敵人，AI.gov 標誌換成 SI GOV",
-    "link": "https://www.blocktempo.com/trump-artificial-intelligence-users-enemy-white-house-ai-gov-rebrand/",
-    "published": "Sun, 11 Oct 2026 03:48:49 +0000",
-    "summary": "<p>川普本週稍早發文，說白宮把用「 AI 人工智慧」而不用「SI 超級智慧」的人視為敵人。AI.gov 同日也換成 [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/trump-arti...",
+    "title": "a16z 找史丹佛密碼學教授：AI 破不了，加密底牌沒崩盤",
+    "link": "https://www.blocktempo.com/a16z-podcast-stanford-boneh-ai-crypto-decrypt-panic-truth/",
+    "published": "Mon, 12 Oct 2026 04:22:00 +0000",
+    "summary": "<p>a16z 最新訪談揭露，AI 並未觸及密碼學核心問題。史丹佛教授 Dan Boneh 明確表示：「我們沒有得知 [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/a16z-podca...",
     "category": "AI"
   },
   {
     "source": "動區動趨 BlockTempo",
-    "title": "14 歲男孩槍殺 9 名學生與 1 名老師後，土耳其 11 月起禁止未滿 15 歲用 IG、TikTok 等社群軟體",
-    "link": "https://www.blocktempo.com/turkey-bans-social-media-children-under-fifteen-egovernment-age-checks/",
-    "published": "Sun, 11 Oct 2026 03:21:36 +0000",
-    "summary": "<p>土耳其 10 日公布法規，11 月 1 日起社群業者不得讓未滿 15 歲的孩子開帳號，用戶一律要用政府 e-D [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/turkey-ban...",
-    "category": "非加密貨幣"
+    "title": "Sui 砸3000萬鎂投 DATA Network！AI 訓練資料上鏈、Walrus 接手",
+    "link": "https://www.blocktempo.com/sui-foundation-invests-30-million-data-network-ai-training-data-walrus-storage/",
+    "published": "Mon, 12 Oct 2026 03:35:19 +0000",
+    "summary": "<p>Sui Foundation 宣布投資 DATA Network 3000萬美元，AI 訓練資料協議將遷移到  [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/sui-founda...",
+    "category": "AI"
   },
   {
     "source": "動區動趨 BlockTempo",
-    "title": "VC 殘酷真相：多數基金只返還不到四成本金給出資人",
-    "link": "https://www.blocktempo.com/vc-funds-nine-years-no-principal-returned-lp-carta-ai/",
-    "published": "Sun, 11 Oct 2026 03:15:37 +0000",
-    "summary": "<p>Carta 資料顯示，2017 年成立的 VC 基金中位數九年只返還 0.37 倍現金，前 10% 才勉強超過 [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/vc-funds-n...",
+    "title": "看空 ETH 沒戲？10 大護城河依然穩如泰山",
+    "link": "https://www.blocktempo.com/ethereum-moat-counter-arguments-jake-koch-gallup-substack-analysis/",
+    "published": "Mon, 12 Oct 2026 02:35:52 +0000",
+    "summary": "<p>ETH 市值達其過去一年 REV 的 1100 倍，65% DeFi TVL 仍鎖在以太坊。Jake Koch [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/ethereum-m...",
+    "category": "Ethereum"
+  },
+  {
+    "source": "動區動趨 BlockTempo",
+    "title": "高盛看空AI算力泡沫：現貨飆漲、長協議價腰斬",
+    "link": "https://www.blocktempo.com/ai-compute-spot-pricing-premium-disappears-supply-expansion/",
+    "published": "Mon, 12 Oct 2026 02:35:03 +0000",
+    "summary": "<p>美國AI算力現貨價高達每吉瓦500億美元，是長協價格的兩倍，但高盛指出這只是暫時短缺，一旦雲廠自建產能跟上，溢 [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/ai-compute...",
     "category": "AI"
+  },
+  {
+    "source": "動區動趨 BlockTempo",
+    "title": "XRP Ledger 補丁太急！潛伏 10 年漏洞還沒完，開發者說「不搶先就沒了」",
+    "link": "https://www.blocktempo.com/xrp-ledger-emergency-patch-defend-10-year-overflow-bug/",
+    "published": "Mon, 12 Oct 2026 02:33:48 +0000",
+    "summary": "<p>XRP Ledger 開發者用兩週前才修復的緊急補丁做例，說跳過正常程式是「必要之惡」，獨立驗證者卻指出補丁流 [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/xrp-ledger...",
+    "category": "非加密貨幣"
+  },
+  {
+    "source": "CoinDesk",
+    "title": "Everyone wants SCOTUS to take up prediction markets: State of Crypto",
+    "link": "https://www.coindesk.com/policy/2026/10/11/everyone-wants-scotus-to-take-up-prediction-markets-state-of-crypto",
+    "published": "Sun, 11 Oct 2026 18:30:00 +0000",
+    "summary": "...",
+    "category": "非加密貨幣"
+  },
+  {
+    "source": "CoinDesk",
+    "title": "Clarity's failure could speed crypto innovation while shielding incumbents",
+    "link": "https://www.coindesk.com/policy/2026/10/11/clarity-s-failure-could-speed-crypto-innovation-while-shielding-incumbents",
+    "published": "Sun, 11 Oct 2026 16:00:00 +0000",
+    "summary": "...",
+    "category": "非加密貨幣"
+  },
+  {
+    "source": "CoinDesk",
+    "title": "President Trump declares 'energy ceasefire' between Russia and Ukraine",
+    "link": "https://www.coindesk.com/markets/2026/10/11/president-trump-declares-energy-ceasefire-between-russia-and-ukraine",
+    "published": "Sun, 11 Oct 2026 15:40:47 +0000",
+    "summary": "...",
+    "category": "非加密貨幣"
+  },
+  {
+    "source": "CoinDesk",
+    "title": "IMF finds demand for tokenized stocks, says the market is still volatile, illiquid",
+    "link": "https://www.coindesk.com/business/2026/10/11/imf-finds-demand-for-tokenized-stocks-says-the-market-is-still-volatile-illiquid",
+    "published": "Sun, 11 Oct 2026 13:00:00 +0000",
+    "summary": "...",
+    "category": "非加密貨幣"
   },
   {
     "source": "CoinDesk",
@@ -48,75 +80,43 @@
     "category": "Bitcoin"
   },
   {
-    "source": "CoinDesk",
-    "title": "Tokenized commodities look beyond gold as lending and oil open new markets",
-    "link": "https://www.coindesk.com/business/2026/10/05/tokenized-commodities-look-beyond-gold-as-lending-and-oil-open-new-markets",
-    "published": "Sat, 10 Oct 2026 12:00:00 +0000",
-    "summary": "...",
+    "source": "CoinTelegraph",
+    "title": "XRP Ledger defends emergency patch for unlimited XRP bug",
+    "link": "https://cointelegraph.com/news/xrp-ledger-defends-emergency-patch-for-unlimited-xrp-bug?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "published": "Mon, 12 Oct 2026 01:21:29 +0000",
+    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"XRP Ledger defends emergency patch for unlimited...",
     "category": "非加密貨幣"
   },
   {
-    "source": "CoinDesk",
-    "title": "Bitcoin's $19 billion wake-up call: One-year after flash crash, has crypto learned anything?",
-    "link": "https://www.coindesk.com/markets/2026/10/10/bitcoin-s-usd19-billion-wake-up-call-one-year-later-has-crypto-learned-anything",
-    "published": "Sat, 10 Oct 2026 11:00:00 +0000",
-    "summary": "...",
-    "category": "Bitcoin"
+    "source": "CoinTelegraph",
+    "title": "Ledger attack spreads to EU, AI finds ’18 trillion XRP’ bug: Hodler’s Digest",
+    "link": "https://cointelegraph.com/magazine/ledger-attack-spreads-to-eu-ai-finds-18-trillion-xrp-bug-hodlers-digest?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "published": "Sun, 11 Oct 2026 22:57:53 +0000",
+    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"Ledger attack spreads to EU, AI finds ’18 trilli...",
+    "category": "AI"
   },
   {
-    "source": "CoinDesk",
-    "title": "Bitcoin's volatility has plunged, but extreme price swings are more frequent than in 2018",
-    "link": "https://www.coindesk.com/markets/2026/10/09/bitcoin-s-volatility-has-plunged-but-extreme-price-swings-are-more-frequent-than-in-2018",
-    "published": "Sat, 10 Oct 2026 05:43:00 +0000",
-    "summary": "...",
+    "source": "CoinTelegraph",
+    "title": "Saylor teases Strategy Bitcoin buying after ending September with STRC buybacks",
+    "link": "https://cointelegraph.com/news/saylors-teases-strategy-bitcoin-buying-after-ending-september-with-strc-buybacks?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "published": "Sun, 11 Oct 2026 17:11:00 +0000",
+    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"Saylor teases Strategy Bitcoin buying after endi...",
     "category": "Bitcoin"
-  },
-  {
-    "source": "CoinDesk",
-    "title": "Robinhood Chain slowdown spreads from fees to trading as transactions fall more than 40%",
-    "link": "https://www.coindesk.com/markets/2026/10/10/robinhood-chain-slowdown-spreads-from-fees-to-trading-as-transactions-fall-more-than-40",
-    "published": "Sat, 10 Oct 2026 04:44:35 +0000",
-    "summary": "...",
-    "category": "非加密貨幣"
   },
   {
     "source": "CoinTelegraph",
     "title": "Here’s what happened in crypto today",
     "link": "https://cointelegraph.com/news/what-happened-in-crypto-today?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-    "published": "Sat, 10 Oct 2026 12:30:00 +0000",
+    "published": "Sun, 11 Oct 2026 12:59:00 +0000",
     "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"Here’s what happened in crypto today\" class=\"typ...",
     "category": "Bitcoin"
   },
   {
     "source": "CoinTelegraph",
-    "title": "Justin Sun says Tron’s post-quantum cryptography has gone live on testnet",
-    "link": "https://cointelegraph.com/news/justin-sun-says-trons-post-quantum-cryptography-has-gone-live-on-testnet?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-    "published": "Sat, 10 Oct 2026 11:52:14 +0000",
-    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"Justin Sun says Tron’s post-quantum cryptography...",
-    "category": "非加密貨幣"
-  },
-  {
-    "source": "CoinTelegraph",
-    "title": "Tech chief says EU can fend off rogue AI risk: Report",
-    "link": "https://cointelegraph.com/news/tech-chief-says-eu-can-fend-off-rogue-ai-risk-report?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-    "published": "Sat, 10 Oct 2026 08:41:06 +0000",
-    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"Tech chief says EU can fend off rogue AI risk: R...",
-    "category": "AI"
-  },
-  {
-    "source": "CoinTelegraph",
-    "title": "Sam Altman-backed Bitcoin life insurer, Meanwhile, raises more funds",
-    "link": "https://cointelegraph.com/news/sam-altman-backed-bitcoin-life-insurer-meanwhile-raises-more-funds?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-    "published": "Sat, 10 Oct 2026 07:10:43 +0000",
-    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"Sam Altman-backed Bitcoin life insurer, Meanwhil...",
-    "category": "Bitcoin"
-  },
-  {
-    "source": "CoinTelegraph",
-    "title": "US plans to seize $1B in crypto linked to Iran this week: Scott Bessent",
-    "link": "https://cointelegraph.com/news/scott-bessent-us-seize-crypto-iran-sanctions?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-    "published": "Fri, 09 Oct 2026 20:39:17 +0000",
-    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"US plans to seize $1B in crypto linked to Iran t...",
+    "title": "Coldcard says it’s investigating how phishing link appeared on its X account",
+    "link": "https://cointelegraph.com/news/coldcard-says-its-investigating-how-phishing-link-appeared-on-its-x-account?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "published": "Sun, 11 Oct 2026 10:40:00 +0000",
+    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"Coldcard says it’s investigating how phishing li...",
     "category": "非加密貨幣"
   }
 ]
