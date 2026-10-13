@@ -162,7 +162,7 @@ function priceTag(fr, hx, k) {
     fr.line(-40, 0, -40, 40, { w: 2, color: '#2A2420' }); fr.line(40, 0, 40, 40, { w: 2, color: '#2A2420' });
     fr.rect(-110, 40, 220, 74, { r: 8, fill: '#F3EAD6' }); fr.rect(-110, 40, 220, 74, { r: 8, color: '#8A6440', w: 2 });
     token(fr, -66, 77, 22, {});
-    fr.text('1 枚代币', 22, 79, { font: 'sansh', size: 32, color: '#3A2A22' });
+    fr.text('1 枚代幣', 22, 79, { font: 'sansh', size: 32, color: '#3A2A22' });
   });
 }
 
