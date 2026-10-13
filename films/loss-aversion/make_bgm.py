@@ -5,7 +5,8 @@
   35–36.4  收住
   36.4–44  片名：暖和弦铺开 + 一声钟
   44–52.4  规则卡：只有低音和长音
-  52.4–61.5 抛硬币：心跳一样的低音脉冲，越来越近，58.4 秒停
+  52.4–60.4 抛硬币：心跳一样的低音脉冲，越来越近，58.4 秒停
+  60.4–67.9 "正面要赢多少"：悬着的长音；67.9 秤放平，落回大调，琶音轻轻回来，76.5 淡出
 用法：python make_bgm.py [输出路径，默认 audio/bgm.wav]
 """
 import sys, wave
@@ -14,7 +15,7 @@ import numpy as np
 from scipy.signal import butter, lfilter, fftconvolve
 
 SR = 48000
-DUR = 61.5
+DUR = 76.5
 BEAT = 60 / 96
 BAR = BEAT * 4
 N = int(DUR * SR)
@@ -89,6 +90,10 @@ while t < 58.2:
     put(thump(), t, gain=.3); put(thump(), t + .18, gain=.16); t += gap; gap = max(.42, gap * .95)
 put(pad([47, 54, 59], 6.0, 1.0, 1.4), 52.6, gain=.08)
 put(bell(59, 3.0), 58.4, gain=.18)
+put(pad([47, 54, 59, 62], 7.6, 1.2, 1.0), 60.4, gain=.09)                         # 正面要赢多少：悬着
+put(pad([50, 57, 62, 66, 69], 9.0, .4, 3.0), 67.9, gain=.15)                      # 放平：落回 D 大调
+put(bell(74, 5.0), 67.95, gain=.2); put(bell(78, 4.0), 68.6, gain=.1)
+groove(70.0, 75.6, MAJ, gain=.6, sparse=True)
 
 # 一点混响 + 限幅
 ir_n = int(2.2 * SR); ir = lp(rng.standard_normal(ir_n) * np.exp(-6.9 * np.arange(ir_n) / SR / 2.2), 4000); ir /= np.abs(ir).sum() / 6

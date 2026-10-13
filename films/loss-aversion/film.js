@@ -8,7 +8,7 @@
 const { W, H, clamp, lerp, seg, ss, E, fade } = VK;
 const K = VKit, A = window.LA, C = A.C, HX = A.HATCH;
 
-const T = { title: 36.4, back: 44.0, card: 44.2, coin: 52.4, end: 61.5 };
+const T = { title: 36.4, back: 44.0, card: 44.2, coin: 52.4, big: 60.4, end: 76.5 };
 const SUBS = [
   { a: .5,   b: 4.0,  zh: '這隻猴子，會用代幣買蘋果' },
   { a: 4.4,  b: 8.0,  zh: '一枚代幣，換{一塊蘋果}' },
@@ -22,7 +22,10 @@ const SUBS = [
   { a: 44.6, b: 48.6, zh: '失去一塊，比得到一塊更痛', tone: 'gold' },
   { a: 49.0, b: 52.2, zh: '心裡的秤，總往{!失去}那邊沉' },
   { a: 52.8, b: 56.4, zh: '換你來：拋一次硬幣' },
-  { a: 56.8, b: 60.8, zh: '反面，你{!輸 100}' },
+  { a: 56.8, b: 60.3, zh: '反面，你{!輸 100}' },
+  { a: 60.7, b: 64.4, zh: '正面要贏多少，你才肯賭？' },
+  { a: 67.0, b: 71.0, zh: '多數人要說到 {200} 左右' },
+  { a: 71.4, b: 75.6, zh: '輸掉的 100，要贏 200 才補得平', tone: 'gold' },
 ];
 
 /* ---------- 鏡頭：焦點 (x, y) 和縮放 s；縮放在對數空間裡走 ---------- */
@@ -162,17 +165,40 @@ function hud(fr, t, o) {
 /* ---------- 拋硬幣：先正面朝上擺著，拋起來，落下反面；"−100" 落進秤的右盤 ---------- */
 const LAND = 4.0;
 function coinToss(fr, t) {
-  const lt = t - T.coin, a = ss(lt, 0, .5); if (a <= 0) return;
+  const lt = t - T.coin, a = ss(lt, 0, .5) * (1 - ss(t, T.end - 1.1, T.end - .1)); if (a <= 0) return;
+  const coinA = 1 - ss(t, T.big, T.big + .6);
   fr.g({ a }, () => {
     const x = fr.x, g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#2B2230'); g.addColorStop(.62, '#3A2C26'); g.addColorStop(.63, '#5A4034'); g.addColorStop(1, '#3E2C24'); fr.rect(0, 0, W, H, { fill: g });
     fr.glow(960, 300, 700, '#FFD9A0', .16);
     const fly = seg(lt, 1.2, LAND);
     const y = 640 - Math.sin(fly * Math.PI) * 360, phase = E.io3(fly) * Math.PI * 9;               // 9π：落下來反面朝上
-    fr.ellipse(960, 690, 170 * (1 - Math.sin(fly * Math.PI) * .5), 22, { fill: '#000', a: .3 });
-    A.coin(fr, 960, y, 150, phase);
+    fr.g({ a: coinA }, () => { fr.ellipse(960, 690, 170 * (1 - Math.sin(fly * Math.PI) * .5), 22, { fill: '#000', a: .3 }); A.coin(fr, 960, y, 150, phase); });
+    bigBalance(fr, t);
     const kt = ss(lt, LAND + .3, LAND + .7), go = E.io3(seg(lt, LAND + 1.4, LAND + 2.0));
     if (kt > 0 && go < 1) fr.text('−100', lerp(960, HUD.x + HUD.w / 2 + 140, go), lerp(420, HUD.y + 205, go), { font: 'sansh', size: lerp(120, 30, go), color: C.red, a: kt, shadow: .5 });
   });
+}
+
+/* ---------- 秤回到畫面中間：右盤 −100；左盤一枚一枚加金幣，加到 200 才放平 ---------- */
+const COIN_T = [64.6, 65.2, 65.7, 66.15, 66.55, 66.9, 67.25, 67.6];                 // 每一枚 +25，第 8 枚 = 200
+function gains(t) { return 25 * COIN_T.filter(c => t >= c).length; }
+function tiltFor(t) {                                                            // 右盤 100，左盤 v：v 越接近 200 越平
+  const v = gains(t), k = E.out3(seg(t, COIN_T[Math.max(0, COIN_T.filter(c => t >= c).length - 1)], COIN_T[Math.max(0, COIN_T.filter(c => t >= c).length - 1)] + .35));
+  const prev = Math.max(0, v - 25), tv = x => .95 * (1 - Math.min(1, x / 200));
+  return v === 0 ? .95 : lerp(tv(prev), tv(v), k);
+}
+function bigBalance(fr, t) {
+  const k = E.io3(seg(t, T.big, T.big + .8)); if (k <= 0) return;
+  const cx = lerp(HUD.x + HUD.w / 2, W / 2, k), cy = lerp(HUD.y + 78, 250, k), s = lerp(.62, 1.25, k), v = gains(t);
+  const L = (fr2, x, y) => {
+    if (v === 0) { const bl = .5 + .5 * Math.sin((t - T.big) * 6); fr2.text('+？', x, y - 26, { font: 'sansh', size: 56, color: C.gold, a: ss(t, T.big + .9, T.big + 1.3) * (.4 + .6 * bl) }); return; }
+    const n = v / 25; for (let i = 0; i < n; i++) { const c = COIN_T[i], kk = E.out3(seg(t, c, c + .3)); fr2.ellipse(x + (i % 2 ? 6 : -6), y - 8 - i * 11 - (1 - kk) * 60, 46, 12, { fill: '#E2C07A', a: kk }); fr2.ellipse(x + (i % 2 ? 6 : -6), y - 10 - i * 11 - (1 - kk) * 60, 46, 10, { color: '#A8843F', w: 2, a: kk }); }
+    fr2.text('+' + v, x, y - 40 - n * 11, { font: 'sansh', size: 50, color: C.gold });
+  };
+  const R = (fr2, x, y) => fr2.text('−100', x, y - 26, { font: 'sansh', size: 56, color: C.red });
+  A.balance(fr, cx, cy, s, tiltFor(t), { color: '#C9A861', L, R, a: ss(k, 0, .3) });
+  if (v >= 200) { K.ripple(fr, t, COIN_T[7] + .35, cx, cy, { r0: 40, r1: 520, dur: 1.4, color: '#F4D48A' }); fr.text('放平了', W / 2, 700, { font: 'sansh', size: 44, track: 8, color: C.gold, a: ss(t, COIN_T[7] + .4, COIN_T[7] + .9) }); }
+  const kn = fade(t, 67.4, 75.6, .5, .5); if (kn > 0) note(fr, '問法出自 Kahneman《快思慢想》第 26 章 · 常見答案約 200', kn);
 }
 
 /* ---------- 片名 ---------- */
@@ -196,7 +222,7 @@ VK.film({
     ruleCard(fr, t);
     coinToss(fr, t);
     const drop = E.outBack(seg(t, T.coin + LAND + 2.0, T.coin + LAND + 2.8));
-    hud(fr, t, { a: ss(t, T.coin - .3, T.coin + .1), tilt: drop * .95, R: drop > 0 ? (fr2, x, y) => fr2.text('−100', x, y - 22, { font: 'sansh', size: 64, color: C.red }) : null });
+    hud(fr, t, { a: ss(t, T.coin - .3, T.coin + .1) * (t < T.big + .05 ? 1 : 0), tilt: drop * .95, R: drop > 0 ? (fr2, x, y) => fr2.text('−100', x, y - 22, { font: 'sansh', size: 64, color: C.red }) : null });
     const x = fr.x, b = x.createLinearGradient(0, 820, 0, H); b.addColorStop(0, 'rgba(18,12,20,0)'); b.addColorStop(.5, 'rgba(18,12,20,.7)'); b.addColorStop(1, 'rgba(18,12,20,.88)'); fr.rect(0, 820, W, 260, { fill: b });
     K.flash(fr, t, T.title, { rise: .3, fall: .4 });
     /* 聲音 */
@@ -206,7 +232,8 @@ VK.film({
     fr.sfx(24.5, 'shimmer', { gain: .4 });
     TRIPS.forEach(t0 => fr.sfx(t0 + .5, 'tick', { pitch: 5, gain: .35 }));
     fr.sfx(T.title, 'bloom', { root: 0, gain: .8 }); fr.sfx(T.card + 1.2, 'thud', { gain: .7 });
-    fr.sfx(T.coin + 1.2, 'rise', { dur: 2.8, gain: .4 }); fr.sfx(T.coin + LAND, 'thud', { gain: .8 }); fr.sfx(T.coin + LAND + 2.0, 'thud', { gain: .9 });
+    fr.sfx(T.coin + 1.2, 'rise', { dur: 2.8, gain: .4 }); fr.sfx(T.coin + LAND, 'thud', { gain: .8 }); fr.sfx(T.coin + LAND + 2.0, 'thud', { gain: .9 }); fr.sfx(T.big + .9, 'rise', { dur: 2.4, gain: .3 });
+    COIN_T.forEach((c, i) => fr.sfx(c, 'tick', { pitch: 4 + i, gain: .45 })); fr.sfx(COIN_T[7] + .35, 'chord', { root: 0, gain: .7 });
     K.subs(fr, t, SUBS, 'flat');
   },
 });
