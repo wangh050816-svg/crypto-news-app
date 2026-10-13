@@ -1,0 +1,4 @@
+review/
+renders/*
+!renders/final.mp4
+audio/
