@@ -5,7 +5,7 @@
   20–28    片名：暖和弦 + 钟
   28–53    实验：琶音回来（大调）
   53–61    "其他人在干嘛"：收成长音
-  61–67.5  每个人头上一盏灯：和弦铺开，钟声一下下亮，淡出
+  （v2 以成片时间计）19.6 暗到只剩那盏灯 → 24 片名 → 31–55.6 实验 → 64 每人一盏灯 → 69–85 收尾几句，轻轻的琶音 → 85.3 灯全熄、教室亮起，和弦 + 一串钟 → 89 片尾淡出
 """
 import sys, wave
 from pathlib import Path
@@ -13,7 +13,7 @@ import numpy as np
 from scipy.signal import butter, lfilter, fftconvolve
 
 SR = 48000
-DUR = 67.5
+DUR = 95.0
 BEAT = 60 / 96
 BAR = BEAT * 4
 N = int(DUR * SR)
@@ -81,12 +81,17 @@ put(pad([50, 57, 62], 11.0, .3, 1.5), 8.6, gain=.12)
 t, gap = 12.6, .7
 while t < 17.4:
     put(thump(), t, gain=.25); put(thump(), t + .18, gain=.13); t += gap; gap = max(.45, gap * .95)
-put(pad([50, 57, 62, 66, 69], 8.0, .6, 2.4), 19.7, gain=.16)
-put(bell(74, 5.0), 20.0, gain=.22); put(bell(81, 4.0), 21.25, gain=.12); put(bell(78, 4.0), 22.5, gain=.1)
-groove(28.0, 52.6, MAJ, gain=.85)
-put(pad([47, 59, 62, 66], 8.6, 1.0, 1.6), 52.6, gain=.11)
-put(pad([50, 57, 62, 66, 69, 74], 7.0, .8, 2.6), 61.0, gain=.15)
-for i, m in enumerate([74, 78, 81, 86]): put(bell(m, 4.0), 61.4 + i * .5, gain=.13)
+put(pad([50, 57, 62, 66], 5.0, 2.0, 1.0), 19.4, gain=.12)                       # 暗下去，只剩那盞燈
+put(pad([50, 57, 62, 66, 69], 8.0, .6, 2.4), 23.8, gain=.16)                      # 片名
+put(bell(74, 5.0), 24.0, gain=.22); put(bell(81, 4.0), 25.25, gain=.12); put(bell(78, 4.0), 26.5, gain=.1)
+groove(31.0, 55.6, MAJ, gain=.85)
+put(pad([47, 59, 62, 66], 8.6, 1.0, 1.6), 55.6, gain=.11)
+put(pad([50, 57, 62, 66, 69, 74], 6.0, .8, 2.0), 64.0, gain=.14)
+for i, m in enumerate([74, 78, 81, 86]): put(bell(m, 4.0), 64.4 + i * .5, gain=.13)
+groove(69.0, 85.2, MAJ, gain=.7, sparse=True)                                     # 收尾的幾句：輕輕的
+put(pad([50, 57, 62, 66, 69, 74, 78], 9.0, .3, 3.0), 85.3, gain=.17)              # 燈全熄、教室亮起來
+for i, m in enumerate([74, 78, 81, 86, 90]): put(bell(m, 4.5), 85.4 + i * .35, gain=.12)
+put(pad([50, 57, 62, 66], 6.0, 1.0, 3.0), 89.0, gain=.1)
 
 # 一点混响 + 限幅
 ir_n = int(2.2 * SR); ir = lp(rng.standard_normal(ir_n) * np.exp(-6.9 * np.arange(ir_n) / SR / 2.2), 4000); ir /= np.abs(ir).sum() / 6

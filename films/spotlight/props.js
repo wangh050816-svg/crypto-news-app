@@ -126,6 +126,7 @@ function bubble(fr, x, y, s, kind, a) {
     if (kind === 0) { for (let i = 0; i < 4; i++) fr.path(`M ${-26 + i * 16},18 Q ${-36 + i * 16},-4 ${-22 + i * 16},-24`, { color: '#5A3A26', w: 5 }); fr.text('！', 30, 0, { font: 'sansh', size: 34, color: C.red }); }
     if (kind === 1) { fr.circle(0, 0, 28, { fill: C.skin[0] }); fr.circle(10, 6, 7, { fill: C.red }); fr.ellipse(-10, -6, 3, 4, { fill: '#2A1E18' }); }
     if (kind === 2) { fr.rect(-22, -28, 44, 56, { r: 4, fill: '#F7F2E6' }); fr.rect(-22, -28, 44, 56, { r: 4, color: '#8A7A60', w: 2 }); fr.text('?', 0, 2, { font: 'sansh', size: 34, color: '#C8402A' }); }
+    if (kind === 4) { fr.path('M -30,-22 L -12,-30 L 12,-30 L 30,-22 L 24,-8 L 16,-12 L 16,28 L -16,28 L -16,-12 L -24,-8 Z', { fill: C.tee }); fr.circle(0, 2, 10, { fill: '#F06A9A' }); }
     if (kind === 3) { fr.rect(-18, -30, 36, 60, { r: 6, fill: '#2A2A30' }); fr.rect(-13, -22, 26, 40, { fill: '#8FC3E8' }); fr.text('…', 0, -4, { font: 'sansh', size: 22, color: '#FFFFFF' }); }
   });
 }
