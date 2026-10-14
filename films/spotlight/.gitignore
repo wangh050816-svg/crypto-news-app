@@ -1,5 +1,4 @@
 review/
 renders/*
-!renders/preview.mp4
-!renders/preview_sfx_only.mp4
+!renders/preview_sfx.mp4
 audio/
