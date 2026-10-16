@@ -135,7 +135,6 @@ def amb(fn, t0, t1, gain, rate, pan=.6):
     while t < t1: put(fn(), t, gain, rng.uniform(-pan, pan)); t += rng.uniform(rate * .5, rate * 1.5)
 
 # ---------- 1. 晴天街上 ----------
-amb(chirp, .5, 12.2, db(-24), 1.3)
 put(lp(noise(12.4), 700) * np.minimum(1, np.arange(int(12.4 * SR)) / SR) * .3, 0, db(-24))      # 遠處車流
 for i, ts in enumerate(np.arange(.4, 4.0, .33)): put(step(i), ts, db(-12), -.4)
 put(ping(), 4.6, db(-12), .5)
@@ -174,14 +173,12 @@ for i in range(4): put(key(), 95.0 + i * .12, db(-16))
 put(send(), 95.6, db(-14)); put(chime(1318, 2), 96.3, db(-16)); put(clap_crowd(1.0) * .6, 96.3, db(-22))
 put(creak(1.0), 99.2, db(-15)); put(whoosh(1.0, 300, 1500), 99.4, db(-18)); put(shimmer(2), 99.8, db(-22))
 # ---------- 7. 結尾街上 ----------
-amb(chirp, 102.4, 106.4, db(-24), 1.0)
 for i, ts in enumerate(np.arange(102.5, 105.6, .33)): put(step(i), ts, db(-12), -.4)
 put(rain_bed(14.4), 106.3, db(-14)); put(thunder(2.2), 106.6, db(-18))
 for i, ts in enumerate(np.arange(109.7, 111.0, .32)): put(step(i), ts, db(-14), .5)
 put(umbrella_open(), 109.7, db(-10), .4)
 put(chime(784, 3), 114.6, db(-20))
 put(chime(1046, 4), 119.2, db(-16)); put(chime(1318, 4), 119.6, db(-18)); put(shimmer(3), 119.4, db(-20))
-amb(chirp, 119.8, 122.6, db(-22), .8)
 put(chime(587, 5), 123.2, db(-16))
 
 # ---------- 一点房间混响 + 限幅 ----------
