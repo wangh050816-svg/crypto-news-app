@@ -1,7 +1,5 @@
 node_modules/
 build/
 props/
-out/*_raw.mp4
-out/*.png
-out/*.jpg
+out/
 audio/
