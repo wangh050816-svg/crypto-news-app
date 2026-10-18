@@ -109,12 +109,11 @@ export const Offers: React.FC = () => {
       {item(2, centred(820, 560, <DarkPhoto src="gold.jpg" w={820} h={560} scale={1.16 - 0.04 * prog(F, turnAt(1), turnAt(2), E.linear)} />))}
       {item(
         3,
-        F >= FALL.from && (
-          <Img
-            src={real('gift.png')}
-            style={{ position: 'absolute', left: -200, top: -173, width: 400, transformOrigin: '50% 100%', transform: `translateY(${(-(1 - fall) * 280).toFixed(2)}px) scale(${sq.across.toFixed(4)}, ${sq.along.toFixed(4)}) rotate(${mix(-14, 4, fall).toFixed(3)}deg)`, opacity: prog(F, FALL.from, FALL.from + f60(8), E.smooth), filter: 'drop-shadow(0 26px 30px rgba(0,0,0,.6))' }}
-          />
-        ),
+        // The gift turns in with the wheel, hanging above its place, then drops onto the light.
+        <Img
+          src={real('gift.png')}
+          style={{ position: 'absolute', left: -200, top: -173, width: 400, transformOrigin: '50% 100%', transform: `translateY(${(-(1 - fall) * 140).toFixed(2)}px) scale(${sq.across.toFixed(4)}, ${sq.along.toFixed(4)}) rotate(${mix(-12, 4, fall).toFixed(3)}deg)`, filter: 'drop-shadow(0 26px 30px rgba(0,0,0,.6))' }}
+        />,
       )}
       {item(4, <div style={{ position: 'absolute', left: 0, top: 40 }}><CardFan open={fan} /></div>)}
       <Chain chain="offers" frame={f} from={A} role="line" size={OFFER_SIZE} top={LENS.y + 370} color={C.paper} />
