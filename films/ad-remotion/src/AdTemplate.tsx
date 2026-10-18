@@ -1,18 +1,19 @@
 // 你的品牌 × OURBIT 萬聖節狂歡夜 · 資料驅動廣告範本（ad-creative-video skill）
-// v2：所有文字都用字體即時排版（Noto Sans TC / Creepster / Bebas Neue），場景元素全部程式現畫；只有兩個 Logo 和寶可夢卡包是圖片。
+// v3：所有文字都用字體即時排版（Noto Sans TC / Creepster / Bebas Neue）；場景和福利圖示換成實拍素材（Pexels），
+//     寶可夢卡包、卡牌用官方 30th Celebration 圖（見 sources/CREDITS.md）。
 // 結構：Hook 0–3s → Context 3–7s → Payoff 7–15s（五個福利快剪）→ Proof 15–17s → CTA 17–20s（與 hook 訊息對應）
 import React from "react";
 import {AbsoluteFill, Img, Sequence, continueRender, delayRender, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig, Easing} from "remotion";
 import {z} from "zod";
 import {theme} from "./theme";
 import {ASPECTS, Aspect} from "./aspects";
-import {NightSky, Bats, Ghost, Pumpkin, Candle, Cobweb, Spider, CandyRain, CoinStack, GiftBox, Airdrop, Wheel} from "./Halloween";
+import {Plate, GroundFog, Pumpkin, Bats, DarkPhoto, SmokeCuts, RisingSmoke, Faces, CardFan} from "./Real";
 
 export const variantSchema = z.object({
   id: z.string(),
   hook: z.string(),
   hookSub: z.string(),
-  hero: z.enum(["pack", "coins", "gift"]),   // hook 的主視覺，和 hook 是同一個承諾
+  hero: z.enum(["pack", "coins", "gold"]),   // hook 的主視覺，和 hook 是同一個承諾
   cta: z.string(),
   accent: z.string(),
   bg: z.string(),
@@ -91,9 +92,9 @@ const BenefitCard: React.FC<{icon: React.ReactNode; num: string; title: string; 
 /* ---------- Hook 0–3s ---------- */
 const HeroVisual: React.FC<{v: Variant; k: number}> = ({v, k}) => {
   const frame = useCurrentFrame();
-  if (v.hero === "pack") return <Img src={staticFile("pack.png")} style={{position: "absolute", left: 540, top: 400, height: 560, transform: `translate(-50%,-50%) scale(${.5 + .5 * k}) rotate(${-4 + (1 - k) * 20}deg)`, filter: "drop-shadow(0 0 40px rgba(244,200,96,.6))"}} />;
-  const node = v.hero === "coins" ? <CoinStack size={520} grow={Math.min(1, frame / 40)} accent={v.accent} /> : <GiftBox size={520} open={interpolate(frame, [14, 34], [0, 1], clamp)} accent={v.accent} />;
-  return <div style={{position: "absolute", left: 540, top: 400, transform: `translate(-50%,-50%) scale(${.5 + .5 * k})`}}>{node}</div>;
+  if (v.hero === "pack") return <Img src={staticFile("real/pack.png")} style={{position: "absolute", left: 540, top: 390, height: 640, transform: `translate(-50%,-50%) scale(${.5 + .5 * k}) rotate(${-5 + (1 - k) * 20 + Math.sin(frame * .08) * 1.5}deg)`, filter: "drop-shadow(0 0 46px rgba(244,200,96,.55)) drop-shadow(0 24px 30px rgba(0,0,0,.8))"}} />;
+  const src = v.hero === "coins" ? "btc.jpg" : "gold.jpg";
+  return <div style={{position: "absolute", left: 540, top: 390, transform: `translate(-50%,-50%) scale(${.6 + .4 * k})`}}><DarkPhoto src={src} w={760} h={640} scale={1.15 - .1 * Math.min(1, frame / 90)} pos={v.hero === "coins" ? "50% 62%" : "50% 50%"} /></div>;
 };
 const Hook: React.FC<{v: Variant}> = ({v}) => {
   const frame = useCurrentFrame(); const {fps} = useVideoConfig();
@@ -115,11 +116,24 @@ const Context: React.FC<{v: Variant}> = ({v}) => {
   const shake = frame < 10 ? Math.sin(frame * 3.1) * (10 - frame) * 1.6 : 0;
   return (
     <AbsoluteFill style={{opacity: out, transform: `translate(${shake}px, ${-shake * .6}px)`}}>
-      <Ghost x={170} y={300} size={150} phase={0} /><Ghost x={920} y={250} size={110} phase={1.7} opacity={.75} />
       <TitleMark y={400} scale={interpolate(k, [0, 1], [1.5, 1])} opacity={Math.min(1, k * 2)} accent={v.accent} />
       <Tape text="糖果可以不拿，福利可別錯過！" y={690} progress={interpolate(frame, [16, 26], [0, 1], {...clamp, easing: Easing.out(Easing.cubic)})} accent={v.accent} />
       <Pill text="活動時間　10/16 – 10/31（UTC+8）" y={830} opacity={interpolate(frame, [30, 40], [0, 1], clamp)} accent={v.accent} />
     </AbsoluteFill>
+  );
+};
+
+/* 空投：實拍禮盒從上方掉下來、落地彈一下 */
+const GiftDrop: React.FC<{frame: number}> = ({frame}) => {
+  const {fps} = useVideoConfig();
+  const k = spring({frame: frame - 2, fps, config: {damping: 9, stiffness: 120, mass: .8}});
+  const land = interpolate(frame, [10, 14, 24], [0, 1, 0], clamp);
+  return (
+    <div style={{position: "relative", width: 600, height: 400}}>
+      <div style={{position: "absolute", left: 300 - 190, top: 330, width: 380, height: 60, borderRadius: "50%", background: "radial-gradient(ellipse, rgba(0,0,0,.7), transparent 70%)", opacity: k}} />
+      <div style={{position: "absolute", left: 300 - 220, top: 250, width: 440, height: 140, borderRadius: "50%", background: "radial-gradient(ellipse, rgba(255,255,255,.18), transparent 70%)", opacity: land, transform: `scaleX(${1 + land})`}} />
+      <Img src={staticFile("real/gift.png")} style={{position: "absolute", left: 300 - 170, top: 20 - (1 - k) * 420, width: 340, transform: `rotate(${(1 - k) * -25 + 4}deg)`, filter: "drop-shadow(0 20px 26px rgba(0,0,0,.7))"}} />
+    </div>
   );
 };
 
@@ -129,11 +143,11 @@ const Shot: React.FC<{i: number; v: Variant}> = ({i, v}) => {
   const k = spring({frame, fps, config: {damping: 13, stiffness: 170}}); const dir = i % 2 ? 1 : -1, x = dir * (1 - k) * 420;
   const a = v.accent;
   const cards = [
-    {num: "01", title: "新用戶註冊", big: "免費送 PKM 卡牌", sub: "萬聖節限定", icon: <Img src={staticFile("pack.png")} style={{height: 380, transform: `rotate(${-6 + Math.sin(frame * .1) * 2}deg)`, filter: "drop-shadow(0 0 30px rgba(244,200,96,.55))"}} />},
-    {num: "02", title: "萬聖節限定加碼", big: "最高 30% 儲值返利", sub: "依儲值與交易量階梯發放", icon: <CoinStack size={380} grow={Math.min(1, frame / 30)} accent={a} />},
-    {num: "03", title: "完成合約交易", big: "588 USDT 體驗金", sub: "最高可領 588 USDT", icon: <GiftBox size={380} open={interpolate(frame, [8, 26], [0, 1], clamp)} accent={a} />},
-    {num: "04", title: "完成任務", big: "免費領 PRL 空投", sub: "PRL 空投", icon: <Airdrop size={380} drop={interpolate(frame, [0, 30], [0, 1], {...clamp, easing: Easing.out(Easing.cubic)})} accent={a} />},
-    {num: "05", title: "VIP 用戶加碼", big: "寶可夢轉盤 +10 次", sub: "額外 10 次抽獎機會", icon: <Wheel size={380} spin={interpolate(frame, [0, 48], [0, 540], {...clamp, easing: Easing.out(Easing.cubic)})} accent={a} />},
+    {num: "01", title: "新用戶註冊", big: "免費送 PKM 卡牌", sub: "萬聖節限定", icon: <Img src={staticFile("real/pack.png")} style={{height: 390, transform: `rotate(${-6 + Math.sin(frame * .1) * 2}deg)`, filter: "drop-shadow(0 0 30px rgba(244,200,96,.5)) drop-shadow(0 16px 20px rgba(0,0,0,.7))"}} />},
+    {num: "02", title: "萬聖節限定加碼", big: "最高 30% 儲值返利", sub: "依儲值與交易量階梯發放", icon: <DarkPhoto src="btc.jpg" w={600} h={400} pos="50% 64%" scale={1.12 - frame * .002} />},
+    {num: "03", title: "完成合約交易", big: "588 USDT 體驗金", sub: "最高可領 588 USDT", icon: <DarkPhoto src="gold.jpg" w={600} h={400} scale={1.18 - frame * .002} />},
+    {num: "04", title: "完成任務", big: "免費領 PRL 空投", sub: "PRL 空投", icon: <GiftDrop frame={frame} />},
+    {num: "05", title: "VIP 用戶加碼", big: "寶可夢轉盤 +10 次", sub: "額外 10 次抽獎機會", icon: <CardFan size={400} open={spring({frame: frame - 4, fps, config: {damping: 13, stiffness: 120}})} />},
   ];
   const c = cards[i];
   return <BenefitCard {...c} accent={a} k={k} x={x} />;
@@ -183,14 +197,15 @@ export const AdTemplate: React.FC<{v: Variant; aspect: Aspect}> = ({v, aspect}) 
   const short = Math.min(W, H);
   return (
     <AbsoluteFill style={{fontFamily: "NotoTC", overflow: "hidden", backgroundColor: v.bg}}>
-      <NightSky accent={v.accent} />
-      {/* 全幅裝飾：角落蜘蛛網、垂下的蜘蛛、兩側南瓜燈和蠟燭、飛過的蝙蝠、糖果雨 */}
-      <Cobweb corner="tl" size={short * .32} /><Cobweb corner="tr" size={short * .26} opacity={.4} />
-      <Spider x={W * .86} len={H * .16} />
-      <Pumpkin x={W * .1} y={H - short * .1} size={short * .2} seed={1} /><Pumpkin x={W * .9} y={H - short * .08} size={short * .16} seed={2} />
-      <Candle x={W * .2} y={H - short * .03} h={short * .1} seed={1} /><Candle x={W * .8} y={H - short * .02} h={short * .07} seed={3} />
-      <Bats start={0} count={8} dir={1} y={.22} /><Bats start={fps * 7} count={6} dir={-1} y={.18} /><Bats start={fps * 15} count={7} dir={1} y={.26} />
-      <CandyRain start={fps * 17} />
+      <Plate />
+      {/* 全幅實拍層：Proof 時黑暗中的南瓜鬼臉、往上飄的煙、飛過的蝙蝠、兩側南瓜燈、地面霧 */}
+      <Faces opacity={interpolate(frame, [fps * 15, fps * 15.4, fps * 16.7, fps * 17], [0, .45, .45, 0], clamp)} />
+      <RisingSmoke opacity={interpolate(frame, [fps * 14.8, fps * 15.3], [.08, .22], clamp)} />
+      <Bats start={0} count={6} dir={1} y={.2} /><Bats start={fps * 7} count={5} dir={-1} y={.16} /><Bats start={fps * 15} count={6} dir={1} y={.22} />
+      {/* 方形畫面沒有上下留白，南瓜縮小、壓低，避免蓋到字 */}
+      <Pumpkin x={W * (aspect === "1x1" ? .08 : .12)} y={H + short * (aspect === "1x1" ? .06 : .02)} w={short * (aspect === "1x1" ? .24 : .36)} seed={1} />
+      <Pumpkin x={W * (aspect === "1x1" ? .93 : .9)} y={H + short * (aspect === "1x1" ? .06 : .03)} w={short * (aspect === "1x1" ? .18 : .26)} seed={2.7} flip blur={2} />
+      <GroundFog />
       {/* 安全舞台 1080×1080：所有重點都在這裡面 */}
       <div style={{position: "absolute", width: 1080, height: 1080, left: (W - 1080 * A.stageScale) / 2, top: aspect === "9x16" ? A.stageY : (H - 1080 * A.stageScale) / 2, transform: `scale(${A.stageScale})`, transformOrigin: "0 0"}}>
         <Sequence durationInFrames={fps * 3} layout="none"><Hook v={v} /></Sequence>
@@ -200,6 +215,7 @@ export const AdTemplate: React.FC<{v: Variant; aspect: Aspect}> = ({v, aspect}) 
         <Sequence from={fps * 17} layout="none"><CTA v={v} /></Sequence>
         <Lockup y={40} scale={.75} opacity={lockA} />
       </div>
+      <SmokeCuts at={cuts} />
       <CutFlash at={cuts} accent={v.accent} />
     </AbsoluteFill>
   );
