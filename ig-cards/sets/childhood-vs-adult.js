@@ -2,7 +2,7 @@
 SET({
   title:'小時候和長大後的6個落差',
   cards:[
-    ['chHome','小時候，最怕天黑要回家','As a kid, you dreaded nightfall because it meant going home.','長大後，最怕天亮要上班','Now you dread daybreak because it means going to work.'],
+    ['chWork','小時候，最煩的是寫功課','As a kid, homework was what you hated most.','長大後才知道，那是最簡單的事','Now you realize it was the easiest thing of all.'],
     ['chBday','小時候，生日是一年最期待的一天','As a kid, your birthday was the day you waited for all year.','長大後，生日只是提醒你又老一歲',"Now it just reminds you that you're a year older."],
     ['chCry','小時候，哭完睡一覺就好了','As a kid, a good cry and a nap fixed everything.','長大後，連哭都要找時間','Now you have to find time just to cry.'],
     ['chSummer','小時候，暑假有整整兩個月','As a kid, summer break lasted two whole months.','長大後，請兩天假都要猶豫','Now you hesitate to take even two days off.'],

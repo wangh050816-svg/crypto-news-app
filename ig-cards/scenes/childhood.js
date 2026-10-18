@@ -3,22 +3,24 @@ const chSlide=(x,y,c)=>`<path d="M${x},${y} L${x},${y-150} L${x+30},${y-150} L${
 const chSwing=(x,y,c)=>`<path d="M${x-80},${y} L${x-50},${y-170} L${x+50},${y-170} L${x+80},${y}" stroke="${c}" stroke-width="8" fill="none"/><path d="M${x-20},${y-170} V${y-50} M${x+20},${y-170} V${y-50}" stroke="${c}" stroke-width="3"/><rect x="${x-30}" y="${y-54}" width="60" height="10" fill="${c}"/>`;
 const chCake=(x,y,big)=>`<ellipse cx="${x}" cy="${y}" rx="${big?110:44}" ry="${big?18:8}" fill="#e8e0d4"/><rect x="${x-(big?90:34)}" y="${y-(big?80:34)}" width="${big?180:68}" height="${big?80:34}" rx="6" fill="#ffd9e2"/><rect x="${x-(big?90:34)}" y="${y-(big?80:34)}" width="${big?180:68}" height="${big?18:8}" rx="6" fill="#fff4f6"/>${(big?[-50,-17,17,50]:[0]).map(dx=>`<rect x="${x+dx-3}" y="${y-(big?118:56)}" width="6" height="${big?38:22}" fill="#8fc0f0"/><path d="M${x+dx},${y-(big?120:58)} q-6,-10 0,-20 q6,10 0,20 Z" fill="#ffb84a"/>`).join('')}`;
 
-// 1 怕天黑回家 → 怕天亮上班：夕陽公園 → 清晨冷清月台
-S.chHomeTop=()=>clip('ch1',`
-${phSky('ch1s',[[0,'#f6a878'],[.5,'#ffd29a'],[1,'#ffe6b8']])}
-${phGlow('ch1g',760,300,320,'#fff0c0',.95)}<path d="M720,320 a40,40 0 0 1 80,0 Z" fill="#fffbe8"/>
-<path d="M0,470 L0,330 Q480,310 960,330 L960,470 Z" fill="#c8a060"/>
-${chSlide(200,400,'#7a4a2a')}${chSwing(560,400,'#7a4a2a')}
-${phTree(1401,880,340,.8,'#6a5a30')}
+// 1 最煩寫功課 → 才知道那是最簡單的事：陽光書桌上的作業本 → 深夜堆滿帳單的桌面
+S.chWorkTop=()=>clip('ch1',`
+<rect width="960" height="470" fill="#fbe8cc"/>
+${ckWin(600,40,300,250,'#fff8ec',`${phSky('ch1s',[[0,'#9ccbec'],[1,'#eef4e2']]).replace('<rect width="960" height="470"','<rect x="600" y="40" width="300" height="250"')}${phTree(1411,760,290,.8,'#7aa860')}`)}
+<path d="M600,290 L900,290 L700,470 L220,470 Z" fill="#fff4c8" opacity=".4"/>
+${ckTable(340,'#e8c49a','#c8a47a')}
+<g transform="rotate(-5 380 300)"><path d="M240,300 L380,288 L520,300 L520,330 L380,320 L240,330 Z" fill="#fffaf0"/><path d="M380,288 V320" stroke="#c8b49a" stroke-width="2"/>${[0,1,2].map(i=>`<path d="M260,${304+i*7} h100 M400,${300+i*7} h100" stroke="#8fb0d8" stroke-width="1.5"/>`).join('')}<path d="M270,310 q20,-10 40,4 q16,10 36,-2" stroke="#ff8a5b" stroke-width="3" fill="none"/></g>
+${['#ff6b6b','#ffd25a','#5fb0f0','#7cc65a','#c77dff'].map((c,i)=>`<g transform="rotate(${-20+i*12} ${600+i*26} 330)"><rect x="${590+i*26}" y="300" width="14" height="60" rx="3" fill="${c}"/><path d="M${590+i*26},300 l7,-14 l7,14 Z" fill="${c}"/></g>`).join('')}
 ${phGrain('ch1n')}
 `);
-S.chHomeBot=()=>clip('ch2',`
-<rect width="960" height="470" fill="#0e1420"/>
-<rect y="0" width="960" height="60" fill="#161c28"/>${[120,360,600,840].map(x=>`<rect x="${x}" y="54" width="80" height="8" fill="#cfe0ff"/>${phGlow('ch2l'+x,x+40,60,90,'#cfe0ff',.25)}`).join('')}
-<path d="M0,470 L0,280 L960,280 L960,470 Z" fill="#1c2230"/>
-<path d="M0,300 L960,300" stroke="#c9a23a" stroke-width="6" stroke-dasharray="30 18" opacity=".7"/>
-<rect y="320" width="960" height="150" fill="#0a0d14"/><path d="M0,380 H960 M0,430 H960" stroke="#3a4050" stroke-width="5"/>
-<rect x="760" y="120" width="140" height="56" rx="8" fill="#0a0c12"/><text x="830" y="160" font-size="32" font-weight="900" text-anchor="middle" fill="#ffb84a" font-family="monospace">06:40</text>
+S.chWorkBot=()=>clip('ch2',`
+<rect width="960" height="470" fill="#07080e"/>
+<path d="M200,0 L130,90 H270 Z" fill="#2a2c34"/>${phGlow('ch2g',200,250,300,'#ffe6b0',.22)}
+${ckTable(340,'#1e1a16','#141210')}
+${[...Array(9)].map((_,i)=>`<rect x="${180+(i*61)%520}" y="${300-(i%4)*10}" width="150" height="46" fill="${i%3?'#d8d4c8':'#c8c0b0'}" transform="rotate(${(i*17)%24-12} ${255+(i*61)%520} ${323-(i%4)*10})"/>`).join('')}
+${[[300,286,'#d84a4a'],[560,280,'#d84a4a'],[440,276,'#4a7ac8']].map(([x,y,c])=>`<rect x="${x}" y="${y}" width="40" height="12" fill="${c}" opacity=".8"/>`).join('')}
+<rect x="760" y="300" width="70" height="40" rx="4" fill="#2a2c34"/><text x="795" y="326" font-size="16" font-weight="900" text-anchor="middle" fill="#ff5a5a" font-family="monospace">01:12</text>
+<rect width="960" height="470" fill="#000" opacity=".25"/>
 ${phGrain('ch2n')}
 `);
 
