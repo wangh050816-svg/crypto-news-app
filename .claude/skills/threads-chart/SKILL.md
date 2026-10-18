@@ -1,6 +1,6 @@
 ---
 name: threads-chart
-description: 製作 Threads 風格的「一句洞見＋一張數據圖」貼文（1080×900 PNG＋短文案）。使用者說「做一則 Threads」「數據圖貼文」「像那種一句話配圖表的」或輸入 /threads-chart 時使用。
+description: 製作 Threads 風格的「一句洞見＋一張圖」貼文（數據圖或插畫，PNG＋短文案）。使用者說「做一則 Threads」「數據圖貼文」「像那種一句話配圖表的」或輸入 /threads-chart 時使用。
 ---
 
 # Threads 一句洞見＋數據圖
@@ -11,10 +11,11 @@ description: 製作 Threads 風格的「一句洞見＋一張數據圖」貼文�
 
 ## 貼文格式
 - 文案只有 1–2 句，講一個反直覺的發現，句型像「人們會把 A 過度放大；也會把 B 過度低估。」不加 hashtag、不加 emoji、不問問題。
-- 圖表是重點：兩條線對比（「理想／直覺」vs「實際」），中間的落差用 `between` 上色。一條用 `color:'light', dashed:true`。
+- 圖不一定是數據圖，也不要模仿別人的圖：可以是插畫、隱喻、對比圖。插畫用 `draw:T=>'<svg 內容>'`，可設 `width/height`，範例見 `posts/hold-on.js`（米色 `paper` 配色、手寫字 class 自己定義）。
+- 用數據圖的時候：兩條線對比（「理想／直覺」vs「實際」），中間的落差用 `between` 上色。一條用 `color:'light', dashed:true`。
 - 圖上用英文，標題 3–5 個字（像 `X vs. Y`），2 句短註解，關鍵數字用 `*星號*` 包起來會變成強調色。
 - 左下是作者（預設 @zqqnc），右下寫資料來源。
-- 配色：`wine`（預設，酒紅）、`navy`、`forest`、`ink`。
+- 配色：`wine`（預設，酒紅）、`navy`、`forest`、`ink`、`paper`（米色紙感，適合插畫）。
 - 數據必須是真的、可查證的，在 post 檔註解寫清楚來源和算法。不推薦特定幣種，也不保證報酬。
 
 ## 流程
