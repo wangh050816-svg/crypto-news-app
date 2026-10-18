@@ -2,7 +2,7 @@
 // 用法：node csv-to-props.js variants.csv ./props 9x16
 const fs = require("fs"), path = require("path");
 const [, , csvPath, outDir, aspect = "9x16"] = process.argv;
-const REQUIRED = ["id", "hook", "hookSub", "hero", "cta", "accent", "bg"], HEROES = ["pack", "paper", "card1"];
+const REQUIRED = ["id", "hook", "hookSub", "hero", "cta", "accent", "bg"], HEROES = ["pack", "coins", "gift"];
 const isHex = (s) => /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(s);
 const [head, ...lines] = fs.readFileSync(csvPath, "utf8").trim().split(/\r?\n/);
 const cols = head.split(",").map((c) => c.trim());
