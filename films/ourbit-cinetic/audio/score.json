@@ -1,0 +1,128 @@
+{
+  "key": "E minor",
+  "bpm": 120,
+  "music": "synth",
+  "sfx": {
+    "engine": "auto",
+    "kit": "audio/kit.json",
+    "python": null
+  },
+  "chords": [
+    "Em9",
+    "Cmaj9",
+    "Am9 B7sus4",
+    "Em9",
+    "Cmaj9",
+    "Am9",
+    "D6",
+    "Cmaj9",
+    "Am9 B7sus4",
+    "Em9",
+    "-",
+    "-"
+  ],
+  "sections": [
+    {
+      "bars": [
+        1,
+        1
+      ],
+      "style": "intro"
+    },
+    {
+      "bars": [
+        2,
+        3
+      ],
+      "style": "build",
+      "level": 0.8
+    },
+    {
+      "bars": [
+        4,
+        4
+      ],
+      "style": "resolve"
+    },
+    {
+      "bars": [
+        5,
+        7
+      ],
+      "style": "groove",
+      "level": 0.58
+    },
+    {
+      "bars": [
+        8,
+        8
+      ],
+      "style": "breakdown",
+      "level": 0.38,
+      "layers": {
+        "drums": 0,
+        "arp": 0.4
+      }
+    },
+    {
+      "bars": [
+        9,
+        9
+      ],
+      "style": "drive",
+      "level": 0.66
+    },
+    {
+      "bars": [
+        10,
+        10
+      ],
+      "style": "resolve",
+      "level": 0.55,
+      "layers": {
+        "drums": 0
+      }
+    },
+    {
+      "bars": [
+        11,
+        12
+      ],
+      "style": "hold"
+    }
+  ],
+  "drops": [
+    {
+      "at": "2",
+      "silence": 0.25,
+      "suck": 0.2
+    }
+  ],
+  "signature": {
+    "tick": "E6",
+    "tock": "B5",
+    "motif": [
+      0,
+      7,
+      12
+    ],
+    "rhythm": [
+      0,
+      0.5,
+      1.5
+    ]
+  },
+  "typing": "off",
+  "payoff": "@packIn-14",
+  "mix": {
+    "music": 1.0,
+    "sfx": 1.25,
+    "reverb": 1.0,
+    "sidechain": 0.55,
+    "duck_db": 3
+  },
+  "master": {
+    "ceiling": 0.77,
+    "fade": 1.0
+  }
+}

@@ -1,0 +1,413 @@
+{
+ "fps": 60,
+ "bpm": 120,
+ "total": 1380,
+ "pace": "crisp",
+ "acts": {
+  "hook": {
+   "from": 0,
+   "dur": 120
+  },
+  "signup": {
+   "from": 120,
+   "dur": 360
+  },
+  "offers": {
+   "from": 480,
+   "dur": 600
+  },
+  "lockup": {
+   "from": 1080,
+   "dur": 300
+  }
+ },
+ "cue": {
+  "flare": 75,
+  "drop": 120,
+  "caret": 210,
+  "capsule": 225,
+  "widen": 248,
+  "cursor": 300,
+  "press": 330,
+  "rise": 360,
+  "packIn": 390,
+  "turn1": 630,
+  "turn2": 780,
+  "turn3": 930,
+  "tally": 510,
+  "gift": 810,
+  "fan": 960,
+  "markIn": 1080,
+  "markRest": 1110,
+  "slide": 1125,
+  "lockup": 1155,
+  "push": 1260,
+  "end": 1320
+ },
+ "copy": [
+  {
+   "id": "hook.1",
+   "text": "不給糖？",
+   "in": 8,
+   "resolved": 34,
+   "out": 90,
+   "words": 1,
+   "kind": "copy",
+   "chain": "hook",
+   "mode": "replace",
+   "read": [
+    [
+     34,
+     90
+    ]
+   ]
+  },
+  {
+   "id": "headline.1",
+   "text": "註冊 就送",
+   "in": 120,
+   "resolved": 152,
+   "out": 210,
+   "words": 2,
+   "kind": "copy",
+   "chain": "headline",
+   "mode": "build",
+   "read": [
+    [
+     152,
+     210
+    ]
+   ]
+  },
+  {
+   "id": "ui.email",
+   "text": "輸入電子郵件",
+   "in": 288,
+   "resolved": 300,
+   "out": 336,
+   "words": 1,
+   "kind": "ui",
+   "read": [
+    [
+     300,
+     336
+    ]
+   ]
+  },
+  {
+   "id": "ui.button",
+   "text": "註冊",
+   "in": 288,
+   "resolved": 300,
+   "out": 336,
+   "words": 1,
+   "kind": "ui",
+   "read": [
+    [
+     300,
+     336
+    ]
+   ]
+  },
+  {
+   "id": "pack.1",
+   "text": "寶可夢卡包",
+   "in": 390,
+   "resolved": 416,
+   "out": 465,
+   "words": 1,
+   "kind": "copy",
+   "chain": "pack",
+   "mode": "replace",
+   "read": [
+    [
+     416,
+     465
+    ]
+   ]
+  },
+  {
+   "id": "offers.1",
+   "text": "儲值返利 最高 30%",
+   "in": 510,
+   "resolved": 548,
+   "out": 638,
+   "words": 3,
+   "kind": "copy",
+   "chain": "offers",
+   "mode": "replace",
+   "read": [
+    [
+     548,
+     602
+    ]
+   ]
+  },
+  {
+   "id": "offers.2",
+   "text": "588 USDT 體驗金",
+   "in": 660,
+   "resolved": 698,
+   "out": 788,
+   "words": 3,
+   "kind": "copy",
+   "chain": "offers",
+   "mode": "replace",
+   "read": [
+    [
+     698,
+     752
+    ]
+   ]
+  },
+  {
+   "id": "offers.3",
+   "text": "PRL 空投",
+   "in": 810,
+   "resolved": 842,
+   "out": 938,
+   "words": 2,
+   "kind": "copy",
+   "chain": "offers",
+   "mode": "replace",
+   "read": [
+    [
+     842,
+     890
+    ]
+   ]
+  },
+  {
+   "id": "offers.4",
+   "text": "VIP 轉盤+10次",
+   "in": 960,
+   "resolved": 992,
+   "out": 1043,
+   "words": 2,
+   "kind": "copy",
+   "chain": "offers",
+   "mode": "replace",
+   "read": [
+    [
+     992,
+     1043
+    ]
+   ]
+  },
+  {
+   "id": "cta.1",
+   "text": "立即註冊",
+   "in": 1185,
+   "resolved": 1211,
+   "out": 1380,
+   "words": 1,
+   "kind": "copy",
+   "chain": "cta",
+   "mode": "build",
+   "read": [
+    [
+     1211,
+     1253
+    ],
+    [
+     1313,
+     1380
+    ]
+   ]
+  },
+  {
+   "id": "cta.2",
+   "text": "10/16 – 10/31",
+   "in": 1275,
+   "resolved": 1313,
+   "out": 1380,
+   "words": 3,
+   "kind": "copy",
+   "chain": "cta",
+   "mode": "build",
+   "read": [
+    [
+     1313,
+     1380
+    ]
+   ]
+  }
+ ],
+ "events": [
+  {
+   "f": 17,
+   "kind": "text",
+   "weight": 0.7,
+   "pan": 0,
+   "id": "hook:hook1"
+  },
+  {
+   "f": 120,
+   "kind": "drop",
+   "weight": 1.2,
+   "pan": 0,
+   "id": "signup:cut-drop"
+  },
+  {
+   "f": 135,
+   "kind": "text",
+   "weight": 0.8,
+   "pan": 0,
+   "id": "signup:headline1"
+  },
+  {
+   "f": 213,
+   "kind": "pop",
+   "weight": 0.6,
+   "pan": 0,
+   "id": "signup:caret"
+  },
+  {
+   "f": 266,
+   "kind": "whoosh",
+   "weight": 0.7,
+   "pan": 0,
+   "apexFrac": 0.3,
+   "dur": 60,
+   "id": "signup:bar-widens"
+  },
+  {
+   "f": 330,
+   "kind": "click",
+   "weight": 1,
+   "pan": 0.544,
+   "variant": "confirm",
+   "id": "signup:press"
+  },
+  {
+   "f": 376,
+   "kind": "land",
+   "weight": 0.9,
+   "pan": 0,
+   "variant": "light",
+   "id": "signup:pack-seats"
+  },
+  {
+   "f": 397,
+   "kind": "text",
+   "weight": 0.8,
+   "pan": 0,
+   "id": "signup:pack1"
+  },
+  {
+   "f": 495,
+   "kind": "whoosh",
+   "weight": 0.55,
+   "pan": 0,
+   "apexFrac": 0.5,
+   "dur": 30,
+   "id": "offers:turn1"
+  },
+  {
+   "f": 529,
+   "kind": "text",
+   "weight": 0.8,
+   "pan": 0,
+   "id": "offers:offers1"
+  },
+  {
+   "f": 548,
+   "kind": "tick",
+   "weight": 0.8,
+   "pan": 0,
+   "variant": "crisp",
+   "id": "offers:tally-30"
+  },
+  {
+   "f": 645,
+   "kind": "whoosh",
+   "weight": 0.55,
+   "pan": 0,
+   "apexFrac": 0.5,
+   "dur": 30,
+   "id": "offers:turn2"
+  },
+  {
+   "f": 679,
+   "kind": "text",
+   "weight": 0.8,
+   "pan": 0,
+   "id": "offers:offers2"
+  },
+  {
+   "f": 795,
+   "kind": "whoosh",
+   "weight": 0.55,
+   "pan": 0,
+   "apexFrac": 0.5,
+   "dur": 30,
+   "id": "offers:turn3"
+  },
+  {
+   "f": 810,
+   "kind": "land",
+   "weight": 1,
+   "pan": 0,
+   "id": "offers:gift-lands"
+  },
+  {
+   "f": 823,
+   "kind": "text",
+   "weight": 0.8,
+   "pan": 0,
+   "id": "offers:offers3"
+  },
+  {
+   "f": 945,
+   "kind": "whoosh",
+   "weight": 0.55,
+   "pan": 0,
+   "apexFrac": 0.5,
+   "dur": 30,
+   "id": "offers:turn4"
+  },
+  {
+   "f": 960,
+   "kind": "snap",
+   "weight": 0.8,
+   "pan": 0,
+   "id": "offers:cards-fan"
+  },
+  {
+   "f": 973,
+   "kind": "text",
+   "weight": 0.8,
+   "pan": 0,
+   "id": "offers:offers4"
+  },
+  {
+   "f": 1094,
+   "kind": "pop",
+   "weight": 0.6,
+   "pan": 0,
+   "variant": "down",
+   "id": "lockup:mark-rises"
+  },
+  {
+   "f": 1155,
+   "kind": "hit",
+   "weight": 1,
+   "pan": 0,
+   "id": "lockup:lockup"
+  },
+  {
+   "f": 1191,
+   "kind": "text",
+   "weight": 0.6,
+   "pan": 0,
+   "id": "lockup:cta1"
+  },
+  {
+   "f": 1293,
+   "kind": "text",
+   "weight": 0.6,
+   "pan": 0,
+   "id": "lockup:cta2"
+  }
+ ]
+}
