@@ -50,7 +50,7 @@ export const TOTAL = b(12) + TAIL;
 export const OFFER_STEP = 5 * BEAT;
 /** Absolute frame offer i (0..3) starts turning into the light; the pack leaves on the first turn. */
 export const turnAt = (i: number) => ACT.offers.from + i * OFFER_STEP;
-export const TURN = BEAT; // a turn of the wheel takes one beat
+export const TURN = BEAT * 1.5; // a turn of the wheel takes a beat and a half (peaks near 50 px/f)
 
 // Named sync points (absolute frames), all on the 16th grid.
 export const CUE = {
@@ -126,7 +126,7 @@ export const COPY: Copy[] = [
     ['588 USDT 體驗金', turnAt(1) + TURN],
     ['PRL 空投', turnAt(2) + TURN],
     ['VIP 轉盤+10次', turnAt(3) + TURN],
-  ], { out: b(9, 2, 3) }),
+  ], { out: b(9, 3, 1) }),
   // The end card: the action, then the practical fact, once the lockup has resolved.
   ...chain('cta', 'build', [['立即註冊', b(10, 3, 2)], ['10/16 – 10/31', b(11, 2, 2)]], { out: TOTAL }),
 ];

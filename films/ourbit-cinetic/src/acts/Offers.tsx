@@ -15,8 +15,8 @@ import { PACK_H } from './Signup';
 // cards fan open.
 
 const A = ACT.offers.from;
-/** Distance between prizes on the wheel (px). A turn peaks near 60 px/f: motion-blurred in the master. */
-export const SLOT = 640;
+/** Distance between prizes on the wheel (px). A turn peaks near 50 px/f: motion-blurred in the master. */
+export const SLOT = 560;
 /** The offer lines' size: src/sync.ts times their text sounds with it. */
 export const OFFER_SIZE = TYPE.line.size * U;
 /** The wheel's turns (absolute frames) and their curve, for src/sync.ts. */

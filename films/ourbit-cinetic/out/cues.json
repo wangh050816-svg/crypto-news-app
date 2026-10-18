@@ -34,9 +34,9 @@
   "turn1": 630,
   "turn2": 780,
   "turn3": 930,
-  "tally": 510,
-  "gift": 825,
-  "fan": 960,
+  "tally": 525,
+  "gift": 840,
+  "fan": 975,
   "markIn": 1080,
   "markRest": 1110,
   "slide": 1125,
@@ -129,68 +129,68 @@
   {
    "id": "offers.1",
    "text": "儲值返利 最高 30%",
-   "in": 510,
-   "resolved": 548,
-   "out": 638,
+   "in": 525,
+   "resolved": 563,
+   "out": 653,
    "words": 3,
    "kind": "copy",
    "chain": "offers",
    "mode": "replace",
    "read": [
     [
-     548,
-     602
+     563,
+     617
     ]
    ]
   },
   {
    "id": "offers.2",
    "text": "588 USDT 體驗金",
-   "in": 660,
-   "resolved": 698,
-   "out": 788,
+   "in": 675,
+   "resolved": 713,
+   "out": 803,
    "words": 3,
    "kind": "copy",
    "chain": "offers",
    "mode": "replace",
    "read": [
     [
-     698,
-     752
+     713,
+     767
     ]
    ]
   },
   {
    "id": "offers.3",
    "text": "PRL 空投",
-   "in": 810,
-   "resolved": 842,
-   "out": 938,
+   "in": 825,
+   "resolved": 857,
+   "out": 953,
    "words": 2,
    "kind": "copy",
    "chain": "offers",
    "mode": "replace",
    "read": [
     [
-     842,
-     890
+     857,
+     905
     ]
    ]
   },
   {
    "id": "offers.4",
    "text": "VIP 轉盤+10次",
-   "in": 960,
-   "resolved": 992,
-   "out": 1043,
+   "in": 975,
+   "resolved": 1007,
+   "out": 1058,
    "words": 2,
    "kind": "copy",
    "chain": "offers",
    "mode": "replace",
    "read": [
     [
-     992,
-     1043
+     1007,
+     1058
     ]
    ]
   },
@@ -294,23 +294,23 @@
    "id": "signup:pack1"
   },
   {
-   "f": 495,
+   "f": 502,
    "kind": "whoosh",
    "weight": 0.55,
    "pan": 0,
-   "apexFrac": 0.5,
-   "dur": 30,
+   "apexFrac": 0.489,
+   "dur": 45,
    "id": "offers:turn1"
   },
   {
-   "f": 529,
+   "f": 544,
    "kind": "text",
    "weight": 0.8,
    "pan": 0,
    "id": "offers:offers1"
   },
   {
-   "f": 548,
+   "f": 563,
    "kind": "tick",
    "weight": 0.8,
    "pan": 0,
@@ -318,62 +318,62 @@
    "id": "offers:tally-30"
   },
   {
-   "f": 645,
+   "f": 652,
    "kind": "whoosh",
    "weight": 0.55,
    "pan": 0,
-   "apexFrac": 0.5,
-   "dur": 30,
+   "apexFrac": 0.489,
+   "dur": 45,
    "id": "offers:turn2"
   },
   {
-   "f": 679,
+   "f": 694,
    "kind": "text",
    "weight": 0.8,
    "pan": 0,
    "id": "offers:offers2"
   },
   {
-   "f": 795,
+   "f": 802,
    "kind": "whoosh",
    "weight": 0.55,
    "pan": 0,
-   "apexFrac": 0.5,
-   "dur": 30,
+   "apexFrac": 0.489,
+   "dur": 45,
    "id": "offers:turn3"
   },
   {
-   "f": 823,
+   "f": 838,
    "kind": "text",
    "weight": 0.8,
    "pan": 0,
    "id": "offers:offers3"
   },
   {
-   "f": 825,
+   "f": 840,
    "kind": "land",
    "weight": 1,
    "pan": 0,
    "id": "offers:gift-lands"
   },
   {
-   "f": 945,
+   "f": 952,
    "kind": "whoosh",
    "weight": 0.55,
    "pan": 0,
-   "apexFrac": 0.5,
-   "dur": 30,
+   "apexFrac": 0.489,
+   "dur": 45,
    "id": "offers:turn4"
   },
   {
-   "f": 960,
+   "f": 975,
    "kind": "snap",
    "weight": 0.8,
    "pan": 0,
    "id": "offers:cards-fan"
   },
   {
-   "f": 973,
+   "f": 988,
    "kind": "text",
    "weight": 0.8,
    "pan": 0,
