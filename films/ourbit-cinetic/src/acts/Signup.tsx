@@ -81,8 +81,8 @@ export const Signup: React.FC = () => {
 
   // The prize: out of the pumpkin's light to the lens, at rest on CUE.packIn, then a slow creep.
   const r = prog(F, RISE.from, RISE.to, RISE.ease);
-  const packY = mix(1560, LENS.y, r);
-  const packK = lmix(0.3, 1, r) * lmix(1, 1.035, prog(F, RISE.to, A + ACT.signup.dur, E.linear));
+  const packY = mix(1380, LENS.y, r); // a short rise: it meets the lens at about 50 px/f
+  const packK = lmix(0.5, 1, r) * lmix(1, 1.035, prog(F, RISE.to, A + ACT.signup.dur, E.linear));
   const sq = squash(F - RISE.to); // the contact: it widens and flattens against the light for 8 f
 
   const ui = typeStyle('ui');

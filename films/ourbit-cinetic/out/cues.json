@@ -35,7 +35,7 @@
   "turn2": 780,
   "turn3": 930,
   "tally": 510,
-  "gift": 810,
+  "gift": 825,
   "fan": 960,
   "markIn": 1080,
   "markRest": 1110,
@@ -343,18 +343,18 @@
    "id": "offers:turn3"
   },
   {
-   "f": 810,
-   "kind": "land",
-   "weight": 1,
-   "pan": 0,
-   "id": "offers:gift-lands"
-  },
-  {
    "f": 823,
    "kind": "text",
    "weight": 0.8,
    "pan": 0,
    "id": "offers:offers3"
+  },
+  {
+   "f": 825,
+   "kind": "land",
+   "weight": 1,
+   "pan": 0,
+   "id": "offers:gift-lands"
   },
   {
    "f": 945,

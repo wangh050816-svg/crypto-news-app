@@ -109,7 +109,7 @@ export const Offers: React.FC = () => {
         F >= FALL.from && (
           <Img
             src={real('gift.png')}
-            style={{ position: 'absolute', left: -200, top: -173, width: 400, transformOrigin: '50% 100%', transform: `translateY(${(-(1 - fall) * 420).toFixed(2)}px) scale(${sq.across.toFixed(4)}, ${sq.along.toFixed(4)}) rotate(${mix(-14, 4, fall).toFixed(3)}deg)`, filter: 'drop-shadow(0 26px 30px rgba(0,0,0,.6))' }}
+            style={{ position: 'absolute', left: -200, top: -173, width: 400, transformOrigin: '50% 100%', transform: `translateY(${(-(1 - fall) * 280).toFixed(2)}px) scale(${sq.across.toFixed(4)}, ${sq.along.toFixed(4)}) rotate(${mix(-14, 4, fall).toFixed(3)}deg)`, filter: 'drop-shadow(0 26px 30px rgba(0,0,0,.6))' }}
           />
         ),
       )}

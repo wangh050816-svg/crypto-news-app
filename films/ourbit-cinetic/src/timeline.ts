@@ -67,7 +67,7 @@ export const CUE = {
   turn2: turnAt(2), // the wheel turns: the gift drops in
   turn3: turnAt(3), // the wheel turns: the cards
   tally: turnAt(0) + TURN, // the 30% cells fill as the bitcoin offer settles
-  gift: turnAt(2) + TURN, // the gift box lands on the light
+  gift: turnAt(2) + TURN + BEAT / 2, // the gift box lands on the light, once the turn has settled
   fan: turnAt(3) + TURN, // the three cards fan open
   markIn: b(10), // the B mark rises out of the light
   markRest: b(10, 1), // the mark is at rest in the light
