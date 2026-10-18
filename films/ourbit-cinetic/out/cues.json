@@ -294,11 +294,11 @@
    "id": "signup:pack1"
   },
   {
-   "f": 502,
+   "f": 503,
    "kind": "whoosh",
    "weight": 0.55,
    "pan": 0,
-   "apexFrac": 0.489,
+   "apexFrac": 0.511,
    "dur": 45,
    "id": "offers:turn1"
   },
@@ -318,11 +318,11 @@
    "id": "offers:tally-30"
   },
   {
-   "f": 652,
+   "f": 653,
    "kind": "whoosh",
    "weight": 0.55,
    "pan": 0,
-   "apexFrac": 0.489,
+   "apexFrac": 0.511,
    "dur": 45,
    "id": "offers:turn2"
   },
@@ -334,11 +334,11 @@
    "id": "offers:offers2"
   },
   {
-   "f": 802,
+   "f": 803,
    "kind": "whoosh",
    "weight": 0.55,
    "pan": 0,
-   "apexFrac": 0.489,
+   "apexFrac": 0.511,
    "dur": 45,
    "id": "offers:turn3"
   },
@@ -357,11 +357,11 @@
    "id": "offers:gift-lands"
   },
   {
-   "f": 952,
+   "f": 953,
    "kind": "whoosh",
    "weight": 0.55,
    "pan": 0,
-   "apexFrac": 0.489,
+   "apexFrac": 0.511,
    "dur": 45,
    "id": "offers:turn4"
   },

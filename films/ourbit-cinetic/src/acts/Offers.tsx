@@ -8,8 +8,8 @@ import { DarkPhoto, LENS, real } from './Night';
 import { PACK_H } from './Signup';
 
 // ACT 3 - THE WHEEL (bars 5-9). The prizes stand in a vertical wheel whose focus is the lens, the
-// pumpkin's light. Each turn (one beat, E.inOut) lifts the last prize away and brings the next one
-// up out of the light; size and brightness fall off with the distance from the lens, so only the
+// pumpkin's light. Each turn (a beat and a half) lifts the last prize away and brings the next one
+// up out of the light (E.smooth: the blur speed ceiling rules out a steeper whip); size and brightness fall off with the distance from the lens, so only the
 // prize in the light is lit. Act 2 left the pack at the lens: it is item 0, the first to leave.
 // Bitcoin: 30% as 3 of 10 cells. Gold: 588 USDT. A gift box drops onto the light. Three official
 // cards fan open.
@@ -20,7 +20,7 @@ export const SLOT = 560;
 /** The offer lines' size: src/sync.ts times their text sounds with it. */
 export const OFFER_SIZE = TYPE.line.size * U;
 /** The wheel's turns (absolute frames) and their curve, for src/sync.ts. */
-export const TURNS = [0, 1, 2, 3].map((i) => ({ from: turnAt(i), to: turnAt(i) + TURN, ease: E.inOut }));
+export const TURNS = [0, 1, 2, 3].map((i) => ({ from: turnAt(i), to: turnAt(i) + TURN, ease: E.smooth })); // E.smooth, not E.inOut: its peak (2.9x the mean) keeps a turn near 36 px/f; E.inOut peaks at 7.7x
 /** The gift's fall onto the light: contact on CUE.gift. */
 export const FALL = { from: CUE.gift - f60(26), to: CUE.gift, ease: E.contact };
 
