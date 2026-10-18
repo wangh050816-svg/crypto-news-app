@@ -2,7 +2,7 @@ import React from 'react';
 import { AbsoluteFill, Img, useCurrentFrame } from 'remotion';
 import { C, TYPE, U } from '../brand/tokens';
 import { Chain } from '../fx/Chain';
-import { clamp, E, hitPulse, mix, prog, spr, SPR, squash, stagger } from '../lib/anim';
+import { E, hitPulse, mix, prog, spr, SPR, squash, stagger } from '../lib/anim';
 import { ACT, CUE, f60, TURN, turnAt } from '../timeline';
 import { DarkPhoto, LENS, real } from './Night';
 import { PACK_H } from './Signup';
@@ -79,8 +79,11 @@ export const Offers: React.FC = () => {
     const a = Math.min(Math.abs(d), 1.4);
     const k = (1 - 0.3 * Math.min(a, 1)) * creep;
     const light = mix(1, 0.28, Math.min(a, 1));
-    // Only the prize in the light reads: the one leaving fades above, the next one stays hidden in the light until it turns in.
-    const o = d > 0 ? 1 - clamp((d - 0.15) / 0.45) : 1 - clamp((a - 0.3) / 0.45);
+    // Only the prize in the light reads. The fades run on time across the whole turn (not on distance:
+    // E.inOut crosses the middle in a few frames, which would collapse a distance fade into a pop).
+    const leave = j < TURNS.length ? prog(F, turnAt(j) - f60(4), turnAt(j) + TURN + f60(10), E.smooth) : 0;
+    const enter = j > 0 ? prog(F, turnAt(j - 1) - f60(2), turnAt(j - 1) + TURN + f60(4), E.smooth) : 1;
+    const o = enter * (1 - leave);
     if (o <= 0) return null;
     return (
       <div key={j} style={{ position: 'absolute', left: 0, top: 0, transform: `translate(${LENS.x}px, ${(LENS.y + d * SLOT).toFixed(2)}px) scale(${k.toFixed(4)})`, opacity: o, filter: `brightness(${light.toFixed(3)})` }}>
