@@ -35,14 +35,16 @@
         3
       ],
       "style": "build",
-      "level": 0.8
+      "level": 0.7
     },
     {
       "bars": [
         4,
         4
       ],
-      "style": "resolve"
+      "style": "resolve",
+      "level": 1.0,
+      "drums": "one"
     },
     {
       "bars": [
@@ -113,7 +115,7 @@
     ]
   },
   "typing": "off",
-  "payoff": "@packIn-14",
+  "payoff": "@packIn",
   "mix": {
     "music": 1.0,
     "sfx": 1.25,

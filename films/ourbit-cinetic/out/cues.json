@@ -27,10 +27,10 @@
   "caret": 210,
   "capsule": 225,
   "widen": 248,
-  "cursor": 300,
-  "press": 330,
-  "rise": 360,
-  "packIn": 390,
+  "cursor": 270,
+  "press": 315,
+  "rise": 345,
+  "packIn": 360,
   "turn1": 630,
   "turn2": 780,
   "turn3": 930,
@@ -84,13 +84,13 @@
    "text": "輸入電子郵件",
    "in": 288,
    "resolved": 300,
-   "out": 336,
+   "out": 321,
    "words": 1,
    "kind": "ui",
    "read": [
     [
      300,
-     336
+     321
     ]
    ]
   },
@@ -99,21 +99,21 @@
    "text": "註冊",
    "in": 288,
    "resolved": 300,
-   "out": 336,
+   "out": 321,
    "words": 1,
    "kind": "ui",
    "read": [
     [
      300,
-     336
+     321
     ]
    ]
   },
   {
    "id": "pack.1",
    "text": "寶可夢卡包",
-   "in": 390,
-   "resolved": 416,
+   "in": 360,
+   "resolved": 386,
    "out": 465,
    "words": 1,
    "kind": "copy",
@@ -121,7 +121,7 @@
    "mode": "replace",
    "read": [
     [
-     416,
+     386,
      465
     ]
    ]
@@ -272,7 +272,7 @@
    "id": "signup:bar-widens"
   },
   {
-   "f": 330,
+   "f": 315,
    "kind": "click",
    "weight": 1,
    "pan": 0.544,
@@ -280,15 +280,14 @@
    "id": "signup:press"
   },
   {
-   "f": 376,
+   "f": 360,
    "kind": "land",
-   "weight": 0.9,
+   "weight": 1.4,
    "pan": 0,
-   "variant": "light",
-   "id": "signup:pack-seats"
+   "id": "signup:pack-lands"
   },
   {
-   "f": 397,
+   "f": 367,
    "kind": "text",
    "weight": 0.8,
    "pan": 0,
@@ -381,7 +380,7 @@
    "id": "offers:offers4"
   },
   {
-   "f": 1094,
+   "f": 1084,
    "kind": "pop",
    "weight": 0.6,
    "pan": 0,

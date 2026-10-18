@@ -22,7 +22,7 @@ import { FALL, OFFER_SIZE, TURNS } from './acts/Offers';
 import { BUTTON, HEAD_SIZE, PACK_LINE, RISE, WIDEN } from './acts/Signup';
 import { chainResolves } from './fx/Chain';
 import { stagger, E } from './lib/anim';
-import { peak, settleOf } from './lib/sync';
+import { peak } from './lib/sync';
 import { ACT, CUE, f60, FPS, TOTAL, W } from './timeline';
 
 export type Kind =
@@ -70,7 +70,7 @@ export default function cues(): SoundEvent[] {
   ev.push({ f: CUE.caret + f60(3), kind: 'pop', weight: 0.6, id: 'caret' });
   ev.push(move(WIDEN, 0.7, 0, 'bar-widens'));
   ev.push({ f: CUE.press, kind: 'click', variant: 'confirm', weight: 1, pan: panX(BUTTON.x), id: 'press' });
-  ev.push({ f: settleOf(RISE.from, RISE.to, RISE.ease), kind: 'land', variant: 'light', weight: 0.9, id: 'pack-seats' });
+  ev.push({ f: RISE.to, kind: 'land', weight: 1.4, id: 'pack-lands' }); // E.contact: the sound sits on the contact frame
   text('pack', PACK_LINE, 0.8);
 
   // The wheel: each turn is one whoosh; the tally's last cell locks with a tick; the gift lands on
@@ -83,7 +83,7 @@ export default function cues(): SoundEvent[] {
 
   // Lockup: the mark rises out of the light (a soft pop, a full second before the hit); the slide
   // stays silent; ONE hit when the wordmark resolves. Then the CTA reads in near-silence.
-  ev.push({ f: CUE.markIn + f60(14), kind: 'pop', variant: 'down', weight: 0.6, id: 'mark-rises' });
+  ev.push({ f: CUE.markIn + f60(4), kind: 'pop', variant: 'down', weight: 0.6, id: 'mark-rises' }); // 50% of its E.out rise
   ev.push({ f: NAME.to, kind: 'hit', weight: 1, id: 'lockup' });
   text('cta', CTA_SIZE, 0.6);
 

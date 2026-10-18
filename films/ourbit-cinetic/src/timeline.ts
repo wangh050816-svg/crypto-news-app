@@ -59,10 +59,10 @@ export const CUE = {
   caret: b(2, 3), // a caret appears in the gap between 註冊 and 就送
   capsule: b(2, 3, 2), // ...thickens to a capsule
   widen: b(3, 0, 1), // ...and widens into the sign-up bar (60 f on E.rest)
-  cursor: b(3, 2), // the cursor sets off (24 f, E.out)
-  press: b(3, 3), // the press on 註冊: the pack starts to rise out of the pumpkin's light
-  rise: b(4), // the pack's rise peaks in speed (the whoosh apex)
-  packIn: b(4, 1), // the pack is at rest above the pumpkin
+  cursor: b(3, 1), // the cursor sets off (24 f, E.out)
+  press: b(3, 2, 2), // the press on 註冊: the pack starts to rise out of the pumpkin's light
+  rise: b(3, 3, 2), // the pack is half-way out of the light
+  packIn: b(4), // the pack lands above the pumpkin on the downbeat: the payoff
   turn1: turnAt(1), // the wheel turns: gold into the light
   turn2: turnAt(2), // the wheel turns: the gift drops in
   turn3: turnAt(3), // the wheel turns: the cards
@@ -116,8 +116,8 @@ export const COPY: Copy[] = [
   // The headline arrives on the cut; the caret in its gap becomes the sign-up bar, which shoves it aside.
   ...chain('headline', 'build', [['註冊 就送', CUE.drop]], { out: CUE.caret }),
   // The sign-up bar's own strings (product UI, not budgeted).
-  { id: 'ui.email', text: '輸入電子郵件', in: CUE.widen + f60(40), resolved: CUE.widen + f60(52), out: CUE.press + f60(6), kind: 'ui' },
-  { id: 'ui.button', text: '註冊', in: CUE.widen + f60(40), resolved: CUE.widen + f60(52), out: CUE.press + f60(6), kind: 'ui' },
+  { id: 'ui.email', text: '輸入電子郵件', in: CUE.widen + f60(28), resolved: CUE.widen + f60(40), out: CUE.press + f60(6), kind: 'ui' },
+  { id: 'ui.button', text: '註冊', in: CUE.widen + f60(28), resolved: CUE.widen + f60(40), out: CUE.press + f60(6), kind: 'ui' },
   // The prize, named once it is at rest.
   ...chain('pack', 'replace', [['寶可夢卡包', CUE.packIn]], { out: b(4, 3, 2) }),
   // The wheel: one line per offer, each read after its turn, gone before the next turn lands.

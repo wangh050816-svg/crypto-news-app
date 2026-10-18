@@ -114,7 +114,7 @@ export const Offers: React.FC = () => {
         ),
       )}
       {item(4, <div style={{ position: 'absolute', left: 0, top: 40 }}><CardFan open={fan} /></div>)}
-      <Chain chain="offers" frame={f} from={A} role="line" size={OFFER_SIZE} top={LENS.y + 380} color={C.paper} />
+      <Chain chain="offers" frame={f} from={A} role="line" size={OFFER_SIZE} top={LENS.y + 370} color={C.paper} />
     </AbsoluteFill>
   );
 };

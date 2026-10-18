@@ -1,7 +1,7 @@
 import React from 'react';
 import { AbsoluteFill, Img, staticFile } from 'remotion';
 import { C } from '../brand/tokens';
-import { E, hitPulse, lmix, prog } from '../lib/anim';
+import { E, hitPulse, lmix, mix, prog } from '../lib/anim';
 import { CUE, H, TOTAL, W } from '../timeline';
 
 // THE NIGHT - one layer under every act, driven by the ABSOLUTE frame, so the sky, the fog and the
@@ -16,7 +16,7 @@ export const PUMPKIN = {
   wide: { x: W / 2, y: H - 40, w: 620 }, // the rest of the film
 };
 /** The light: the point above the pumpkin where every prize is presented and lit. */
-export const LENS = { x: W / 2, y: 820 };
+export const LENS = { x: W / 2, y: 870 };
 
 /** Flicker of a candle flame, from a few sines (deterministic, no random). */
 const flicker = (t: number) => 0.9 + 0.05 * Math.sin(t * 9.1) + 0.03 * Math.sin(t * 23.7 + 1) + 0.02 * Math.sin(t * 47.3 + 2);
@@ -32,11 +32,13 @@ export const Night: React.FC<{ abs: number }> = ({ abs }) => {
   // The sky creeps the whole film (log-space, linear: frame 0 already moves).
   const k = lmix(1.14, 1.0, prog(abs, 0, TOTAL, E.linear));
   // The hook is darker: the room opens on the cut.
-  const dark = tight ? 0.62 : 0.4;
+  // The end card dims the sky again, so the moon never sits behind the mark.
+  const dark = tight ? 0.62 : mix(0.4, 0.72, prog(abs, CUE.markIn - 30, CUE.markIn + 30, E.smooth));
   const b = burn(abs);
-  const pw = P.w;
+  // In the hook the camera creeps in on the pumpkin from frame 0, so the opening already moves.
+  const pw = P.w * (tight ? lmix(1, 1.1, prog(abs, 0, CUE.drop, E.linear)) : 1);
   const ph = pw * (679 / 817);
-  const fogX = -W * 0.25 + 10 * t;
+  const fogX = -W * 0.25 + 28 * t;
   return (
     <AbsoluteFill style={{ background: C.ink, overflow: 'hidden' }}>
       <Img
@@ -47,7 +49,7 @@ export const Night: React.FC<{ abs: number }> = ({ abs }) => {
       {/* Fog: two real layers, screen-blended, drifting in opposite directions. */}
       <Img
         src={real('fog_tall.jpg')}
-        style={{ position: 'absolute', left: 0, top: 0, width: W * 1.5, height: H * 0.55, objectFit: 'fill', mixBlendMode: 'screen', opacity: 0.22, transform: `translate(${(-W * 0.3 - 6 * t).toFixed(2)}px, ${(H * 0.55).toFixed(1)}px) scaleX(-1)` }}
+        style={{ position: 'absolute', left: 0, top: 0, width: W * 1.5, height: H * 0.55, objectFit: 'fill', mixBlendMode: 'screen', opacity: 0.22, transform: `translate(${(-W * 0.2 - 18 * t).toFixed(2)}px, ${(H * 0.55).toFixed(1)}px) scaleX(-1)` }}
       />
       {/* The device. Its brightness is the light the prizes are shown in. */}
       <Img

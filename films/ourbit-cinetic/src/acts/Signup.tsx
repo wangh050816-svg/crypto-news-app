@@ -3,7 +3,7 @@ import { AbsoluteFill, Img, useCurrentFrame } from 'remotion';
 import { C, TYPE, U, typeStyle } from '../brand/tokens';
 import { Chain } from '../fx/Chain';
 import { Cursor, cursorArc, pressAt } from '../fx/Cursor';
-import { arrive, arriveK, blurIn, blurOut, clamp, E, lmix, mix, pace, prog } from '../lib/anim';
+import { arrive, arriveK, blurIn, blurOut, clamp, E, lmix, mix, pace, prog, squash } from '../lib/anim';
 import { mixColor } from '../lib/color';
 import { measureTracked } from '../lib/measure';
 import { ACT, copy, CUE, f60, W } from '../timeline';
@@ -21,13 +21,13 @@ export const HEAD_SIZE = TYPE.display.size * U;
 export const PACK_LINE = TYPE.line.size * U;
 
 /** The bar: its centre line and its final size. */
-export const BAR = { y: 760, h: 132, w: Math.round(W * 0.92) };
+export const BAR = { y: 870, h: 140, w: Math.round(W * 0.92) };
 /** The button inside the bar (centre, size), where the cursor presses. */
 export const BUTTON = { x: W / 2 + BAR.w / 2 - 20 - 110, y: BAR.y, w: 220, h: 100 };
 /** The pack: its height at the lens. Act 3 opens on exactly this pose. */
-export const PACK_H = 620;
+export const PACK_H = 600;
 /** The pack's rise out of the light (absolute frames) and its curve, for src/sync.ts. */
-export const RISE = { from: CUE.press, to: CUE.packIn, ease: E.rest };
+export const RISE = { from: CUE.press, to: CUE.packIn, ease: E.contact }; // arrives with speed: the landing is the payoff
 /** The bar's widening (absolute frames) and its curve, for src/sync.ts. */
 export const WIDEN = { from: CUE.widen, to: CUE.widen + f60(60), ease: E.rest };
 
@@ -67,10 +67,10 @@ export const Signup: React.FC = () => {
 
   // The bar's contents, container-first: the OURBIT name above it, the placeholder, then the button.
   const item = (k: number) => {
-    const s = WIDEN.from + f60(40) + f60(4 * k);
+    const s = WIDEN.from + f60(28) + f60(4 * k);
     return prog(F, s, s + f60(12), E.out);
   };
-  const btnFill = prog(F, WIDEN.from + f60(52), WIDEN.from + f60(68), E.linear);
+  const btnFill = prog(F, WIDEN.from + f60(40), WIDEN.from + f60(56), E.linear);
   const gone = prog(F, CUE.press + f60(6), CUE.press + f60(30), E.exit); // the bar drops away after the press
 
   // The cursor: snappy, from the lower right to the button (24 f, E.out), presses on CUE.press.
@@ -83,12 +83,13 @@ export const Signup: React.FC = () => {
   const r = prog(F, RISE.from, RISE.to, RISE.ease);
   const packY = mix(1560, LENS.y, r);
   const packK = lmix(0.3, 1, r) * lmix(1, 1.035, prog(F, RISE.to, A + ACT.signup.dur, E.linear));
+  const sq = squash(F - RISE.to); // the contact: it widens and flattens against the light for 8 f
 
   const ui = typeStyle('ui');
   return (
     <AbsoluteFill>
-      {F < WIDEN.from + f60(40) && word(wl, 0, W / 2 - slotW / 2 - gap - ww)}
-      {F < WIDEN.from + f60(40) && word(wr, 1, W / 2 + slotW / 2 + gap)}
+      {F < WIDEN.from + f60(30) && word(wl, 0, W / 2 - slotW / 2 - gap - ww)}
+      {F < WIDEN.from + f60(30) && word(wr, 1, W / 2 + slotW / 2 + gap)}
       {slotH > 0 && gone < 1 && (
         <div
           style={{
@@ -143,13 +144,13 @@ export const Signup: React.FC = () => {
             top: 0,
             height: PACK_H,
             transformOrigin: '50% 50%',
-            transform: `translate(${(LENS.x - (PACK_H * 847) / 1706 / 2).toFixed(2)}px, ${(packY - PACK_H / 2).toFixed(2)}px) scale(${packK.toFixed(4)}) rotate(${mix(-8, -3, r).toFixed(3)}deg)`,
+            transform: `translate(${(LENS.x - (PACK_H * 847) / 1706 / 2).toFixed(2)}px, ${(packY - PACK_H / 2).toFixed(2)}px) scale(${(packK * sq.across).toFixed(4)}, ${(packK * sq.along).toFixed(4)}) rotate(${mix(-8, -3, r).toFixed(3)}deg)`,
             opacity: clamp((F - RISE.from) / f60(8)),
             filter: 'drop-shadow(0 30px 40px rgba(0,0,0,.55))',
           }}
         />
       )}
-      <Chain chain="pack" frame={f} from={A} role="line" size={PACK_LINE} top={LENS.y + PACK_H / 2 + 70} color={C.paper} />
+      <Chain chain="pack" frame={f} from={A} role="line" size={PACK_LINE} top={LENS.y + PACK_H / 2 + 50} color={C.paper} />
     </AbsoluteFill>
   );
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import { AbsoluteFill, Img, useCurrentFrame } from 'remotion';
 import { C, TYPE, U } from '../brand/tokens';
 import { Chain } from '../fx/Chain';
-import { arrive, blurIn, E, lmix, mix, prog } from '../lib/anim';
+import { arrive, blurIn, E, hitPulse, lmix, mix, prog } from '../lib/anim';
 import { ACT, CUE, f60, TOTAL } from '../timeline';
 import { LENS, real } from './Night';
 
@@ -14,8 +14,8 @@ import { LENS, real } from './Night';
 const A = ACT.lockup.from;
 /** The CTA line's size: src/sync.ts times its text sounds with it. */
 export const CTA_SIZE = TYPE.line.size * U * 0.9;
-const MARK_H = 300;
-const NAME_H = 92;
+const MARK_H = 420;
+const NAME_H = 118;
 /** The mark's slide up into the lockup (absolute frames). */
 export const SLIDE = { from: CUE.slide, to: CUE.slide + f60(36), ease: E.smooth };
 /** The name's rise: it starts at 55% of the slide and resolves on CUE.lockup. */
@@ -26,11 +26,12 @@ export const Lockup: React.FC = () => {
   const F = f + A;
   const up = prog(F, CUE.markIn, CUE.markRest, E.out);
   const sl = prog(F, SLIDE.from, SLIDE.to, SLIDE.ease);
-  const markY = mix(LENS.y + 160, LENS.y, up) - 200 * sl;
-  const markK = lmix(0.6, 1, up) * lmix(1, 0.82, sl);
+  const markY = mix(LENS.y + 160, LENS.y, up) - 230 * sl;
+  const markK = lmix(0.6, 1, up) * lmix(1, 0.82, sl) * (1 + 0.03 * hitPulse(F - CUE.lockup, 2, 8));
   const n = prog(F, NAME.from, NAME.to, E.out);
-  const nameY = LENS.y + 10 + (1 - arrive(n)) * 30;
-  const push = lmix(1, 1.04, prog(F, CUE.push, TOTAL, E.dolly));
+  const nameY = LENS.y + 20 + (1 - arrive(n)) * 30;
+  // The end card keeps building: a slow push from the lockup to the last frame (<= 6%).
+  const push = lmix(1, 1.05, prog(F, CUE.lockup, TOTAL, E.dolly));
   const markW = (MARK_H * 436) / 516;
   const nameW = (NAME_H * 664) / 164;
   return (
@@ -45,7 +46,7 @@ export const Lockup: React.FC = () => {
           style={{ position: 'absolute', left: 0, top: 0, height: NAME_H, transform: `translate(${(540 - nameW / 2).toFixed(2)}px, ${nameY.toFixed(2)}px)`, opacity: prog(F, NAME.from, NAME.to, E.smooth), filter: n < 0.6 ? `blur(${blurIn(n, 10).toFixed(2)}px)` : undefined }}
         />
       )}
-      <Chain chain="cta" frame={f} from={A} role="line" size={CTA_SIZE} top={LENS.y + 200} color={C.paper} />
+      <Chain chain="cta" frame={f} from={A} role="line" size={CTA_SIZE} top={LENS.y + 230} color={C.paper} />
     </AbsoluteFill>
   );
 };
