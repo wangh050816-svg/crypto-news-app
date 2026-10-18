@@ -55,7 +55,7 @@ const Tape: React.FC<{text: string; y: number; progress: number; accent: string}
   </div>
 );
 const Pill: React.FC<{text: string; y: number; opacity: number; accent: string; size?: number}> = ({text, y, opacity, accent, size = 36}) => (
-  <div style={{position: "absolute", left: "50%", top: y, transform: "translate(-50%,-50%)", padding: "16px 40px", borderRadius: 60, background: "rgba(8,14,11,.78)", border: `2px solid ${accent}`, opacity, fontFamily: "NotoTC", fontSize: size, fontWeight: 700, color: theme.ink, whiteSpace: "nowrap", boxShadow: `0 0 24px ${accent}44`}}>{text}</div>
+  <div style={{position: "absolute", left: "50%", top: y, transform: "translate(-50%,-50%)", padding: "16px 40px", borderRadius: 60, background: "rgba(10,10,10,.85)", border: `2px solid ${accent}`, opacity, fontFamily: "NotoTC", fontSize: size, fontWeight: 700, color: theme.ink, whiteSpace: "nowrap", boxShadow: `0 0 24px ${accent}44`}}>{text}</div>
 );
 const Lockup: React.FC<{y: number; scale: number; opacity: number}> = ({y, scale, opacity}) => (
   <div style={{position: "absolute", left: 540, top: y, transform: `translate(-50%,-50%) scale(${scale})`, opacity, display: "flex", alignItems: "center", gap: 26}}>
@@ -79,7 +79,7 @@ const TitleMark: React.FC<{y: number; scale: number; opacity: number; accent: st
 
 /* 毛玻璃福利卡：圖示 + 標題 + 說明（全部字體排版） */
 const BenefitCard: React.FC<{icon: React.ReactNode; num: string; title: string; big: string; sub: string; accent: string; k: number; x: number}> = ({icon, num, title, big, sub, accent, k, x}) => (
-  <div style={{position: "absolute", left: 540 + x, top: 480, width: 660, height: 760, transform: `translate(-50%,-50%) scale(${.7 + .3 * k}) rotate(${(1 - k) * 8}deg)`, opacity: Math.min(1, k * 1.6), borderRadius: 40, background: "linear-gradient(160deg, rgba(30,46,38,.85), rgba(8,12,10,.9))", border: `2px solid ${accent}66`, boxShadow: `0 30px 80px rgba(0,0,0,.6), inset 0 0 60px ${accent}14`}}>
+  <div style={{position: "absolute", left: 540 + x, top: 480, width: 660, height: 760, transform: `translate(-50%,-50%) scale(${.7 + .3 * k}) rotate(${(1 - k) * 8}deg)`, opacity: Math.min(1, k * 1.6), borderRadius: 40, background: "linear-gradient(160deg, rgba(28,28,30,.9), rgba(6,6,7,.95))", border: `2px solid ${accent}66`, boxShadow: `0 30px 80px rgba(0,0,0,.6), inset 0 0 60px ${accent}14`}}>
     <div style={{position: "absolute", left: 40, top: 30, fontFamily: "BebasNeue", fontSize: 72, color: `${accent}AA`, letterSpacing: 4}}>{num}</div>
     <div style={{position: "absolute", left: 0, right: 0, top: 70, display: "flex", justifyContent: "center"}}>{icon}</div>
     <div style={{position: "absolute", left: 0, right: 0, top: 470, textAlign: "center", fontFamily: "NotoTC", fontWeight: 700, fontSize: 40, color: "#D9EFE5"}}>{title}</div>

@@ -9,7 +9,7 @@ export const NightSky: React.FC<{accent: string}> = ({accent}) => {
   const frame = useCurrentFrame(); const {width: W, height: H, fps} = useVideoConfig(); const t = frame / fps;
   const mx = W * .78, my = H * .16, mr = Math.min(W, H) * .13;
   return (
-    <AbsoluteFill style={{background: "linear-gradient(180deg, #05070C 0%, #0A1018 45%, #0B1A14 100%)", overflow: "hidden"}}>
+    <AbsoluteFill style={{background: "#000000", overflow: "hidden"}}>
       {/* 月光暈 + 月亮 + 坑 */}
       <div style={{position: "absolute", left: mx - mr * 4, top: my - mr * 4, width: mr * 8, height: mr * 8, borderRadius: "50%", background: "radial-gradient(circle, rgba(255,236,190,.22) 0%, rgba(255,236,190,.06) 35%, transparent 65%)"}} />
       <svg style={{position: "absolute", left: mx - mr, top: my - mr}} width={mr * 2} height={mr * 2} viewBox="-100 -100 200 200">
@@ -20,19 +20,19 @@ export const NightSky: React.FC<{accent: string}> = ({accent}) => {
       {/* 雲：從月亮前面慢慢飄過 */}
       {[0, 1, 2].map((i) => {
         const x = ((t * (18 + i * 10) + i * 420) % (W + 600)) - 300, y = my + (i - 1) * mr * .9;
-        return <div key={i} style={{position: "absolute", left: x, top: y, width: 420 + i * 80, height: 70 + i * 10, borderRadius: 999, background: "rgba(40,48,62,.75)", filter: "blur(18px)"}} />;
+        return <div key={i} style={{position: "absolute", left: x, top: y, width: 420 + i * 80, height: 70 + i * 10, borderRadius: 999, background: "rgba(22,22,24,.85)", filter: "blur(18px)"}} />;
       })}
       {/* 遠方墓園 + 枯樹剪影 */}
       <svg style={{position: "absolute", left: 0, bottom: 0}} width={W} height={H * .3} viewBox={`0 0 ${W} ${H * .3}`} preserveAspectRatio="none">
-        <path d={`M0 ${H * .3} L0 ${H * .16} Q${W * .2} ${H * .1} ${W * .45} ${H * .15} T${W} ${H * .12} L${W} ${H * .3} Z`} fill="#06100C" />
+        <path d={`M0 ${H * .3} L0 ${H * .16} Q${W * .2} ${H * .1} ${W * .45} ${H * .15} T${W} ${H * .12} L${W} ${H * .3} Z`} fill="#0A0A0A" />
         {Array.from({length: 7}).map((_, i) => { const x = W * (.08 + i * .13) + hash(i) * 30, h = 40 + hash(i + 5) * 40, y = H * .16 - (i % 2) * 10;
-          return <path key={i} d={`M${x - 22} ${y + 30} L${x - 22} ${y - h + 20} Q${x} ${y - h - 14} ${x + 22} ${y - h + 20} L${x + 22} ${y + 30} Z`} fill="#091812" />; })}
-        <path d={`M${W * .14} ${H * .16} L${W * .15} ${H * .04} M${W * .15} ${H * .07} L${W * .1} ${H * .03} M${W * .15} ${H * .06} L${W * .2} ${H * .02} M${W * .2} ${H * .02} L${W * .23} ${H * .03}`} stroke="#091812" strokeWidth="9" strokeLinecap="round" fill="none" />
+          return <path key={i} d={`M${x - 22} ${y + 30} L${x - 22} ${y - h + 20} Q${x} ${y - h - 14} ${x + 22} ${y - h + 20} L${x + 22} ${y + 30} Z`} fill="#0D0D0D" />; })}
+        <path d={`M${W * .14} ${H * .16} L${W * .15} ${H * .04} M${W * .15} ${H * .07} L${W * .1} ${H * .03} M${W * .15} ${H * .06} L${W * .2} ${H * .02} M${W * .2} ${H * .02} L${W * .23} ${H * .03}`} stroke="#0D0D0D" strokeWidth="9" strokeLinecap="round" fill="none" />
       </svg>
       {/* 地面的綠色霧 */}
       {[0, 1, 2, 3].map((i) => {
         const x = ((t * (12 + i * 6) + i * 300) % (W + 800)) - 400;
-        return <div key={i} style={{position: "absolute", left: x, bottom: H * (.02 + i * .05), width: 700, height: 160, borderRadius: 999, background: `radial-gradient(ellipse, ${accent}22, transparent 70%)`, filter: "blur(10px)"}} />;
+        return <div key={i} style={{position: "absolute", left: x, bottom: H * (.02 + i * .05), width: 700, height: 160, borderRadius: 999, background: "radial-gradient(ellipse, rgba(160,160,160,.08), transparent 70%)", filter: "blur(10px)"}} />;
       })}
       {/* 螢火／餘燼 */}
       {Array.from({length: 46}).map((_, i) => {
@@ -40,7 +40,7 @@ export const NightSky: React.FC<{accent: string}> = ({accent}) => {
         const r = 2 + hash(i * 5) * 3, col = hash(i * 11) < .45 ? "61,240,160" : "255,170,70", a = (.4 + .5 * hash(i * 13)) * (.5 + .5 * Math.sin(t * 3 + i));
         return <div key={i} style={{position: "absolute", left: x - r * 3, top: y - r * 3, width: r * 6, height: r * 6, borderRadius: "50%", background: `radial-gradient(circle, rgba(${col},${a}) 0%, rgba(${col},0) 70%)`}} />;
       })}
-      <AbsoluteFill style={{background: "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,.6) 100%)"}} />
+      <AbsoluteFill style={{background: "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,.8) 100%)"}} />
     </AbsoluteFill>
   );
 };
