@@ -82,14 +82,14 @@
   {
    "id": "ui.email",
    "text": "輸入電子郵件",
-   "in": 288,
-   "resolved": 300,
+   "in": 276,
+   "resolved": 288,
    "out": 321,
    "words": 1,
    "kind": "ui",
    "read": [
     [
-     300,
+     288,
      321
     ]
    ]
@@ -97,14 +97,14 @@
   {
    "id": "ui.button",
    "text": "註冊",
-   "in": 288,
-   "resolved": 300,
+   "in": 276,
+   "resolved": 288,
    "out": 321,
    "words": 1,
    "kind": "ui",
    "read": [
     [
-     300,
+     288,
      321
     ]
    ]
