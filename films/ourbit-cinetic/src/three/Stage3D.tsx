@@ -3,8 +3,7 @@ import { useThree } from '@react-three/fiber';
 import React, { useEffect, useMemo, useState } from 'react';
 import { continueRender, delayRender, staticFile } from 'remotion';
 import * as THREE from 'three';
-import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
-import { M } from '../brand/tokens';
+import { C, M } from '../brand/tokens';
 import { burn, LENS } from '../acts/Night';
 import { E, hitPulse, lmix, mix, prog, spr, SPR, squash } from '../lib/anim';
 import { ACT, CUE, f60, H, W } from '../timeline';
@@ -49,19 +48,42 @@ const useTextures = (files: string[]) => {
   return tex;
 };
 
-/** A room to reflect: gives gold and foil their highlights. */
+/**
+ * A dark studio to reflect: black walls with a few softboxes (a big cool key above left, a strip on
+ * the right, a dim back fill) and the pumpkin's warm bounce from below. Gold then shows real
+ * highlights and dark falloff instead of the flat yellow a uniform grey room gives it.
+ */
+const studio = () => {
+  const s = new THREE.Scene();
+  s.background = new THREE.Color(C.black);
+  const panel = (w: number, h: number, color: string, power: number, pos: [number, number, number]) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(color).multiplyScalar(power), side: THREE.DoubleSide }));
+    m.position.set(...pos);
+    m.lookAt(0, 0, 0);
+    s.add(m);
+  };
+  panel(6, 4, M.keyLight, 5, [-5, 6, 5]); // key softbox
+  panel(1.2, 7, M.rimLight, 4, [7, 1, -1]); // strip on the right
+  panel(5, 3, M.keyLight, 0.6, [0, 2, -8]); // dim back fill
+  panel(8, 8, M.keyLight, 2.2, [0, 9, 0]); // overhead: the tops of bars and coins catch it
+  panel(9, 5, M.keyLight, 3.2, [0, 0, 10]); // front fill behind the camera: faces turned to us read gold, not black
+  panel(6, 2, M.pumpkin, 1.2, [0, -6, 4]); // the pumpkin's warm bounce
+  return s;
+};
+
+/** The studio as the scene's environment: gives gold and foil their highlights. */
 const Room: React.FC = () => {
   const { gl, scene } = useThree();
   // Built during render, not in an effect: every frame is rendered once, so an environment set
   // after the first paint would miss the captured frame (the gold rendered black).
   const env = useMemo(() => {
     const pm = new THREE.PMREMGenerator(gl);
-    const t = pm.fromScene(new RoomEnvironment(), 0.04).texture;
+    const t = pm.fromScene(studio(), 0.02).texture;
     pm.dispose();
     return t;
   }, [gl]);
   scene.environment = env;
-  scene.environmentIntensity = 1.2;
+  scene.environmentIntensity = 1;
   return null;
 };
 
@@ -138,10 +160,10 @@ const Pack: React.FC<{ tex: THREE.Texture; k?: number }> = ({ tex, k = 1 }) => {
   return (
     <group>
       <mesh geometry={geo}>
-        <meshPhysicalMaterial map={tex} alphaTest={0.5} metalness={0.45} roughness={0.28} clearcoat={1} clearcoatRoughness={0.15} envMapIntensity={1.4} side={THREE.FrontSide} />
+        <meshStandardMaterial map={tex} alphaTest={0.5} metalness={0.25} roughness={0.38} envMapIntensity={0.8} side={THREE.FrontSide} />
       </mesh>
       <mesh geometry={geo} rotation={[0, Math.PI, 0]}>
-        <meshPhysicalMaterial map={tex} alphaTest={0.5} color={M.packBack} metalness={0.6} roughness={0.35} envMapIntensity={1.2} side={THREE.FrontSide} />
+        <meshStandardMaterial map={tex} alphaTest={0.5} color={M.packBack} metalness={0.4} roughness={0.4} envMapIntensity={0.8} side={THREE.FrontSide} />
       </mesh>
     </group>
   );
@@ -151,18 +173,18 @@ const Card: React.FC<{ tex: THREE.Texture; back: THREE.Texture; w?: number }> = 
   <group>
     <mesh>
       <planeGeometry args={[w, w * 1.396]} />
-      <meshPhysicalMaterial map={tex} roughness={0.25} metalness={0.2} clearcoat={1} clearcoatRoughness={0.1} iridescence={0.6} envMapIntensity={1.2} side={THREE.FrontSide} />
+      <meshStandardMaterial map={tex} roughness={0.45} metalness={0} envMapIntensity={0.35} side={THREE.FrontSide} />
     </mesh>
     <mesh rotation={[0, Math.PI, 0]}>
       <planeGeometry args={[w, w * 1.396]} />
-      <meshPhysicalMaterial map={back} roughness={0.3} metalness={0.15} clearcoat={1} clearcoatRoughness={0.15} envMapIntensity={1.1} />
+      <meshStandardMaterial map={back} roughness={0.45} metalness={0} envMapIntensity={0.35} />
     </mesh>
   </group>
 );
 
 const CoinStack: React.FC<{ face: THREE.Texture; spin: number }> = ({ face, spin }) => {
-  const side = <meshStandardMaterial attach="material-0" color={GOLD} metalness={1} roughness={0.32} />;
-  const cap = (n: number) => <meshStandardMaterial attach={`material-${n}`} map={face} metalness={1} roughness={0.28} />;
+  const side = <meshStandardMaterial attach="material-0" color={GOLD} metalness={1} roughness={0.2} />;
+  const cap = (n: number) => <meshStandardMaterial attach={`material-${n}`} map={face} metalness={1} roughness={0.24} />;
   const coin = (key: string, pos: [number, number, number], rot: [number, number, number]) => (
     <mesh key={key} position={pos} rotation={rot}>
       <cylinderGeometry args={[0.36, 0.36, 0.065, 72]} />
@@ -182,7 +204,7 @@ const CoinStack: React.FC<{ face: THREE.Texture; spin: number }> = ({ face, spin
 
 const GoldBars: React.FC<{ spin: number }> = ({ spin }) => {
   const geo = useMemo(barGeometry, []);
-  const mat = <meshStandardMaterial color={GOLD} metalness={1} roughness={0.22} envMapIntensity={1.5} />;
+  const mat = <meshStandardMaterial color={GOLD} metalness={1} roughness={0.16} />;
   const bars: [number, number, number, number][] = [
     [-0.52, -0.3, 0.1, 0.1],
     [0.52, -0.3, 0.05, -0.12],
@@ -206,7 +228,7 @@ const Gift: React.FC<{ spin: number; drop: number; sq: { along: number; across: 
     <group position={[0, (1 - drop) * 0.6, 0]} scale={[sq.across, sq.along, sq.across]} rotation={[0.08, spin + (1 - drop) * 0.6, 0]}>
       <mesh>
         <boxGeometry args={[0.95, 0.75, 0.95]} />
-        <meshStandardMaterial color={M.giftBox} roughness={0.7} envMapIntensity={0.6} />
+        <meshStandardMaterial color={M.giftBox} roughness={0.55} envMapIntensity={0.5} />
       </mesh>
       <mesh>
         <boxGeometry args={[0.97, 0.77, 0.16]} />
@@ -288,11 +310,11 @@ const Scene: React.FC<{ F: number; tex: Record<string, THREE.Texture>; face: THR
   return (
     <>
       <Camera yaw={yaw} h={camH} target={[0, LENS_Y, 0]} dist={DIST} />
-      <ambientLight intensity={0.45} />
-      <directionalLight position={[-3, 5, 6]} intensity={2.2} color={M.keyLight} />
-      <directionalLight position={[3, 2, -4]} intensity={1.4} color={M.rimLight} />
+      <ambientLight intensity={0.25} />
+      <directionalLight position={[-3, 5, 6]} intensity={1.5} color={M.keyLight} />
+      <directionalLight position={[3, 2, -4]} intensity={1.0} color={M.rimLight} />
       {/* The pumpkin's light, from below and in front: warm, flickering with the flame. */}
-      <pointLight position={[0, PUMPKIN_Y, 2.2]} intensity={14 * lit} distance={9} decay={1.6} color={M.pumpkin} />
+      <pointLight position={[0, PUMPKIN_Y, 2.2]} intensity={8 * lit} distance={9} decay={1.6} color={M.pumpkin} />
 
       {showPackAlone && (
         <group position={[0, mix(PUMPKIN_Y, LENS_Y, r), 0]} rotation={[0, packTurn, mix(-0.14, -0.05, r)]} scale={[lmix(0.45, 1, r) * packSq.across * punch, lmix(0.45, 1, r) * packSq.along * punch, 1]}>
@@ -339,8 +361,7 @@ export const Stage3D: React.FC<{ abs: number }> = ({ abs }) => {
       gl={{ alpha: true, antialias: true, preserveDrawingBuffer: true }}
       camera={{ fov: FOV, near: 0.1, far: 100, position: [0, 0, DIST] }}
       onCreated={({ gl }) => {
-        gl.toneMapping = THREE.ACESFilmicToneMapping;
-        gl.toneMappingExposure = 1.05;
+        gl.toneMapping = THREE.NoToneMapping; // a filmic curve greyed the printed pack and cards
         gl.outputColorSpace = THREE.SRGBColorSpace;
         gl.setClearColor(0x000000, 0);
       }}

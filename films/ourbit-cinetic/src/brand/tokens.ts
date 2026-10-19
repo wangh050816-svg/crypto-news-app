@@ -25,14 +25,14 @@ export const C = {
 // Materials of the 3D prizes (three/Stage3D.tsx). These are the objects' own surfaces, not accents:
 // the campaign gives away gold, bitcoin and a gift, and the pumpkin's light is warm. BRIEF.md lists them.
 export const M = {
-  gold: '#E3B04B', // cinetic:brand-supplied gold bars and coins (the 588 USDT and bitcoin prizes)
+  gold: '#F2C25A', // cinetic:brand-supplied gold bars and coins (the 588 USDT and bitcoin prizes)
   goldHi: '#FFE7A3', // cinetic:brand-supplied coin face highlight
   goldLo: '#9A6A1C', // cinetic:brand-supplied coin face rim shadow
   goldRing: '#B07D24', // cinetic:brand-supplied coin face rim
   goldMark: '#A8761F', // cinetic:brand-supplied the struck bitcoin sign
   packBack: '#6B6B6B', // the foil pack's unprinted back
   ribbon: '#B00C14', // the gift's red ribbon (the gift photo's own red)
-  giftBox: '#CFCBC4', // cinetic:brand-supplied the gift box's white card, under a warm light
+  giftBox: '#D3D7D9', // the gift box's white card, kept cool so the pumpkin's light does not turn it pink
   keyLight: '#E9F1FF', // cool key light
   rimLight: '#BFD7FF', // cool rim light
   pumpkin: '#FF8A2A', // cinetic:brand-supplied the jack-o'-lantern's own light (the photo's flame)
