@@ -123,7 +123,7 @@ export const COPY: Copy[] = [
   // The wheel: one line per offer, each read after its turn, gone before the next turn lands.
   ...chain('offers', 'replace', [
     ['儲值返利 最高 30%', turnAt(0) + TURN],
-    ['588 USDT 體驗金', turnAt(1) + TURN],
+    ['最高 588 USDT 體驗金', turnAt(1) + TURN],
     ['PRL 空投', turnAt(2) + TURN],
     ['VIP 轉盤+10次', turnAt(3) + TURN],
   ], { out: b(9, 3, 1) }),

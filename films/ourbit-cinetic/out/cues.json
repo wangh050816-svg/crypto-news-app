@@ -145,18 +145,18 @@
   },
   {
    "id": "offers.2",
-   "text": "588 USDT 體驗金",
+   "text": "最高 588 USDT 體驗金",
    "in": 675,
-   "resolved": 713,
+   "resolved": 719,
    "out": 803,
-   "words": 3,
+   "words": 4,
    "kind": "copy",
    "chain": "offers",
    "mode": "replace",
    "read": [
     [
-     713,
-     767
+     719,
+     779
     ]
    ]
   },
@@ -327,7 +327,7 @@
    "id": "offers:turn2"
   },
   {
-   "f": 694,
+   "f": 700,
    "kind": "text",
    "weight": 0.8,
    "pan": 0,

@@ -35,14 +35,14 @@ The jack-o'-lantern (a real photo) sits at the bottom centre of every shot. Its 
 | 3 | 4–6 s | cursor arrives, presses 「註冊」 | — (UI strings only) | press → pumpkin light flares, pack rises | click on press, riser |
 | 4 | 6–8 s | the pack lands above the pumpkin | 「寶可夢卡包」 | pack lands with contact | land on contact, text |
 | 5–6 | 8–10.5 s | wheel turns: bitcoin over the light; 10 cells, 3 fill | 「儲值返利 最高 30%」 | cells tally | whoosh per turn, tick on tally lock |
-| 6–7 | 10.5–13 s | wheel: gold bars | 「588 USDT 體驗金」 | gold lights | whoosh, text |
+| 6–7 | 10.5–13 s | wheel: gold bars | 「最高 588 USDT 體驗金」 | gold lights | whoosh, text |
 | 7–8 | 13–15.5 s | wheel: gift box drops onto the light | 「PRL 空投」 | gift lands | land |
 | 8–9 | 15.5–18 s | wheel: three official cards fan open | 「VIP 轉盤 +10 次」 | fan opens | snap |
 | 10–11 | 18–22 s | light hands over: B mark rises, OURBIT rises under it | 「立即註冊」「10/16 – 10/31」 | lockup | stop-down, ONE hit |
 | tail | 22–23 s | hold, creep | | | decay |
 
 ## Copy (word count by fragment, CJK phrase = 1 word)
-不給糖？(1) · 註冊 / 就送 (2) · 寶可夢卡包 (1) · 儲值返利 最高 30% (3) · 588 USDT 體驗金 (3) · PRL 空投 (2) · VIP 轉盤 +10 次 (4) · 立即註冊 (1) · 10/16 – 10/31 (3) = **20 words**, inside the 15–25 budget.
+不給糖？(1) · 註冊 / 就送 (2) · 寶可夢卡包 (1) · 儲值返利 最高 30% (3) · 最高 588 USDT 體驗金 (4) · PRL 空投 (2) · VIP 轉盤 +10 次 (4) · 立即註冊 (1) · 10/16 – 10/31 (3) = **21 words**, inside the 15–25 budget.
 
 ## Final frame
 B mark over the OURBIT wordmark, 「立即註冊」 and the dates under it, the pumpkin's light below, fog still moving.
