@@ -31,7 +31,10 @@ export const M = {
   goldRing: '#B07D24', // cinetic:brand-supplied coin face rim
   goldMark: '#A8761F', // cinetic:brand-supplied the struck bitcoin sign
   packBack: '#6B6B6B', // the foil pack's unprinted back
-  print: '#A6A6A6', // dims the cards' printed art so the key light does not push it past the print's own colours
+  // Printed things (the pack's face, the cards): most of their colour comes straight from the art
+  // (emissive), a little from the lights, so pack and cards show the print's own colours and match.
+  printGlow: '#B3B3B3', // the share shown as printed
+  printLit: '#3D3D3D', // the share the lights add (turns, the pumpkin's flicker)
   ribbon: '#B00C14', // the gift's red ribbon (the gift photo's own red)
   giftBox: '#D3D7D9', // the gift box's white card, kept cool so the pumpkin's light does not turn it pink
   keyLight: '#E9F1FF', // cool key light

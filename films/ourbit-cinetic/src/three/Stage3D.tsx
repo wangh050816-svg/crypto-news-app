@@ -177,10 +177,10 @@ const Pack: React.FC<{ tex: THREE.Texture; tear?: number }> = ({ tex, tear = 0 }
   const face = (geo: THREE.BufferGeometry, opacity = 1) => (
     <>
       <mesh geometry={geo}>
-        <meshStandardMaterial map={tex} alphaTest={0.5} metalness={0.25} roughness={0.38} envMapIntensity={0.8} side={THREE.FrontSide} transparent={opacity < 1} opacity={opacity} />
+        <meshStandardMaterial map={tex} emissiveMap={tex} color={M.printLit} emissive={M.printGlow} roughness={0.5} metalness={0} envMapIntensity={0.15} alphaTest={0.5} side={THREE.FrontSide} transparent={opacity < 1} opacity={opacity} />
       </mesh>
       <mesh geometry={geo} rotation={[0, Math.PI, 0]}>
-        <meshStandardMaterial map={tex} alphaTest={0.5} color={M.packBack} metalness={0.4} roughness={0.4} envMapIntensity={0.8} side={THREE.FrontSide} transparent={opacity < 1} opacity={opacity} />
+        <meshStandardMaterial map={tex} alphaTest={0.5} color={M.packBack} metalness={0.3} roughness={0.45} envMapIntensity={0.5} side={THREE.FrontSide} transparent={opacity < 1} opacity={opacity} />
       </mesh>
     </>
   );
@@ -203,11 +203,11 @@ const Card: React.FC<{ tex: THREE.Texture; back: THREE.Texture; w?: number }> = 
   <group>
     <mesh>
       <planeGeometry args={[w, w * 1.396]} />
-      <meshStandardMaterial map={tex} color={M.print} roughness={0.55} metalness={0} envMapIntensity={0.2} side={THREE.FrontSide} />
+      <meshStandardMaterial map={tex} emissiveMap={tex} color={M.printLit} emissive={M.printGlow} roughness={0.5} metalness={0} envMapIntensity={0.15} side={THREE.FrontSide} />
     </mesh>
     <mesh rotation={[0, Math.PI, 0]}>
       <planeGeometry args={[w, w * 1.396]} />
-      <meshStandardMaterial map={back} color={M.print} roughness={0.55} metalness={0} envMapIntensity={0.2} />
+      <meshStandardMaterial map={back} emissiveMap={back} color={M.printLit} emissive={M.printGlow} roughness={0.5} metalness={0} envMapIntensity={0.15} />
     </mesh>
   </group>
 );
