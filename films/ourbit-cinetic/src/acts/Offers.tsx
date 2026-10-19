@@ -4,7 +4,7 @@ import { C, TYPE, U } from '../brand/tokens';
 import { Chain } from '../fx/Chain';
 import { E, hitPulse, mix, prog, spr, SPR, squash, stagger } from '../lib/anim';
 import { ACT, CUE, f60, TURN, turnAt } from '../timeline';
-import { DarkPhoto, LENS, real } from './Night';
+import { DarkPhoto, LENS, real, Sheen } from './Night';
 import { PACK_H } from './Signup';
 
 // ACT 3 - THE WHEEL (bars 5-9). The prizes stand in a vertical wheel whose focus is the lens, the
@@ -15,6 +15,8 @@ import { PACK_H } from './Signup';
 // cards fan open.
 
 const A = ACT.offers.from;
+/** The photos' soft ellipse (DarkPhoto's mask), so a sheen stays on the coins and bars. */
+const GOLD_MASK = 'radial-gradient(ellipse 46% 44% at 50% 50%, #000 40%, transparent 85%)';
 /** Distance between prizes on the wheel (px). A turn peaks near 50 px/f: motion-blurred in the master. */
 export const SLOT = 560;
 /** The offer lines' size: src/sync.ts times their text sounds with it. */
@@ -85,8 +87,12 @@ export const Offers: React.FC = () => {
     const enter = j > 0 ? prog(F, turnAt(j - 1) - f60(2), turnAt(j - 1) + TURN + f60(4), E.smooth) : 1;
     const o = enter * (1 - leave);
     if (o <= 0) return null;
+    // Each prize tips up out of the light like a card standing up (rotateX), tips back as it leaves,
+    // and lands in the light with a short punch.
+    const tilt = d > 0 ? 58 * Math.min(d, 1) : -28 * Math.min(-d, 1);
+    const land = j > 0 ? hitPulse(F - (turnAt(j - 1) + TURN), 2, 10) : 0;
     return (
-      <div key={j} style={{ position: 'absolute', left: 0, top: 0, transform: `translate(${LENS.x}px, ${(LENS.y + d * SLOT).toFixed(2)}px) scale(${k.toFixed(4)})`, opacity: o, filter: `brightness(${light.toFixed(3)})` }}>
+      <div key={j} style={{ position: 'absolute', left: 0, top: 0, transform: `translate(${LENS.x}px, ${(LENS.y + d * SLOT).toFixed(2)}px) perspective(1400px) rotateX(${tilt.toFixed(3)}deg) scale(${(k * (1 + 0.045 * land)).toFixed(4)})`, opacity: o, filter: `brightness(${light.toFixed(3)})` }}>
         {node}
       </div>
     );
@@ -101,12 +107,19 @@ export const Offers: React.FC = () => {
         1,
         <>
           {centred(720, 580, <DarkPhoto src="btc.jpg" w={720} h={580} pos="50% 64%" scale={1.12 - 0.04 * prog(F, turnAt(0), turnAt(1), E.linear)} />)}
+          <Sheen mask={GOLD_MASK} w={720} h={580} left={-360} top={-290} p={prog(F, turnAt(0) + TURN, turnAt(0) + TURN + f60(36), E.inOut)} strength={0.65} />
           <div style={{ position: 'absolute', left: -(10 * 44 + 9 * 14) / 2, top: 300 }}>
             <Tally F={F} />
           </div>
         </>,
       )}
-      {item(2, centred(820, 560, <DarkPhoto src="gold.jpg" w={820} h={560} scale={1.16 - 0.04 * prog(F, turnAt(1), turnAt(2), E.linear)} />))}
+      {item(
+        2,
+        <>
+          {centred(820, 560, <DarkPhoto src="gold.jpg" w={820} h={560} scale={1.16 - 0.04 * prog(F, turnAt(1), turnAt(2), E.linear)} />)}
+          <Sheen mask={GOLD_MASK} w={820} h={560} left={-410} top={-280} p={prog(F, turnAt(1) + TURN, turnAt(1) + TURN + f60(36), E.inOut)} strength={0.7} />
+        </>,
+      )}
       {item(
         3,
         // The gift turns in with the wheel, hanging above its place, then drops onto the light.

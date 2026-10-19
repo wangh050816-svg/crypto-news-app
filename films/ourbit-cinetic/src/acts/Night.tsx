@@ -75,3 +75,31 @@ export const DarkPhoto: React.FC<{ src: string; w: number; h: number; pos?: stri
 };
 
 export { real };
+
+/**
+ * A band of light sweeping across a shape (foil, gold, the rose-gold mark), clipped to that shape by
+ * `mask` (a CSS mask: an image's alpha, or a gradient). `p` 0..1 carries the band from left to right.
+ * Screen-blended white, so it only brightens what is already there: a reflection, not a glow.
+ */
+export const Sheen: React.FC<{ mask: string; w: number; h: number; p: number; strength?: number; left?: number; top?: number }> = ({ mask, w, h, p, strength = 0.55, left = 0, top = 0 }) => {
+  if (p <= 0 || p >= 1) return null;
+  const x = mix(-25, 125, p);
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left,
+        top,
+        width: w,
+        height: h,
+        WebkitMaskImage: mask,
+        maskImage: mask,
+        WebkitMaskSize: '100% 100%',
+        maskSize: '100% 100%',
+        mixBlendMode: 'screen',
+        background: `linear-gradient(105deg, transparent ${(x - 14).toFixed(2)}%, rgba(255,255,255,${(strength * 0.5).toFixed(3)}) ${(x - 4).toFixed(2)}%, rgba(255,255,255,${strength.toFixed(3)}) ${x.toFixed(2)}%, rgba(255,255,255,${(strength * 0.5).toFixed(3)}) ${(x + 4).toFixed(2)}%, transparent ${(x + 14).toFixed(2)}%)`,
+        pointerEvents: 'none',
+      }}
+    />
+  );
+};
