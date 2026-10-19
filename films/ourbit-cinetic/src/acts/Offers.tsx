@@ -2,7 +2,7 @@ import React from 'react';
 import { AbsoluteFill, Img, useCurrentFrame } from 'remotion';
 import { C, TYPE, U } from '../brand/tokens';
 import { Chain } from '../fx/Chain';
-import { E, hitPulse, mix, prog, spr, SPR, squash, stagger } from '../lib/anim';
+import { E, hitPulse, mix, pace, prog, spr, SPR, squash, stagger } from '../lib/anim';
 import { ACT, CUE, f60, TURN, turnAt } from '../timeline';
 import { DarkPhoto, LENS, orbitAt, real, Sheen } from './Night';
 import { PACK_H } from './Signup';
@@ -15,6 +15,7 @@ import { PACK_H } from './Signup';
 // 588 USDT. A gift box drops onto the light. Three official cards fan open.
 
 const A = ACT.offers.from;
+const OFFER_PACE = { ...pace, blur: 0 };
 /** The photos' soft ellipse (DarkPhoto's mask), so a sheen stays on the coins and bars. */
 const GOLD_MASK = 'radial-gradient(ellipse 46% 44% at 50% 50%, #000 40%, transparent 85%)';
 /** The carousel ring around the light: five prizes, its half-width and its (foreshortened) half-depth. */
@@ -134,7 +135,8 @@ export const Offers: React.FC = () => {
         />,
       )}
       {item(4, <div style={{ position: 'absolute', left: 0, top: 40 }}><CardFan open={fan} /></div>)}
-      <Chain chain="offers" frame={f} from={A} role="line" size={OFFER_SIZE} top={LENS.y + 370} color={C.paper} />
+      {/* No entry blur on the offer lines: over the busy carousel a stepped blur reads as a one-frame flash. */}
+      <Chain chain="offers" frame={f} from={A} role="line" size={OFFER_SIZE} top={LENS.y + 370} color={C.paper} pace={OFFER_PACE} />
     </AbsoluteFill>
   );
 };
