@@ -141,30 +141,60 @@ const barGeometry = () => {
   return g;
 };
 
-/** The pack: a gently bent foil sheet, printed both sides. */
-const packGeometry = (w: number, h: number) => {
-  const g = new THREE.PlaneGeometry(w, h, 24, 2);
+/** Where the pack's top seal tears off (fraction of its height from the bottom). */
+const TEAR_V = 0.885;
+
+/**
+ * One band of the foil pack, v0..v1 of its height (0 = bottom), in the whole pack's coordinates and
+ * UVs, gently bent across its width. The tear line zigzags, so the seal comes off along a ragged edge.
+ */
+const packBand = (w: number, h: number, v0: number, v1: number) => {
+  const cols = 24;
+  const g = new THREE.PlaneGeometry(w, h * (v1 - v0), cols, 4);
   const p = g.attributes.position;
+  const uv = g.attributes.uv;
   for (let i = 0; i < p.count; i++) {
-    const x = p.getX(i) / (w / 2);
-    p.setZ(i, -0.09 * x * x); // pillow bend across its width
+    const x = p.getX(i);
+    let v = v0 + (p.getY(i) / (h * (v1 - v0)) + 0.5) * (v1 - v0);
+    if (Math.abs(v - TEAR_V) < 1e-6) v += (Math.round((x / w + 0.5) * cols) % 2 ? 1 : -1) * 0.006; // ragged tear
+    p.setY(i, (v - 0.5) * h);
+    p.setZ(i, -0.09 * (x / (w / 2)) ** 2); // pillow bend across its width
+    uv.setXY(i, x / w + 0.5, v);
   }
   g.computeVertexNormals();
   return g;
 };
 
-const Pack: React.FC<{ tex: THREE.Texture; k?: number }> = ({ tex, k = 1 }) => {
-  const w = 1.13 * k;
-  const h = 2.28 * k;
-  const geo = useMemo(() => packGeometry(w, h), [w, h]);
-  return (
-    <group>
+/**
+ * The pack, printed both sides. `tear` 0..1 opens it: the top seal peels from its left end (the
+ * first third), then flies off up and to the left and fades; at 1 it is gone and the pack stays open.
+ */
+const Pack: React.FC<{ tex: THREE.Texture; tear?: number }> = ({ tex, tear = 0 }) => {
+  const w = 1.13;
+  const h = 2.28;
+  const body = useMemo(() => packBand(w, h, 0, TEAR_V), []);
+  const seal = useMemo(() => packBand(w, h, TEAR_V, 1), []);
+  const face = (geo: THREE.BufferGeometry, opacity = 1) => (
+    <>
       <mesh geometry={geo}>
-        <meshStandardMaterial map={tex} alphaTest={0.5} metalness={0.25} roughness={0.38} envMapIntensity={0.8} side={THREE.FrontSide} />
+        <meshStandardMaterial map={tex} alphaTest={0.5} metalness={0.25} roughness={0.38} envMapIntensity={0.8} side={THREE.FrontSide} transparent={opacity < 1} opacity={opacity} />
       </mesh>
       <mesh geometry={geo} rotation={[0, Math.PI, 0]}>
-        <meshStandardMaterial map={tex} alphaTest={0.5} color={M.packBack} metalness={0.4} roughness={0.4} envMapIntensity={0.8} side={THREE.FrontSide} />
+        <meshStandardMaterial map={tex} alphaTest={0.5} color={M.packBack} metalness={0.4} roughness={0.4} envMapIntensity={0.8} side={THREE.FrontSide} transparent={opacity < 1} opacity={opacity} />
       </mesh>
+    </>
+  );
+  const peel = Math.min(1, tear / 0.35);
+  const fly = Math.max(0, (tear - 0.25) / 0.75);
+  const hinge: [number, number, number] = [-w / 2, (TEAR_V - 0.5) * h, 0];
+  return (
+    <group>
+      {face(body)}
+      {tear < 1 && (
+        <group position={[hinge[0] + fly * -0.7, hinge[1] + fly * 1.3, fly * 0.5]} rotation={[fly * 0.6, fly * 0.9, peel * 0.35 + fly * 1.1]}>
+          <group position={[-hinge[0], -hinge[1], 0]}>{face(seal, 1 - fly * fly)}</group>
+        </group>
+      )}
     </group>
   );
 };
@@ -222,10 +252,10 @@ const GoldBars: React.FC<{ spin: number }> = ({ spin }) => {
   );
 };
 
-const Gift: React.FC<{ spin: number; drop: number; sq: { along: number; across: number } }> = ({ spin, drop, sq }) => {
+const Gift: React.FC<{ spin: number; drop: number; sq: { along: number; across: number }; shake: number; hop: number }> = ({ spin, drop, sq, shake, hop }) => {
   const red = <meshPhysicalMaterial color={M.ribbon} roughness={0.38} metalness={0.05} clearcoat={0.6} envMapIntensity={0.7} />;
   return (
-    <group position={[0, (1 - drop) * 0.6, 0]} scale={[sq.across, sq.along, sq.across]} rotation={[0.08, spin + (1 - drop) * 0.6, 0]}>
+    <group position={[0, (1 - drop) * 0.6 + hop, 0]} scale={[sq.across, sq.along, sq.across]} rotation={[0.08, spin + (1 - drop) * 0.6, shake]}>
       <mesh>
         <boxGeometry args={[0.95, 0.75, 0.95]} />
         <meshStandardMaterial color={M.giftBox} roughness={0.55} envMapIntensity={0.5} />
@@ -267,7 +297,11 @@ const Scene: React.FC<{ F: number; tex: Record<string, THREE.Texture>; face: THR
   const packTurn = mix(-2 * Math.PI, 0, prog(F, RISE.from, RISE.to - f60(4), E.outSoft)); // one full turn: more breaks the blur speed ceiling
   const packSq = squash(F - RISE.to);
   const punch = 1 + 0.05 * hitPulse(F - RISE.to, 2, 10);
-  const orbitR = prog(F, RISE.from, RISE.to + f60(20), E.out);
+  // The pack tears open once it has landed: the seal peels and flies off, then the three cards slide
+  // up out of the opening and spread into an orbit round it.
+  const tear = prog(F, CUE.tear, CUE.tear + f60(40), E.inOut);
+  const cardsOut = prog(F, CUE.tear + f60(12), CUE.tear + f60(48), E.out);
+  const packTop = mix(PUMPKIN_Y, LENS_Y, r) + 1.0;
 
   // --- the carousel (offers act)
   const pos = TURNS.reduce((s, t) => s + prog(F, t.from, t.to, t.ease), 0);
@@ -277,6 +311,11 @@ const Scene: React.FC<{ F: number; tex: Record<string, THREE.Texture>; face: THR
   const giftSq = squash(F - CUE.gift);
   // The gift rests on the ring like the others; only as its turn comes round does it lift, then drop onto the light.
   const giftDrop = 1 - prog(F, turnAt(2), turnAt(2) + f60(30), E.smooth) * (1 - fall);
+  // Two shakes after it lands (a decaying wobble with small hops), as if something inside wants out.
+  const rattle = (t: number) => (t > 0 && t < f60(50) ? Math.sin((t / f60(9)) * Math.PI * 2) * Math.exp(-t / f60(16)) : 0);
+  const shakeAt = [CUE.gift + f60(24), CUE.gift + f60(78)];
+  const giftShake = shakeAt.reduce((a, s) => a + 0.16 * rattle(F - s), 0);
+  const giftHop = shakeAt.reduce((a, s) => a + 0.06 * Math.abs(rattle(F - s)), 0);
   const fan = spr(F, CUE.fan - f60(6), SPR.soft);
   const life = F / 60; // slow self-rotation of every prize
 
@@ -326,16 +365,16 @@ const Scene: React.FC<{ F: number; tex: Record<string, THREE.Texture>; face: THR
 
       {showPackAlone && (
         <group position={[0, mix(PUMPKIN_Y, LENS_Y, r), 0]} rotation={[0, packTurn + toRing * ringSway(signupEnd), mix(-0.14, -0.05, r)]} scale={[lmix(0.45, 1, r) * packSq.across * punch * mix(1, 0.72, toRing), lmix(0.45, 1, r) * packSq.along * punch * mix(1, 0.72, toRing), mix(1, 0.72, toRing)]}>
-          <Pack tex={tex['pack.png']} />
+          <Pack tex={tex['pack.png']} tear={tear} />
         </group>
       )}
       {showPackAlone &&
         cards.map((t, i) => {
           const th = ((F - RISE.from) * 2 * Math.PI) / f60(150) + (i * 2 * Math.PI) / 3;
           const fold = 1 - prog(F, signupEnd - f60(40), signupEnd - f60(4), E.in);
-          const rr = 1.15 * orbitR * fold;
+          const rr = 1.15 * cardsOut * fold;
           return (
-            <group key={i} position={[Math.sin(th) * rr, mix(PUMPKIN_Y, LENS_Y, r) - 0.3 + Math.sin(th * 2) * 0.15, Math.cos(th) * rr]} rotation={[0, th + Math.PI / 2, 0.15]} scale={mix(0.3, 1, orbitR) * fold}>
+            <group key={i} position={[Math.sin(th) * rr, mix(packTop - 0.25, mix(PUMPKIN_Y, LENS_Y, r) - 0.3 + Math.sin(th * 2) * 0.15, cardsOut), Math.cos(th) * rr - 0.06 * (1 - cardsOut)]} rotation={[0, (th + Math.PI / 2) * cardsOut, 0.15 * cardsOut]} scale={mix(0.55, 1, cardsOut) * Math.min(1, cardsOut * 6) * fold}>
               <Card tex={t} back={tex['card_back.png']} />
             </group>
           );
@@ -344,10 +383,10 @@ const Scene: React.FC<{ F: number; tex: Record<string, THREE.Texture>; face: THR
       {showRing && (
         <>
           {/* every prize sized to about the pack's height, so the front one always reads as the hero */}
-          {F >= signupEnd && ringItem(0, <group rotation={[0, ringSway(F), -0.05]} scale={0.72}><Pack tex={tex['pack.png']} /></group>)}
+          {F >= signupEnd && ringItem(0, <group rotation={[0, ringSway(F), -0.05]} scale={0.72}><Pack tex={tex['pack.png']} tear={1} /></group>)}
           {ringItem(1, <group scale={1.3}><CoinStack face={face} spin={life * 0.6} /></group>)}
           {ringItem(2, <group scale={1.15}><GoldBars spin={-0.3 + life * 0.5} /></group>)}
-          {ringItem(3, <group scale={1.05}><Gift spin={0.5 + life * 0.4} drop={giftDrop} sq={giftSq} /></group>)}
+          {ringItem(3, <group scale={1.05}><Gift spin={0.5 + life * 0.4} drop={giftDrop} sq={giftSq} shake={giftShake} hop={giftHop} /></group>)}
           {ringItem(4, <group rotation={[0, Math.sin(life * 0.8) * 0.3, 0]} scale={1.2}><CardFan tex={cards} back={tex['card_back.png']} open={fan} /></group>)}
         </>
       )}

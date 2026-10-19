@@ -71,6 +71,8 @@ export default function cues(): SoundEvent[] {
   ev.push(move(WIDEN, 0.7, 0, 'bar-widens'));
   ev.push({ f: CUE.press, kind: 'click', variant: 'confirm', weight: 1, pan: panX(BUTTON.x), id: 'press' });
   ev.push({ f: RISE.to, kind: 'land', weight: 1.4, id: 'pack-lands' }); // E.contact: the sound sits on the contact frame
+  // The seal tears: one crisp snap as it peels (a third of the tear's 40 f).
+  ev.push({ f: CUE.tear + f60(12), kind: 'snap', weight: 0.7, id: 'pack-tears' });
   text('pack', PACK_LINE, 0.8);
 
   // The wheel: each turn is one whoosh; the tally's last cell locks with a tick; the gift lands on
@@ -78,6 +80,8 @@ export default function cues(): SoundEvent[] {
   TURNS.forEach((t, i) => ev.push(move(t, 0.55, 0, `turn${i + 1}`)));
   ev.push({ f: CUE.tally + stagger(2, 3, f60(30), E.out) + f60(8), kind: 'tick', variant: 'crisp', weight: 0.8, id: 'tally-30' });
   ev.push({ f: FALL.to, kind: 'land', weight: 1, id: 'gift-lands' });
+  // The gift shakes twice after it lands: a light tick on each first swing (Stage3D: 24 f and 78 f after landing).
+  [24, 78].forEach((d, i) => ev.push({ f: CUE.gift + f60(d) + f60(2), kind: 'tick', weight: 0.5, id: `gift-shake${i + 1}` }));
   ev.push({ f: CUE.fan, kind: 'snap', weight: 0.8, id: 'cards-fan' });
   text('offers', OFFER_SIZE, 0.8);
 

@@ -31,6 +31,7 @@
   "press": 315,
   "rise": 345,
   "packIn": 360,
+  "tear": 375,
   "turn1": 630,
   "turn2": 780,
   "turn3": 930,
@@ -294,6 +295,13 @@
    "id": "signup:pack1"
   },
   {
+   "f": 387,
+   "kind": "snap",
+   "weight": 0.7,
+   "pan": 0,
+   "id": "signup:pack-tears"
+  },
+  {
    "f": 503,
    "kind": "whoosh",
    "weight": 0.55,
@@ -355,6 +363,20 @@
    "weight": 1,
    "pan": 0,
    "id": "offers:gift-lands"
+  },
+  {
+   "f": 866,
+   "kind": "tick",
+   "weight": 0.5,
+   "pan": 0,
+   "id": "offers:gift-shake1"
+  },
+  {
+   "f": 920,
+   "kind": "tick",
+   "weight": 0.5,
+   "pan": 0,
+   "id": "offers:gift-shake2"
   },
   {
    "f": 953,

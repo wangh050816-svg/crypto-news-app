@@ -63,6 +63,7 @@ export const CUE = {
   press: b(3, 2, 2), // the press on 註冊: the pack starts to rise out of the pumpkin's light
   rise: b(3, 3, 2), // the pack is half-way out of the light
   packIn: b(4), // the pack lands above the pumpkin on the downbeat: the payoff
+  tear: b(4, 0, 2), // its top seal tears off; the three cards slide out of it and start to circle
   turn1: turnAt(1), // the wheel turns: gold into the light
   turn2: turnAt(2), // the wheel turns: the gift drops in
   turn3: turnAt(3), // the wheel turns: the cards
