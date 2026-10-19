@@ -26,6 +26,8 @@ const UNIT = H / (2 * DIST * Math.tan(((FOV / 2) * Math.PI) / 180)); // px per w
 // origin lands on LENS.y on screen. The pumpkin sits below it.
 const LENS_Y = 0;
 const PUMPKIN_Y = (LENS.y - 1560) / UNIT;
+/** Where the pack starts its rise: the top of the pumpkin, so it meets the lens at about 50 px/f. */
+const RISE_Y = (LENS.y - 1380) / UNIT;
 
 const GOLD = M.gold;
 const real = (f: string) => staticFile(`real/${f}`);
@@ -295,13 +297,16 @@ const Scene: React.FC<{ F: number; tex: Record<string, THREE.Texture>; face: THR
   // --- the pack's rise (sign-up act): spiral up out of the light, one full turn in real 3D
   const r = prog(F, RISE.from, RISE.to, RISE.ease);
   const packTurn = mix(-2 * Math.PI, 0, prog(F, RISE.from, RISE.to - f60(4), E.outSoft)); // one full turn: more breaks the blur speed ceiling
+  // It grows on its own, earlier curve, so it is full size before the contact (growing into the
+  // landing doubled the edge speed past the blur ceiling).
+  const grow = prog(F, RISE.from, RISE.to - f60(14), E.out);
   const packSq = squash(F - RISE.to);
   const punch = 1 + 0.05 * hitPulse(F - RISE.to, 2, 10);
   // The pack tears open once it has landed: the seal peels and flies off, then the three cards slide
   // up out of the opening and spread into an orbit round it.
   const tear = prog(F, CUE.tear, CUE.tear + f60(40), E.inOut);
   const cardsOut = prog(F, CUE.tear + f60(12), CUE.tear + f60(48), E.out);
-  const packTop = mix(PUMPKIN_Y, LENS_Y, r) + 1.0;
+  const packTop = mix(RISE_Y, LENS_Y, r) + 1.0;
 
   // --- the carousel (offers act)
   const pos = TURNS.reduce((s, t) => s + prog(F, t.from, t.to, t.ease), 0);
@@ -364,7 +369,7 @@ const Scene: React.FC<{ F: number; tex: Record<string, THREE.Texture>; face: THR
       <pointLight position={[0, PUMPKIN_Y, 2.2]} intensity={8 * lit} distance={9} decay={1.6} color={M.pumpkin} />
 
       {showPackAlone && (
-        <group position={[0, mix(PUMPKIN_Y, LENS_Y, r), 0]} rotation={[0, packTurn + toRing * ringSway(signupEnd), mix(-0.14, -0.05, r)]} scale={[lmix(0.45, 1, r) * packSq.across * punch * mix(1, 0.72, toRing), lmix(0.45, 1, r) * packSq.along * punch * mix(1, 0.72, toRing), mix(1, 0.72, toRing)]}>
+        <group position={[0, mix(RISE_Y, LENS_Y, r), 0]} rotation={[0, packTurn + toRing * ringSway(signupEnd), mix(-0.14, -0.05, r)]} scale={[lmix(0.45, 1, grow) * packSq.across * punch * mix(1, 0.72, toRing), lmix(0.45, 1, grow) * packSq.along * punch * mix(1, 0.72, toRing), mix(1, 0.72, toRing)]}>
           <Pack tex={tex['pack.png']} tear={tear} />
         </group>
       )}
@@ -374,7 +379,7 @@ const Scene: React.FC<{ F: number; tex: Record<string, THREE.Texture>; face: THR
           const fold = 1 - prog(F, signupEnd - f60(40), signupEnd - f60(4), E.in);
           const rr = 1.15 * cardsOut * fold;
           return (
-            <group key={i} position={[Math.sin(th) * rr, mix(packTop - 0.25, mix(PUMPKIN_Y, LENS_Y, r) - 0.3 + Math.sin(th * 2) * 0.15, cardsOut), Math.cos(th) * rr - 0.06 * (1 - cardsOut)]} rotation={[0, (th + Math.PI / 2) * cardsOut, 0.15 * cardsOut]} scale={mix(0.55, 1, cardsOut) * Math.min(1, cardsOut * 6) * fold}>
+            <group key={i} position={[Math.sin(th) * rr, mix(packTop - 0.25, mix(RISE_Y, LENS_Y, r) - 0.3 + Math.sin(th * 2) * 0.15, cardsOut), Math.cos(th) * rr - 0.06 * (1 - cardsOut)]} rotation={[0, (th + Math.PI / 2) * cardsOut, 0.15 * cardsOut]} scale={mix(0.55, 1, cardsOut) * Math.min(1, cardsOut * 6) * fold}>
               <Card tex={t} back={tex['card_back.png']} />
             </group>
           );
