@@ -33,8 +33,8 @@ export const M = {
   packBack: '#6B6B6B', // the foil pack's unprinted back
   // Printed things (the pack's face, the cards): most of their colour comes straight from the art
   // (emissive), a little from the lights, so pack and cards show the print's own colours and match.
-  printGlow: '#B3B3B3', // the share shown as printed
-  printLit: '#3D3D3D', // the share the lights add (turns, the pumpkin's flicker)
+  printGlow: '#D6D6D6', // the share shown as printed
+  printLit: '#454545', // the share the lights add (turns, the pumpkin's flicker)
   ribbon: '#B00C14', // the gift's red ribbon (the gift photo's own red)
   giftBox: '#D3D7D9', // the gift box's white card, kept cool so the pumpkin's light does not turn it pink
   keyLight: '#E9F1FF', // cool key light
