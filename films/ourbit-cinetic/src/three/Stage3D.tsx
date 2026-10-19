@@ -6,7 +6,7 @@ import * as THREE from 'three';
 import { C, M } from '../brand/tokens';
 import { burn, LENS } from '../acts/Night';
 import { E, hitPulse, lmix, mix, prog, spr, SPR, squash } from '../lib/anim';
-import { ACT, CUE, f60, H, W } from '../timeline';
+import { ACT, CUE, f60, H, turnAt, W } from '../timeline';
 import { FALL, TURNS } from '../acts/Offers';
 import { RISE } from '../acts/Signup';
 
@@ -173,11 +173,11 @@ const Card: React.FC<{ tex: THREE.Texture; back: THREE.Texture; w?: number }> = 
   <group>
     <mesh>
       <planeGeometry args={[w, w * 1.396]} />
-      <meshStandardMaterial map={tex} roughness={0.45} metalness={0} envMapIntensity={0.35} side={THREE.FrontSide} />
+      <meshStandardMaterial map={tex} color={M.print} roughness={0.55} metalness={0} envMapIntensity={0.2} side={THREE.FrontSide} />
     </mesh>
     <mesh rotation={[0, Math.PI, 0]}>
       <planeGeometry args={[w, w * 1.396]} />
-      <meshStandardMaterial map={back} roughness={0.45} metalness={0} envMapIntensity={0.35} />
+      <meshStandardMaterial map={back} color={M.print} roughness={0.55} metalness={0} envMapIntensity={0.2} />
     </mesh>
   </group>
 );
@@ -275,6 +275,8 @@ const Scene: React.FC<{ F: number; tex: Record<string, THREE.Texture>; face: THR
   const R = 2.2;
   const fall = prog(F, FALL.from, FALL.to, FALL.ease);
   const giftSq = squash(F - CUE.gift);
+  // The gift rests on the ring like the others; only as its turn comes round does it lift, then drop onto the light.
+  const giftDrop = 1 - prog(F, turnAt(2), turnAt(2) + f60(30), E.smooth) * (1 - fall);
   const fan = spr(F, CUE.fan - f60(6), SPR.soft);
   const life = F / 60; // slow self-rotation of every prize
 
@@ -286,10 +288,16 @@ const Scene: React.FC<{ F: number; tex: Record<string, THREE.Texture>; face: THR
     F < signupEnd
       ? mix(-0.55, 0.35, prog(F, RISE.from, signupEnd, E.inOut))
       : mix(0.35, 0, prog(F, signupEnd, signupEnd + f60(60), E.inOut)) + 0.1 * Math.sin((F - signupEnd) / 90);
-  const camH = F < signupEnd ? mix(-0.6, 0.9, prog(F, RISE.from, RISE.to, E.out)) : mix(0.9, 0.55, prog(F, signupEnd, signupEnd + f60(40), E.smooth));
+  // Low enough that the back of the ring hides behind the front prize instead of peeking over it.
+  const camH = F < signupEnd ? mix(-0.6, 0.45, prog(F, RISE.from, RISE.to, E.out)) : mix(0.45, 0.2, prog(F, signupEnd, signupEnd + f60(40), E.smooth));
   const lit = burn(F);
 
   const showPackAlone = F >= RISE.from && F < signupEnd;
+  // The hand-off to the carousel: over the act's last 40 f the lone pack eases into the exact pose of
+  // the ring's first prize (scale 0.72, its sway), so the ring can take it over with no jump and
+  // there is never a second pack on screen.
+  const toRing = prog(F, signupEnd - f60(40), signupEnd, E.inOut);
+  const ringSway = (t: number) => Math.sin(t / 60) * 0.25;
   const showRing = F >= signupEnd - f60(30);
 
   // A prize on the ring: index j, its node; the ring turns so prize `pos` faces the camera.
@@ -301,7 +309,7 @@ const Scene: React.FC<{ F: number; tex: Record<string, THREE.Texture>; face: THR
     const y = LENS_Y + up * 1.75;
     const k = mix(1, 0.38, up);
     return (
-      <group key={j} position={[x, y, z]} scale={k * mix(0.6, 1, ringIn)}>
+      <group key={j} position={[x, y, z]} scale={k * (j === 0 ? 1 : ringIn)}>
         {node}
       </group>
     );
@@ -317,7 +325,7 @@ const Scene: React.FC<{ F: number; tex: Record<string, THREE.Texture>; face: THR
       <pointLight position={[0, PUMPKIN_Y, 2.2]} intensity={8 * lit} distance={9} decay={1.6} color={M.pumpkin} />
 
       {showPackAlone && (
-        <group position={[0, mix(PUMPKIN_Y, LENS_Y, r), 0]} rotation={[0, packTurn, mix(-0.14, -0.05, r)]} scale={[lmix(0.45, 1, r) * packSq.across * punch, lmix(0.45, 1, r) * packSq.along * punch, 1]}>
+        <group position={[0, mix(PUMPKIN_Y, LENS_Y, r), 0]} rotation={[0, packTurn + toRing * ringSway(signupEnd), mix(-0.14, -0.05, r)]} scale={[lmix(0.45, 1, r) * packSq.across * punch * mix(1, 0.72, toRing), lmix(0.45, 1, r) * packSq.along * punch * mix(1, 0.72, toRing), mix(1, 0.72, toRing)]}>
           <Pack tex={tex['pack.png']} />
         </group>
       )}
@@ -336,10 +344,10 @@ const Scene: React.FC<{ F: number; tex: Record<string, THREE.Texture>; face: THR
       {showRing && (
         <>
           {/* every prize sized to about the pack's height, so the front one always reads as the hero */}
-          {ringItem(0, <group rotation={[0, Math.sin(life) * 0.25, -0.05]} scale={0.72}><Pack tex={tex['pack.png']} /></group>)}
+          {F >= signupEnd && ringItem(0, <group rotation={[0, ringSway(F), -0.05]} scale={0.72}><Pack tex={tex['pack.png']} /></group>)}
           {ringItem(1, <group scale={1.3}><CoinStack face={face} spin={life * 0.6} /></group>)}
           {ringItem(2, <group scale={1.15}><GoldBars spin={-0.3 + life * 0.5} /></group>)}
-          {ringItem(3, <group scale={1.05}><Gift spin={0.5 + life * 0.4} drop={F < FALL.from ? 0 : fall} sq={giftSq} /></group>)}
+          {ringItem(3, <group scale={1.05}><Gift spin={0.5 + life * 0.4} drop={giftDrop} sq={giftSq} /></group>)}
           {ringItem(4, <group rotation={[0, Math.sin(life * 0.8) * 0.3, 0]} scale={1.2}><CardFan tex={cards} back={tex['card_back.png']} open={fan} /></group>)}
         </>
       )}
