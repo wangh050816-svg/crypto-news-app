@@ -103,3 +103,13 @@ export const Sheen: React.FC<{ mask: string; w: number; h: number; p: number; st
     />
   );
 };
+
+/**
+ * A point on a tilted orbit, seen from slightly above: `theta` 0 is the front (lowest, nearest), PI
+ * the back. z runs 1 (front) .. -1 (back): scale, brightness and stacking follow it.
+ */
+export const orbitAt = (theta: number, cx: number, cy: number, rx: number, ry: number) => ({
+  x: cx + rx * Math.sin(theta),
+  y: cy + ry * Math.cos(theta),
+  z: Math.cos(theta),
+});

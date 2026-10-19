@@ -4,21 +4,21 @@ import { C, TYPE, U } from '../brand/tokens';
 import { Chain } from '../fx/Chain';
 import { E, hitPulse, mix, prog, spr, SPR, squash, stagger } from '../lib/anim';
 import { ACT, CUE, f60, TURN, turnAt } from '../timeline';
-import { DarkPhoto, LENS, real, Sheen } from './Night';
+import { DarkPhoto, LENS, orbitAt, real, Sheen } from './Night';
 import { PACK_H } from './Signup';
 
-// ACT 3 - THE WHEEL (bars 5-9). The prizes stand in a vertical wheel whose focus is the lens, the
-// pumpkin's light. Each turn (a beat and a half) lifts the last prize away and brings the next one
-// up out of the light (E.smooth: the blur speed ceiling rules out a steeper whip); size and brightness fall off with the distance from the lens, so only the
-// prize in the light is lit. Act 2 left the pack at the lens: it is item 0, the first to leave.
-// Bitcoin: 30% as 3 of 10 cells. Gold: 588 USDT. A gift box drops onto the light. Three official
-// cards fan open.
+// ACT 3 - THE CAROUSEL (bars 5-9). The five prizes stand on one ring circling the pumpkin's light.
+// Each turn (a beat and a half, E.smooth: the blur speed ceiling rules out a steeper whip) brings the
+// next prize round to the front, the lens: biggest, lit, named, landing with a short punch. The rest
+// keep circling at the sides and behind, small and dim, so the act is surrounded by them. Act 2 left
+// the pack at the lens: it is item 0, the first to turn away. Bitcoin: 30% as 3 of 10 cells. Gold:
+// 588 USDT. A gift box drops onto the light. Three official cards fan open.
 
 const A = ACT.offers.from;
 /** The photos' soft ellipse (DarkPhoto's mask), so a sheen stays on the coins and bars. */
 const GOLD_MASK = 'radial-gradient(ellipse 46% 44% at 50% 50%, #000 40%, transparent 85%)';
-/** Distance between prizes on the wheel (px). A turn peaks near 50 px/f: motion-blurred in the master. */
-export const SLOT = 560;
+/** The carousel ring around the light: five prizes, its half-width and its (foreshortened) half-depth. */
+export const RING = { n: 5, rx: 420, ry: 130 };
 /** The offer lines' size: src/sync.ts times their text sounds with it. */
 export const OFFER_SIZE = TYPE.line.size * U;
 /** The wheel's turns (absolute frames) and their curve, for src/sync.ts. */
@@ -76,23 +76,28 @@ export const Offers: React.FC = () => {
   const fan = spr(F, CUE.fan - f60(6), SPR.soft);
   const creep = 1 + 0.02 * ((F - A) / ACT.offers.dur);
 
+  // THE CAROUSEL: the five prizes stand on one ring that circles the pumpkin's light. Each turn
+  // brings the next prize round to the front (the lens): biggest, lit, named. The others keep
+  // circling at the sides and behind, small and dim, so the whole act is surrounded by them.
   const item = (j: number, node: React.ReactNode) => {
-    const d = j - pos;
-    const a = Math.min(Math.abs(d), 1.4);
-    const k = (1 - 0.3 * Math.min(a, 1)) * creep;
-    const light = mix(1, 0.28, Math.min(a, 1));
-    // Only the prize in the light reads. The fades run on time across the whole turn (not on distance:
-    // E.inOut crosses the middle in a few frames, which would collapse a distance fade into a pop).
-    const leave = j < TURNS.length ? prog(F, turnAt(j) - f60(4), turnAt(j) + TURN + f60(10), E.smooth) : 0;
-    const enter = j > 0 ? prog(F, turnAt(j - 1) - f60(2), turnAt(j - 1) + TURN + f60(4), E.smooth) : 1;
-    const o = enter * (1 - leave);
-    if (o <= 0) return null;
-    // Each prize tips up out of the light like a card standing up (rotateX), tips back as it leaves,
-    // and lands in the light with a short punch.
-    const tilt = d > 0 ? 58 * Math.min(d, 1) : -28 * Math.min(-d, 1);
+    const theta = ((j - pos) * 2 * Math.PI) / RING.n;
+    const o = orbitAt(theta, LENS.x, LENS.y - RING.ry, RING.rx, RING.ry);
+    const front = (o.z + 1) / 2; // 1 at the lens, 0 at the back
     const land = j > 0 ? hitPulse(F - (turnAt(j - 1) + TURN), 2, 10) : 0;
+    const k = mix(0.34, 1, front ** 2.2) * creep * (1 + 0.045 * land);
     return (
-      <div key={j} style={{ position: 'absolute', left: 0, top: 0, transform: `translate(${LENS.x}px, ${(LENS.y + d * SLOT).toFixed(2)}px) perspective(1400px) rotateX(${tilt.toFixed(3)}deg) scale(${(k * (1 + 0.045 * land)).toFixed(4)})`, opacity: o, filter: `brightness(${light.toFixed(3)})` }}>
+      <div
+        key={j}
+        style={{
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          zIndex: Math.round(100 + 100 * o.z),
+          transform: `translate(${o.x.toFixed(2)}px, ${o.y.toFixed(2)}px) perspective(1400px) rotateY(${(-Math.sin(theta) * 28).toFixed(3)}deg) scale(${k.toFixed(4)})`,
+          opacity: mix(0.45, 1, front),
+          filter: `brightness(${mix(0.18, 1, front ** 3).toFixed(3)})`,
+        }}
+      >
         {node}
       </div>
     );
@@ -108,7 +113,7 @@ export const Offers: React.FC = () => {
         <>
           {centred(720, 580, <DarkPhoto src="btc.jpg" w={720} h={580} pos="50% 64%" scale={1.12 - 0.04 * prog(F, turnAt(0), turnAt(1), E.linear)} />)}
           <Sheen mask={GOLD_MASK} w={720} h={580} left={-360} top={-290} p={prog(F, turnAt(0) + TURN, turnAt(0) + TURN + f60(36), E.inOut)} strength={0.65} />
-          <div style={{ position: 'absolute', left: -(10 * 44 + 9 * 14) / 2, top: 300 }}>
+          <div style={{ position: 'absolute', left: -(10 * 44 + 9 * 14) / 2, top: 300, opacity: 1 - Math.min(1, Math.abs(1 - pos) / 0.35) }}>
             <Tally F={F} />
           </div>
         </>,

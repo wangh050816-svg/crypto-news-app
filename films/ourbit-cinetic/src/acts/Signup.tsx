@@ -7,7 +7,7 @@ import { arrive, arriveK, blurIn, blurOut, clamp, E, hitPulse, lmix, mix, pace, 
 import { mixColor } from '../lib/color';
 import { measureTracked } from '../lib/measure';
 import { ACT, copy, CUE, f60, W } from '../timeline';
-import { LENS, real, Sheen } from './Night';
+import { LENS, orbitAt, real, Sheen } from './Night';
 
 // ACT 2 - SIGN-UP (bars 2-4). The headline 「註冊　就送」 lands on the cut. A caret appears in its
 // gap, thickens to a capsule and widens into OURBIT's sign-up bar, shoving the two words off the
@@ -90,6 +90,22 @@ export const Signup: React.FC = () => {
   const spin = mix(-270, 0, prog(F, RISE.from, RISE.to - f60(6), E.outSoft));
   const punch = 1 + 0.05 * hitPulse(F - RISE.to, 2, 10);
   const packW = (PACK_H * 847) / 1706;
+  // Three of the pack's cards spiral up out of the light with it and circle it (one turn per 2.5 s),
+  // then fold back into it before the carousel takes over.
+  const ringR = prog(F, RISE.from, RISE.to + f60(20), E.out) * (1 - prog(F, A + ACT.signup.dur - f60(40), A + ACT.signup.dur - f60(6), E.in));
+  const spinT = ((F - RISE.from) * 2 * Math.PI) / f60(150);
+  const orbiters = ['card_gengar.png', 'card_pikachu.png', 'card_arceus.png'].map((src, i) => ({ src, o: orbitAt(spinT + (i * 2 * Math.PI) / 3, LENS.x, packY + 40, 330 * ringR, 110 * ringR) }));
+  const orbiter = (c: (typeof orbiters)[number]) => {
+    const front = (c.o.z + 1) / 2;
+    const w = 150 * mix(0.6, 1, front) * mix(0.4, 1, ringR);
+    return (
+      <Img
+        key={c.src}
+        src={real(c.src)}
+        style={{ position: 'absolute', left: 0, top: 0, width: w, borderRadius: w * 0.045, transform: `translate(${(c.o.x - w / 2).toFixed(2)}px, ${(c.o.y - w * 0.7).toFixed(2)}px) rotate(${(c.o.x - LENS.x) * 0.03}deg)`, opacity: ringR, filter: `brightness(${mix(0.35, 1, front).toFixed(3)}) drop-shadow(0 14px 18px rgba(0,0,0,.5))` }}
+      />
+    );
+  };
 
   const ui = typeStyle('ui');
   return (
@@ -141,6 +157,7 @@ export const Signup: React.FC = () => {
         </>
       )}
       {F >= CUE.cursor && curO > 0 && <Cursor x={cur.x} y={cur.y} scale={2.6} press={press} opacity={curO} />}
+      {F >= RISE.from && ringR > 0 && orbiters.filter((c) => c.o.z < 0).map(orbiter)}
       {F >= RISE.from && (
         <div
           style={{
@@ -158,6 +175,7 @@ export const Signup: React.FC = () => {
           <Sheen mask={`url(${real('pack.png')})`} w={packW} h={PACK_H} p={prog(F, RISE.to + f60(6), RISE.to + f60(40), E.inOut)} strength={0.85} />
         </div>
       )}
+      {F >= RISE.from && ringR > 0 && orbiters.filter((c) => c.o.z >= 0).map(orbiter)}
       <Chain chain="pack" frame={f} from={A} role="line" size={PACK_LINE} top={LENS.y + PACK_H / 2 + 50} color={C.paper} />
     </AbsoluteFill>
   );
