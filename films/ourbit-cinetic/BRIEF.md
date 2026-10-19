@@ -28,6 +28,7 @@
 - **The rose-gold B mark** (`brandmark.png`) is the user's logo; its warm metallic colour is the brand's, not an accent.
 - **Jack-o'-lanterns are photographs** (Pexels): their orange is the subject of the campaign (Halloween), never a UI accent, glow or paper. No orange is added by code.
 - **Official Pokémon pack and card art** appear as product photos (the prize), unaltered.
+- **3D prize materials** (`M` in `src/brand/tokens.ts`): gold for the bars and bitcoin coins, the gift's white card and red ribbon, the pumpkin's warm point light. They are the prizes' and the jack-o'-lantern's own surfaces, never a UI accent.
 - **Real photography** (moon sky, fog, bitcoin, gold, gift) from Pexels; see films/ad-remotion/sources/CREDITS.md.
 
 ## Assumptions

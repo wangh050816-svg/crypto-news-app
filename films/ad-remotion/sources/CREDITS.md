@@ -23,5 +23,6 @@
 |---|---|---|
 | m6a_pack.webp | 30th CELEBRATION 拡張パック | https://www.30th.pokemon-card.com/product/m6a |
 | card_gengar / pikachu / arceus.png | 轉盤福利的三張卡 | 同上（收錄卡牌） |
+| card_back.webp | 3D 卡牌的背面 | https://www.30th.pokemon-card.com/ |
 
 寶可夢圖是版權商品圖，只在宣傳 OURBIT 實際送出的卡包時使用；正式投放前請 OURBIT 確認他們的使用授權。

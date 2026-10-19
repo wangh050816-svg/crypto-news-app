@@ -15,14 +15,18 @@
     "qa": "mkdir -p out/qa && python3 scripts/probe.py out/film.mp4 --spec 1080x1920@60 && python3 scripts/forensics.py out/film.mp4 --cues out/cues.json --json out/qa/forensics.json && python3 scripts/av-audit.py out/film.mp4 --cues out/cues.json --stems out/stems --json out/qa/av.json && python3 scripts/sheet.py out/film.mp4 --out out/qa/sheet.png"
   },
   "dependencies": {
+    "@react-three/fiber": "^9.0.4",
     "@remotion/cli": "4.0.529",
     "@remotion/layout-utils": "4.0.529",
     "@remotion/noise": "4.0.529",
     "@remotion/paths": "4.0.529",
     "@remotion/shapes": "4.0.529",
+    "@remotion/three": "^4.0.529",
+    "@types/three": "^0.169.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "remotion": "4.0.529"
+    "remotion": "4.0.529",
+    "three": "^0.169.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",

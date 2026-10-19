@@ -1,6 +1,7 @@
 import React from 'react';
 import { Composition, Folder, useCurrentFrame } from 'remotion';
 import { Night } from './acts/Night';
+import { Stage3D } from './three/Stage3D';
 import { C } from './brand/tokens';
 import { ACTS, Film, FilmProps } from './Film';
 import { FilmSub, subMetadata } from './FilmSub';
@@ -17,6 +18,7 @@ const solo = (from: number, Act: React.FC) => {
       <FontGate>
         <div style={{ position: 'absolute', inset: 0, background: C.ink }}>
           <Night abs={f + from} />
+          <Stage3D abs={f + from} />
           <Act />
           {audit && <Audit safe={safe} />}
         </div>

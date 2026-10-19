@@ -3,6 +3,7 @@ import { AbsoluteFill, getStaticFiles, Html5Audio, Sequence, staticFile, useCurr
 import { Hook } from './acts/Hook';
 import { Lockup } from './acts/Lockup';
 import { Night } from './acts/Night';
+import { Stage3D } from './three/Stage3D';
 import { Offers } from './acts/Offers';
 import { Signup } from './acts/Signup';
 import { C } from './brand/tokens';
@@ -34,6 +35,7 @@ export const Film: React.FC<FilmProps> = ({ audit = false, safe }) => {
     <FontGate>
       <AbsoluteFill style={{ background: C.ink }}>
         <Night abs={f} />
+        <Stage3D abs={f} />
         {ACTS.map(({ key, name, C: Act }) => (
           <Sequence key={key} from={ACT[key].from} durationInFrames={ACT[key].dur} name={name}>
             <Act />

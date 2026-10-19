@@ -3,11 +3,11 @@ import { AbsoluteFill, Img, useCurrentFrame } from 'remotion';
 import { C, TYPE, U, typeStyle } from '../brand/tokens';
 import { Chain } from '../fx/Chain';
 import { Cursor, cursorArc, pressAt } from '../fx/Cursor';
-import { arrive, arriveK, blurIn, blurOut, clamp, E, hitPulse, lmix, mix, pace, prog, squash } from '../lib/anim';
+import { arrive, arriveK, blurIn, blurOut, E, mix, pace, prog } from '../lib/anim';
 import { mixColor } from '../lib/color';
 import { measureTracked } from '../lib/measure';
 import { ACT, copy, CUE, f60, W } from '../timeline';
-import { LENS, orbitAt, real, Sheen } from './Night';
+import { LENS, real } from './Night';
 
 // ACT 2 - SIGN-UP (bars 2-4). The headline 「註冊　就送」 lands on the cut. A caret appears in its
 // gap, thickens to a capsule and widens into OURBIT's sign-up bar, shoving the two words off the
@@ -79,33 +79,7 @@ export const Signup: React.FC = () => {
   const hover = prog(F, CUE.cursor + f60(28), CUE.cursor + f60(32), E.smooth);
   const curO = prog(F, CUE.cursor, CUE.cursor + f60(4), E.smooth) * (1 - prog(F, CUE.press + f60(14), CUE.press + f60(24), E.smooth));
 
-  // The prize: out of the pumpkin's light to the lens, at rest on CUE.packIn, then a slow creep.
-  const r = prog(F, RISE.from, RISE.to, RISE.ease);
-  const packY = mix(1380, LENS.y, r); // a short rise: it meets the lens at about 50 px/f
-  const packK = lmix(0.5, 1, r) * lmix(1, 1.035, prog(F, RISE.to, A + ACT.signup.dur, E.linear));
-  const sq = squash(F - RISE.to); // the contact: it widens and flattens against the light for 8 f
-  // It spins up out of the light (three quarters of a turn on E.outSoft, face-on before it lands;
-  // more would break the blur speed ceiling),
-  // lands with a short punch, then the foil catches the light.
-  const spin = mix(-270, 0, prog(F, RISE.from, RISE.to - f60(6), E.outSoft));
-  const punch = 1 + 0.05 * hitPulse(F - RISE.to, 2, 10);
-  const packW = (PACK_H * 847) / 1706;
-  // Three of the pack's cards spiral up out of the light with it and circle it (one turn per 2.5 s),
-  // then fold back into it before the carousel takes over.
-  const ringR = prog(F, RISE.from, RISE.to + f60(20), E.out) * (1 - prog(F, A + ACT.signup.dur - f60(40), A + ACT.signup.dur - f60(6), E.in));
-  const spinT = ((F - RISE.from) * 2 * Math.PI) / f60(150);
-  const orbiters = ['card_gengar.png', 'card_pikachu.png', 'card_arceus.png'].map((src, i) => ({ src, o: orbitAt(spinT + (i * 2 * Math.PI) / 3, LENS.x, packY + 40, 330 * ringR, 110 * ringR) }));
-  const orbiter = (c: (typeof orbiters)[number]) => {
-    const front = (c.o.z + 1) / 2;
-    const w = 150 * mix(0.6, 1, front) * mix(0.4, 1, ringR);
-    return (
-      <Img
-        key={c.src}
-        src={real(c.src)}
-        style={{ position: 'absolute', left: 0, top: 0, width: w, borderRadius: w * 0.045, transform: `translate(${(c.o.x - w / 2).toFixed(2)}px, ${(c.o.y - w * 0.7).toFixed(2)}px) rotate(${(c.o.x - LENS.x) * 0.03}deg)`, opacity: ringR, filter: `brightness(${mix(0.35, 1, front).toFixed(3)}) drop-shadow(0 14px 18px rgba(0,0,0,.5))` }}
-      />
-    );
-  };
+  // The prize itself rises on the 3D stage (three/Stage3D.tsx); this act keeps the type and the UI.
 
   const ui = typeStyle('ui');
   return (
@@ -157,25 +131,6 @@ export const Signup: React.FC = () => {
         </>
       )}
       {F >= CUE.cursor && curO > 0 && <Cursor x={cur.x} y={cur.y} scale={2.6} press={press} opacity={curO} />}
-      {F >= RISE.from && ringR > 0 && orbiters.filter((c) => c.o.z < 0).map(orbiter)}
-      {F >= RISE.from && (
-        <div
-          style={{
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            width: packW,
-            height: PACK_H,
-            transformOrigin: '50% 50%',
-            transform: `translate(${(LENS.x - packW / 2).toFixed(2)}px, ${(packY - PACK_H / 2).toFixed(2)}px) perspective(1800px) rotateY(${spin.toFixed(3)}deg) scale(${(packK * sq.across * punch).toFixed(4)}, ${(packK * sq.along * punch).toFixed(4)}) rotate(${mix(-8, -3, r).toFixed(3)}deg)`,
-            opacity: clamp((F - RISE.from) / f60(8)),
-          }}
-        >
-          <Img src={real('pack.png')} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', filter: 'drop-shadow(0 30px 40px rgba(0,0,0,.55))' }} />
-          <Sheen mask={`url(${real('pack.png')})`} w={packW} h={PACK_H} p={prog(F, RISE.to + f60(6), RISE.to + f60(40), E.inOut)} strength={0.85} />
-        </div>
-      )}
-      {F >= RISE.from && ringR > 0 && orbiters.filter((c) => c.o.z >= 0).map(orbiter)}
       <Chain chain="pack" frame={f} from={A} role="line" size={PACK_LINE} top={LENS.y + PACK_H / 2 + 50} color={C.paper} />
     </AbsoluteFill>
   );
