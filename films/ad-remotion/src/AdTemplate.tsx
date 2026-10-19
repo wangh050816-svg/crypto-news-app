@@ -145,7 +145,7 @@ const Shot: React.FC<{i: number; v: Variant}> = ({i, v}) => {
   const cards = [
     {num: "01", title: "新用戶註冊", big: "免費送 PKM 卡牌", sub: "萬聖節限定", icon: <Img src={staticFile("real/pack.png")} style={{height: 390, transform: `rotate(${-6 + Math.sin(frame * .1) * 2}deg)`, filter: "drop-shadow(0 0 30px rgba(244,200,96,.5)) drop-shadow(0 16px 20px rgba(0,0,0,.7))"}} />},
     {num: "02", title: "萬聖節限定加碼", big: "最高 30% 儲值返利", sub: "依儲值與交易量階梯發放", icon: <DarkPhoto src="btc.jpg" w={600} h={400} pos="50% 64%" scale={1.12 - frame * .002} />},
-    {num: "03", title: "完成合約交易", big: "588 USDT 體驗金", sub: "最高可領 588 USDT", icon: <DarkPhoto src="gold.jpg" w={600} h={400} scale={1.18 - frame * .002} />},
+    {num: "03", title: "完成合約交易", big: "最高 588 USDT", sub: "合約交易體驗金", icon: <DarkPhoto src="gold.jpg" w={600} h={400} scale={1.18 - frame * .002} />},
     {num: "04", title: "完成任務", big: "免費領 PRL 空投", sub: "PRL 空投", icon: <GiftDrop frame={frame} />},
     {num: "05", title: "VIP 用戶加碼", big: "寶可夢轉盤 +10 次", sub: "額外 10 次抽獎機會", icon: <CardFan size={400} open={spring({frame: frame - 4, fps, config: {damping: 13, stiffness: 120}})} />},
   ];
