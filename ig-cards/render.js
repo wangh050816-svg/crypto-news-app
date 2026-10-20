@@ -12,9 +12,15 @@ const scenes=fs.readdirSync(path.join(dir,'scenes')).filter(f=>f.endsWith('.js')
 const html=`<!doctype html>${read(path.join(dir,'template-head.html'))}<div id="root"></div><script>
 ${read(path.join(dir,'engine.js'))}
 ${scenes}
-function SET({title,cards}){
+function SET({title,cards,layout}){
   document.getElementById('root').innerHTML=cards.map(([k,a,ae,b,be],i)=>{
     if(!S[k+'Top']||!S[k+'Bot']) throw new Error('找不到場景 '+k+'Top / '+k+'Bot');
+    // layout:'cine' → 電影感版型：不放大標題，上下兩格滿版，字幕壓在畫面上
+    if(layout==='cine'){
+      const cine=svg=>svg.replace('<svg class="panel"','<svg class="panel cine-panel" preserveAspectRatio="xMidYMid slice"');
+      const sub=(zh,en)=>\`<div class="sub"><b>\${zh}</b><span>\${en}</span></div>\`;
+      return \`<div class="card cine" id="card\${i+1}"><div class="half">\${cine(S[k+'Top']())}\${sub(a,ae)}</div><div class="half">\${cine(S[k+'Bot']())}\${sub(b,be)}</div></div>\`;
+    }
     return \`<div class="card" id="card\${i+1}"><h1>\${title}</h1>\${S[k+'Top']()}<div class="cap"><b>\${a}</b><span>\${ae}</span></div>\${S[k+'Bot']()}<div class="cap"><b>\${b}</b><span>\${be}</span></div></div>\`}).join('');
 }
 ${read(setFile)}
