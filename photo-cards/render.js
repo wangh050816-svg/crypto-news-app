@@ -78,10 +78,10 @@ body{margin:0;background:#000}
 .pn img{width:100%;height:100%;object-fit:cover;display:block}
 .sh{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0) 45%,rgba(0,0,0,.55) 80%,rgba(0,0,0,.7))}
 .tx{position:absolute;left:60px;right:60px;bottom:56px;text-align:center;color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.55)}
-.tx b{display:block;font-family:"Source Serif 4",serif;font-weight:700;font-size:62px;line-height:1.12;letter-spacing:-.3px}
+.tx b{display:block;font-family:"Source Serif 4",serif;font-weight:700;font-size:62px;line-height:1.12;letter-spacing:-.3px;text-wrap:balance}
 .tx span{display:block;font-family:"Noto Serif TC",serif;font-weight:500;font-size:38px;margin-top:12px;letter-spacing:2px}
 .tp{height:100%;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;padding:0 90px}
-.tp b{font-family:"Source Serif 4",serif;font-weight:700;font-size:72px;line-height:1.15;white-space:pre-line}
+.tp b{font-family:"Source Serif 4",serif;font-weight:700;font-size:72px;line-height:1.15;white-space:pre-line;text-wrap:balance}
 .tp span{font-family:"Noto Serif TC",serif;font-size:42px;margin-top:28px;letter-spacing:2px;white-space:pre-line;color:rgba(255,255,255,.85)}
 .ln{height:2px;background:rgba(255,255,255,.85)}
 .au{position:absolute;right:40px;bottom:26px;color:rgba(255,255,255,.85);font-family:"Source Serif 4",serif;font-size:28px;text-shadow:0 1px 8px rgba(0,0,0,.6)}
