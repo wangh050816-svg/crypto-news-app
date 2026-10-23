@@ -98,6 +98,7 @@ ${cards.map((c,i)=>`<div class="card" id="card${i+1}">${c}${spec.author?`<div cl
   for(let i=1;i<=n;i++) await pg.locator('#card'+i).screenshot({path:path.join(out,i+'.png')});
   // 總覽圖：5 欄縮小排在一起，方便一次檢查
   const imgs=[...Array(n)].map((_,i)=>'data:image/png;base64,'+fs.readFileSync(path.join(out,(i+1)+'.png')).toString('base64'));
+  await pg.setViewportSize({width:1824,height:100});
   await pg.setContent(`<body style="margin:0;background:#222;display:grid;grid-template-columns:repeat(5,360px);align-items:start;gap:6px;width:1824px">${imgs.map(s=>`<img src="${s}" width="360" style="display:block">`).join('')}</body>`);
   await pg.screenshot({path:path.join(out,'sheet.png'),fullPage:true});
   await b.close();
