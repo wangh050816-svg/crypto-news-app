@@ -6,7 +6,7 @@ description: 製作 IG 實拍照片上下對比輪播貼文（Unsplash 照片＋
 # IG 實拍照片上下對比貼文
 
 程式在 `photo-cards/`：
-- `render.js`：`node photo-cards/render.js photo-cards/posts/<名稱>.js`，輸出 `photo-cards/out/<名稱>/` 的 1.png–N.png、總覽 `sheet.png`、`caption.txt`（已附 Unsplash 攝影師署名）。
+- `render.js`：`node photo-cards/render.js photo-cards/posts/<名稱>.js`，輸出 `photo-cards/out/<名稱>/` 的 1.png–N.png、總覽 `sheet.png`、`caption.txt`（貼文文案）、`credits.txt`（攝影師名單；Unsplash 授權不強制標示，使用者想標再貼）。
 - `posts/*.js`：一則貼文，格式照 `posts/rich-vs-most.js`。
 - `posts/<名稱>.photos.json`：render 自動寫入選中的照片，要一起 commit，下次重跑不用再搜尋。
 

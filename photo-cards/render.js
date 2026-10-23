@@ -103,10 +103,11 @@ ${cards.map((c,i)=>`<div class="card" id="card${i+1}">${c}${spec.author?`<div cl
   await pg.screenshot({path:path.join(out,'sheet.png'),fullPage:true});
   await b.close();
 
-  // 貼文文案＋攝影師署名（Unsplash 規範要標示作者）
+  // 貼文文案；攝影師名單另存 credits.txt（Unsplash 授權不強制標示，想標再貼）
   const by=[...new Set(Object.values(used).map(v=>v.by))];
-  const caption=spec.caption.trim()+'\n\n📷 Unsplash：'+by.join('、')+'\n';
+  const caption=spec.caption.trim()+'\n';
   fs.writeFileSync(path.join(out,'caption.txt'),caption);
+  fs.writeFileSync(path.join(out,'credits.txt'),'📷 Unsplash：'+by.join('、')+'\n');
   console.log(`完成 ${n} 張 → ${out}\n\n${caption}`);
 })().catch(e=>{
   // 中途額度用完也先存下已選的照片，下次接著抓
