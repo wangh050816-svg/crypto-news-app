@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BTC 黑天鵝砸盤</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+TC:wght@500;900&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#000;--ui:rgba(20,22,30,.82);--fg:#fff;--accent:#ea3943}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#000}}
+  :root[data-theme="dark"]{--bg:#000}
+  html,body{margin:0;height:100%;background:var(--bg);overflow:hidden;font-family:"Noto Sans TC",sans-serif;color:var(--fg)}
+  #stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  canvas{display:block;background:#07080c}
+  #ui{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);display:flex;gap:8px;align-items:center;background:var(--ui);padding:8px 12px;border-radius:999px;transition:opacity .4s;max-width:calc(100vw - 32px);box-sizing:border-box}
+  #ui.hide{opacity:0;pointer-events:none}
+  #ui button{background:none;border:1px solid rgba(255,255,255,.25);color:var(--fg);border-radius:999px;padding:6px 12px;font:500 14px "Noto Sans TC",sans-serif;cursor:pointer;white-space:nowrap}
+  #ui button.on{background:var(--accent);border-color:var(--accent)}
+  #ui input{width:180px;accent-color:var(--accent)}
+  body.export #ui{display:none}
+  body.export #stage{position:static;display:block}
+</style></head><body>
+<div id="stage"><canvas id="c"></canvas></div>
+<div id="ui">
+  <button id="bPlay">⏸ 暫停</button>
+  <button id="bRe">↺ 重播</button>
+  <input id="seek" type="range" min="0" max="24" step="0.01" value="0" aria-label="時間軸">
+  <button id="bSnd">🔊 開啟音效</button>
+</div>
+<script>
+// ===== 2025.10.10 黑天鵝：川普宣布對中國加徵 100% 關稅，BTC 一根大陰線砸穿 $110,000 =====
+// 整支動畫是 t（秒）的純函式：render(t) 畫出那一格，匯出影片時逐格呼叫。
+const W=1080,H=1920,T=24;
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+cv.width=W;cv.height=H;
+const EXPORT=new URLSearchParams(location.search).has('export');
+if(EXPORT)document.body.classList.add('export');
+
+// ---------- 工具 ----------
+const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,k)=>a+(b-a)*k;
+const prog=(t,a,b)=>clamp((t-a)/(b-a));
+const eio=k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+const eout=k=>1-Math.pow(1-k,3);
+const ein=k=>k*k*k;
+const eback=k=>{const c1=2.2,c3=c1+1;return 1+c3*Math.pow(k-1,3)+c1*Math.pow(k-1,2)};
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let x=Math.imul(seed^seed>>>15,1|seed);x=x+Math.imul(x^x>>>7,61|x)^x;return((x^x>>>14)>>>0)/4294967296}}
+const fmt=p=>Math.round(p).toLocaleString('en-US');
+const NUM='Anton, "Noto Sans TC", sans-serif', TC='"Noto Sans TC", sans-serif';
+const GREEN='#16c784',RED='#ea3943',YEL='#ffd400';
+
+// ---------- 價格座標 ----------
+const py=p=>1560-(p-100000)*0.04;     // $100k → y1560，每 $1,000 = 40px
+const cx=i=>50+i*24;
+const IX=cx(30)+22;                    // 巨型 K 棒的 x（撞擊點）
+const ST=py(110000),SH=64,SX0=20,SX1=950; // $110,000 鐵底
+
+// ---------- K 棒資料（約略重現 10/1 → 10/10） ----------
+const C=[];
+{let p=112000;const r=rng(7);
+ for(let i=0;i<20;i++){const tg=112000+14100*((i+1)/20);const o=p;let c=i===19?125600:tg+(r()-.5)*900;
+  let h=Math.max(o,c)+r()*500+150,l=Math.min(o,c)-r()*500-150;if(i<19)h=Math.min(h,125900);if(i===19)h=126200;
+  C.push({o,c,h,l});p=c}
+ for(const c of [124800,125300,123900,124400,122800,123300,122100,121500]){const o=p;C.push({o,c,h:Math.max(o,c)+r()*500+150,l:Math.min(o,c)-r()*500-150});p=c}
+ for(const c of [119800,117200]){const o=p;C.push({o,c,h:o+300,l:c-400});p=c}
+}
+const revealT=i=>i<28?0.3+i*0.12:(i===28?5.0:5.8);
+const G={o:117200,h:117600,l:102000,c:105500};
+const REC=[[105500,108300],[108300,110600],[110600,109700],[109700,111900],[111900,111200],[111200,112600]].map(([o,c],k)=>({o,c,h:Math.max(o,c)+400,l:Math.min(o,c)-500,x:IX+52+k*20,t0:15.6+k*.45}));
+
+// ---------- 時間軸關鍵點 ----------
+const T_NEWS=4.0,T_SLAB=7.0,T_CHARGE=7.6,T_STOMP=9.42,T_DIVE=9.4,T_HIT=10.1,TS=10.35,T_LOW=11.2,T_STAMP=13.36;
+const BEATS=[];{let b=7.8,g=.6;while(b<9.3){BEATS.push(b);b+=g;g*=.82}}
+
+// 巨型 K 棒狀態
+function gs(t){
+  let cur=117200,w=lerp(14,76,eback(prog(t,T_CHARGE,9.0)));
+  if(t<T_DIVE)cur=lerp(117200,116300,eout(prog(t,T_CHARGE,T_DIVE)));
+  else if(t<T_HIT)cur=lerp(116300,110000,ein(prog(t,T_DIVE,T_HIT)));
+  else if(t<TS)cur=lerp(110000,109800,prog(t,T_HIT,TS));
+  else if(t<T_LOW)cur=lerp(109800,102000,eout(prog(t,TS,T_LOW)));
+  else cur=lerp(102000,105500,eio(prog(t,T_LOW,12.6)));
+  const low=t<T_LOW?cur:102000;
+  const jit=t<T_DIVE?Math.sin(t*90)*6*prog(t,8.2,9.4):0;
+  return{cur,low,w,jit};
+}
+function price(t){
+  for(let k=REC.length-1;k>=0;k--)if(t>=REC[k].t0)return lerp(REC[k].o,REC[k].c,eout(prog(t,REC[k].t0,REC[k].t0+.3)));
+  if(t>=T_CHARGE)return gs(t).cur;
+  for(let i=C.length-1;i>=0;i--)if(t>=revealT(i))return lerp(C[i].o,C[i].c,eout(prog(t,revealT(i),revealT(i)+.18)));
+  return C[0].o;
+}
+function cam(t){
+  let z=1,fx=540,fy=1000;
+  const a=eio(prog(t,7.0,8.8));z=lerp(1,1.32,a);fx=lerp(540,IX-40,a);fy=lerp(1000,1010,a);
+  const b=ein(prog(t,T_DIVE,T_HIT));z=lerp(z,1.42,b);fy=lerp(fy,1120,b);
+  const c=eout(prog(t,TS,11.6));z=lerp(z,1.12,c);fy=lerp(fy,1220,c);fx=lerp(fx,IX-60,c);
+  const d=eio(prog(t,15.2,16.8));z=lerp(z,1,d);fx=lerp(fx,540,d);fy=lerp(fy,1000,d);
+  return{z,fx,fy};
+}
+const toScreen=(t,x,y)=>{const c=cam(t);return[540+(x-c.fx)*c.z,1000+(y-c.fy)*c.z]};
+const IMPULSES=[[7.55,12,9],[T_STOMP,16,10],[T_HIT,70,4.5],[TS,50,3.5],[T_STAMP,26,7],[21.6,10,5]];
+function shake(t){let A=0;for(const[t0,a,d]of IMPULSES)if(t>=t0)A+=a*Math.exp(-(t-t0)*d);
+  if(t>8.2&&t<T_DIVE)A+=3*prog(t,8.2,T_DIVE);
+  return{x:A*(Math.sin(t*97.3)+Math.sin(t*61.7))*.5,y:A*(Math.sin(t*83.1)+Math.cos(t*71.9))*.5}}
+
+// ---------- 預先算好的碎片、粒子（固定亂數種子） ----------
+const r2=rng(99),RR=(a,b)=>a+(b-a)*r2();
+const DEBRIS=[...Array(170)].map(()=>{const up=r2()<.75;const a=up?RR(-Math.PI*.95,-Math.PI*.05):RR(Math.PI*.2,Math.PI*.8);const sp=RR(300,1500);
+  return{x:IX+RR(-50,50),y:ST+RR(-5,20),vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,s:RR(3,15),w:RR(-12,12),c:r2()<.3?`hsl(${RR(15,45)|0},100%,${RR(55,70)|0}%)`:`hsl(220,6%,${RR(35,70)|0}%)`}});
+const SPARKS=[...Array(90)].map(()=>{const a=RR(-Math.PI,0),sp=RR(800,2400);return{vx:Math.cos(a)*sp,vy:Math.sin(a)*sp}});
+const DUST=[...Array(26)].map(()=>({x:IX+RR(-300,300),y:ST+RR(-50,40),r:RR(130,260),d:RR(0,.25)}));
+const SPEED=[...Array(40)].map(()=>({x:IX+RR(-280,280),y0:RR(0,2600),len:RR(140,380),w:RR(2,6)}));
+const COINS=[...Array(28)].map((_,i)=>({t0:11.7+i*.12,x:IX+RR(-210,210),vy:RR(-250,80),sp:RR(4,11),s:RR(.7,1.2)}));
+const COIN_N=['BTC','ETH','SOL','DOGE','XRP','BNB','SUI','ADA'],LEV=[10,20,25,50,75,100,125];
+const TAGS=[...Array(46)].map((_,i)=>({t0:11.4+i*.085,x:RR(80,1000),vy:RR(650,1050),rot:RR(-.35,.35),s:RR(.75,1.1),
+  txt:`${COIN_N[r2()*8|0]} 多單 ${LEV[r2()*7|0]}x  -$${fmt(Math.exp(RR(Math.log(12000),Math.log(9.8e6))))}`}));
+const SPECK=[...Array(160)].map(()=>[RR(SX0,SX1),RR(ST+14,ST+SH),RR(1,3),r2()<.5]);
+// 鐵底切塊：撞擊點附近切得碎，遠處切得大
+const CHUNKS=[];
+{const r=rng(42),j=(x,a)=>x+(r()-.5)*a;
+ const cuts=[[[SX0,ST],[SX0,ST+SH*.35],[SX0,ST+SH*.7],[SX0,ST+SH]]];let x=SX0;
+ while(x<SX1){x+=Math.abs(x-IX)<240?28+r()*28:70+r()*60;if(x>SX1-20)x=SX1;
+  cuts.push(x===SX1?[[x,ST],[x,ST+SH*.35],[x,ST+SH*.7],[x,ST+SH]]:[[j(x,16),ST],[j(x,30),ST+SH*.35],[j(x,30),ST+SH*.7],[j(x,16),ST+SH]])}
+ for(let i=0;i<cuts.length-1;i++){const L=cuts[i],Rt=cuts[i+1];const mx=(L[0][0]+Rt[0][0])/2;const near=Math.abs(mx-IX)<220;
+  const polys=near?[[L[0],L[1],Rt[1],Rt[0]],[L[1],L[2],L[3],Rt[3],Rt[2],Rt[1]]]:[[...L,...[...Rt].reverse()]];
+  for(const pts of polys){const ccx=pts.reduce((s,p)=>s+p[0],0)/pts.length,ccy=pts.reduce((s,p)=>s+p[1],0)/pts.length;
+   const dir=Math.sign(ccx-IX)||1,dd=Math.abs(ccx-IX);
+   const close=clamp(1-(dd-220)/300);
+   CHUNKS.push({pts,cx:ccx,cy:ccy,near,
+    vx:dir*(200+r()*800)*(1-dd/440),vy:dd<60?300+r()*600:-(100+r()*600),w:(r()-.5)*12,
+    sag:(ccx<IX?1:-1)*.09*close,sagY:12*close})}}}
+const CRACKS=[...Array(12)].map((_,k)=>{const r=rng(500+k);let x=IX+(r()-.5)*30,y=ST+r()*8,a=(k%2?0:Math.PI)+(r()-.5)*.6;const pts=[[x,y]];
+  for(let s=0;s<9;s++){a+=(r()-.5)*.9;a=k%2?clamp(a,-.6,.6):clamp(a,Math.PI-.6,Math.PI+.6);x+=Math.cos(a)*(28+r()*24);y=clamp(y+Math.sin(a)*(20+r()*20),ST+2,ST+SH-2);pts.push([x,y])}return pts});
+
+// ---------- 世界（會被鏡頭縮放/震動） ----------
+function grid(t){
+  ctx.lineWidth=2;ctx.textAlign='right';ctx.textBaseline='middle';ctx.font=`30px ${NUM}`;
+  for(let p=100000;p<=125000;p+=5000){const y=py(p);ctx.strokeStyle='#151923';ctx.beginPath();ctx.moveTo(SX0,y);ctx.lineTo(SX1,y);ctx.stroke();ctx.fillStyle='#4b5263';ctx.fillText(fmt(p),1060,y)}
+}
+function candle(x,o,c,h,l,w,k){
+  const cur=lerp(o,c,k),hi=Math.max(o,cur)+(h-Math.max(o,c))*k,lo=Math.min(o,cur)-(Math.min(o,c)-l)*k;
+  const col=c>=o?GREEN:RED;ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=3;
+  ctx.beginPath();ctx.moveTo(x,py(hi));ctx.lineTo(x,py(lo));ctx.stroke();
+  const y0=py(Math.max(o,cur)),y1=py(Math.min(o,cur));ctx.fillRect(x-w/2,y0,w,Math.max(3,y1-y0));
+}
+function pill(x,y,txt,bg,fg,font,align='center'){
+  ctx.font=font;const w=ctx.measureText(txt).width+36;const x0=align==='center'?x-w/2:align==='right'?x-w:x;
+  ctx.fillStyle=bg;ctx.beginPath();ctx.roundRect(x0,y-30,w,60,30);ctx.fill();ctx.fillStyle=fg;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(txt,x0+w/2,y+2);
+}
+function slabFace(){
+  const g=ctx.createLinearGradient(0,ST,0,ST+SH);g.addColorStop(0,'#9aa0aa');g.addColorStop(.2,'#636872');g.addColorStop(1,'#2a2d33');
+  ctx.fillStyle=g;ctx.fillRect(SX0,ST,SX1-SX0,SH);
+  ctx.fillStyle=YEL;ctx.fillRect(SX0,ST,SX1-SX0,12);ctx.fillStyle='#111';
+  for(let x=SX0-20;x<SX1;x+=36){ctx.beginPath();ctx.moveTo(x,ST+12);ctx.lineTo(x+18,ST);ctx.lineTo(x+32,ST);ctx.lineTo(x+14,ST+12);ctx.fill()}
+  for(const[x,y,s,d]of SPECK){ctx.fillStyle=d?'rgba(0,0,0,.35)':'rgba(255,255,255,.18)';ctx.fillRect(x,y,s,s)}
+  ctx.fillStyle='#f4f4f4';ctx.font=`900 32px ${NUM}`;ctx.textAlign='left';ctx.textBaseline='middle';
+  ctx.fillText('SUPPORT  $110,000  鐵底支撐',SX0+26,ST+39);ctx.fillText('SUPPORT  $110,000',600,ST+39);
+}
+function slab(t){
+  if(t<T_SLAB)return;
+  let drop=0;if(t<7.55)drop=-760*(1-ein(prog(t,T_SLAB,7.55)));else if(t<7.85)drop=-16*Math.sin(Math.PI*prog(t,7.55,7.85));
+  const tremble=t>8.2&&t<T_HIT?Math.sin(t*120)*2.5*prog(t,8.2,T_HIT):0;
+  ctx.globalAlpha=prog(t,T_SLAB,7.2);
+  for(const ch of CHUNKS){
+    let dx=tremble,dy=drop,rot=0;
+    if(t>=TS&&ch.near){const d=t-TS;dx=ch.vx*d;dy=ch.vy*d+1200*d*d;rot=ch.w*d}
+    else if(t>=TS){const p=eout(prog(t,TS,TS+.6));rot=ch.sag*p;dy=ch.sagY*p}
+    else if(t>=T_HIT)dy=16*Math.exp(-Math.abs(ch.cx-IX)/110);
+    if(dy>1400)continue;
+    ctx.save();ctx.translate(ch.cx+dx,ch.cy+dy);ctx.rotate(rot);ctx.translate(-ch.cx,-ch.cy);
+    ctx.beginPath();ch.pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();
+    ctx.save();ctx.clip();slabFace();ctx.restore();
+    if(t>=T_HIT){ctx.strokeStyle='rgba(0,0,0,.7)';ctx.lineWidth=2;ctx.stroke()}
+    ctx.restore();
+  }
+  ctx.globalAlpha=1;
+  if(t>=T_HIT&&t<TS){
+    const k=eout(prog(t,T_HIT,T_HIT+.2));
+    ctx.save();ctx.beginPath();ctx.rect(SX0,ST,SX1-SX0,SH+20);ctx.clip();ctx.translate(0,10);
+    for(const c of CRACKS){const n=Math.max(1,Math.floor(c.length*k));ctx.beginPath();for(let i=0;i<n;i++)i?ctx.lineTo(c[i][0],c[i][1]):ctx.moveTo(c[i][0],c[i][1]);
+      ctx.strokeStyle='#0b0b0b';ctx.lineWidth=5;ctx.stroke();ctx.strokeStyle='rgba(255,220,180,.6)';ctx.lineWidth=1.5;ctx.stroke()}
+    ctx.restore();
+  }
+  // 落地揚塵
+  if(t>7.5&&t<8.6){const p=prog(t,7.5,8.6);for(const sx of[SX0+30,SX1-30,300,620]){const g=ctx.createRadialGradient(sx,ST+SH,0,sx,ST+SH,40+120*eout(p));
+    g.addColorStop(0,`rgba(170,160,150,${.35*(1-p)})`);g.addColorStop(1,'rgba(170,160,150,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(sx,ST+SH,40+120*eout(p),0,7);ctx.fill()}}
+}
+function giant(t){
+  if(t<T_CHARGE)return;
+  const s=gs(t),x=IX+s.jit,w=s.w;
+  const dive=t>=T_DIVE&&t<12;
+  ctx.save();ctx.shadowColor='rgba(255,30,50,.9)';ctx.shadowBlur=dive?70:20+25*(0.5+0.5*Math.sin(t*14))*prog(t,T_CHARGE,T_DIVE);
+  ctx.strokeStyle=RED;ctx.lineWidth=Math.max(3,w*.13);ctx.beginPath();ctx.moveTo(x,py(G.h));ctx.lineTo(x,py(s.low));ctx.stroke();
+  const y0=py(G.o),y1=py(s.cur);const g=ctx.createLinearGradient(0,y0,0,Math.max(y1,y0+1));g.addColorStop(0,'#8a0618');g.addColorStop(1,'#ff2a40');
+  ctx.fillStyle=g;ctx.fillRect(x-w/2,y0,w,Math.max(6,y1-y0));ctx.restore();
+  if(t>=T_DIVE&&t<T_LOW+.2){ctx.save();ctx.shadowColor='#fff';ctx.shadowBlur=40;ctx.fillStyle='#fff6e0';ctx.fillRect(x-w/2-4,py(s.cur)-6,w+8,10);ctx.restore()}
+}
+function speedLines(t){
+  const a=prog(t,T_DIVE,9.7)*(1-prog(t,10.9,11.5));if(a<=0)return;
+  ctx.save();ctx.globalAlpha=a*.55;ctx.strokeStyle='#ffe9e9';
+  for(const s of SPEED){const y=((s.y0-t*4200)%2600+2600)%2600-200;ctx.lineWidth=s.w;ctx.beginPath();ctx.moveTo(s.x,y);ctx.lineTo(s.x,y+s.len);ctx.stroke()}
+  ctx.restore();
+}
+function swanPos(t){
+  const s=.85;
+  if(t<5.4||t>13.4)return null;
+  if(t<T_CHARGE){const k=eio(prog(t,5.4,T_CHARGE)),u=1-k;return{x:u*u*-250+2*u*k*300+k*k*(IX-10),y:u*u*620+2*u*k*300+k*k*730,s,f:Math.sin(t*16)*.9,glow:.5}}
+  if(t<9.1)return{x:IX-10,y:730+Math.sin(t*3.2)*14,s,f:Math.sin(t*12)*.8,glow:lerp(.5,1,prog(t,T_CHARGE,9.1))};
+  if(t<9.3)return{x:IX-10,y:lerp(730,630,eout(prog(t,9.1,9.3))),s,f:1.15,glow:1};
+  if(t<T_STOMP)return{x:IX-10,y:lerp(630,826,ein(prog(t,9.3,T_STOMP))),s,f:1.2,glow:1};
+  if(t<12)return{x:IX-10,y:826+Math.sin(t*5)*3,s,f:.55+Math.sin(t*4)*.12,glow:1};
+  const k=ein(prog(t,12,13.4));return{x:lerp(IX-10,1500,k),y:lerp(826,150,k),s,f:Math.sin(t*18),glow:1};
+}
+function wing(a,col){
+  ctx.save();ctx.translate(8,-20);ctx.rotate(-a);ctx.fillStyle=col;ctx.beginPath();
+  ctx.moveTo(34,0);ctx.quadraticCurveTo(-20,-78,-160,-46);ctx.lineTo(-128,-30);ctx.lineTo(-150,-16);ctx.lineTo(-112,-10);ctx.lineTo(-124,2);ctx.quadraticCurveTo(-40,14,-26,10);ctx.closePath();ctx.fill();ctx.restore();
+}
+function swan(t){
+  const p=swanPos(t);if(!p)return;
+  // 血月光暈
+  const ga=prog(t,6.2,T_CHARGE)*(1-prog(t,9.6,10.2));
+  if(ga>0){const g=ctx.createRadialGradient(IX-10,700,40,IX-10,700,260);g.addColorStop(0,`rgba(200,10,20,${.55*ga})`);g.addColorStop(.6,`rgba(140,0,10,${.3*ga})`);g.addColorStop(1,'rgba(120,0,0,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(IX-10,700,260,0,7);ctx.fill()}
+  ctx.save();ctx.translate(p.x,p.y);ctx.scale(p.s,p.s);
+  ctx.shadowColor=`rgba(255,40,40,${.85*p.glow})`;ctx.shadowBlur=36;
+  wing(p.f*.9+.15,'#1a1a1f');
+  ctx.fillStyle='#000';ctx.strokeStyle='#000';
+  ctx.beginPath();ctx.ellipse(0,0,74,36,0,0,7);ctx.fill();
+  ctx.beginPath();ctx.moveTo(-60,-6);ctx.lineTo(-112,-34);ctx.lineTo(-84,14);ctx.fill();
+  ctx.lineWidth=19;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(46,-8);ctx.bezierCurveTo(100,-42,20,-84,62,-122);ctx.stroke();
+  ctx.beginPath();ctx.ellipse(68,-126,17,13,.3,0,7);ctx.fill();
+  wing(p.f,'#000');
+  ctx.shadowBlur=0;ctx.fillStyle='#d4141e';ctx.beginPath();ctx.moveTo(80,-132);ctx.lineTo(116,-114);ctx.lineTo(78,-116);ctx.fill();
+  ctx.shadowColor='#f00';ctx.shadowBlur=24*p.glow;ctx.fillStyle='#ff3030';ctx.beginPath();ctx.arc(68,-130,5,0,7);ctx.fill();
+  ctx.restore();
+}
+function fx(t){
+  // 火花（撞擊瞬間）
+  if(t>=T_HIT&&t<T_HIT+.8){const d=t-T_HIT,a=1-d/.8;ctx.save();ctx.strokeStyle=`rgba(255,230,140,${a})`;ctx.lineWidth=4;ctx.shadowColor='#ffb300';ctx.shadowBlur=14;
+    for(const s of SPARKS){const x=IX+s.vx*d,y=ST+s.vy*d+900*d*d,x2=IX+s.vx*Math.max(0,d-.035),y2=ST+s.vy*Math.max(0,d-.035)+900*Math.max(0,d-.035)**2;ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x,y);ctx.stroke()}ctx.restore()}
+  // 衝擊波
+  for(const[t0,c]of[[T_HIT,'255,255,255'],[TS,'255,60,60']]){if(t<t0||t>t0+.8)continue;const p=prog(t,t0,t0+.8),rx=950*eout(p);
+    ctx.save();ctx.strokeStyle=`rgba(${c},${1-p})`;ctx.lineWidth=34*(1-p)+2;ctx.beginPath();ctx.ellipse(IX,ST,rx,rx*.26,0,0,7);ctx.stroke();ctx.restore()}
+  // 碎石
+  if(t>=TS&&t<TS+2.6){const d=t-TS,a=1-prog(t,TS+1.8,TS+2.6);ctx.save();ctx.globalAlpha=a;
+    for(const b of DEBRIS){const x=b.x+b.vx*d,y=b.y+b.vy*d+1200*d*d;if(y>2300)continue;ctx.save();ctx.translate(x,y);ctx.rotate(b.w*d);ctx.fillStyle=b.c;ctx.fillRect(-b.s/2,-b.s/2,b.s,b.s*.8);ctx.restore()}ctx.restore()}
+  // 煙塵
+  if(t>=TS&&t<TS+4){for(const u of DUST){const p=prog(t,TS+u.d,TS+4);if(p<=0)continue;const r=40+u.r*eout(p);const g=ctx.createRadialGradient(u.x,u.y-p*60,0,u.x,u.y-p*60,r);
+    g.addColorStop(0,`rgba(150,140,130,${.38*(1-p)})`);g.addColorStop(1,'rgba(150,140,130,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(u.x,u.y-p*60,r,0,7);ctx.fill()}}
+  // 金幣掉進洞
+  for(const c of COINS){if(t<c.t0)continue;const d=t-c.t0,y=380+c.vy*d+900*d*d;if(y>2300)continue;
+    ctx.save();ctx.translate(c.x,y);ctx.scale(Math.cos(d*c.sp)*c.s,c.s);ctx.fillStyle='#f7a600';ctx.beginPath();ctx.arc(0,0,30,0,7);ctx.fill();
+    ctx.strokeStyle='#ffd25e';ctx.lineWidth=5;ctx.stroke();ctx.fillStyle='#fff3c4';ctx.font=`38px ${NUM}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('B',0,2);
+    ctx.fillRect(-6,-24,3,8);ctx.fillRect(2,-24,3,8);ctx.fillRect(-6,16,3,8);ctx.fillRect(2,16,3,8);ctx.restore()}
+}
+function abyss(t){
+  if(t<TS)return;const a=prog(t,TS,TS+.4)*(.75+.25*Math.sin(t*5));
+  const g=ctx.createRadialGradient(IX,1620,20,IX,1620,560);g.addColorStop(0,`rgba(255,60,0,${.55*a})`);g.addColorStop(.5,`rgba(180,10,10,${.3*a})`);g.addColorStop(1,'rgba(80,0,0,0)');
+  ctx.fillStyle=g;ctx.fillRect(IX-560,ST,1120,1100);
+}
+function world(t){
+  grid(t);abyss(t);
+  // 現價虛線
+  const p=price(t),y=py(p),col=t<T_NEWS?GREEN:RED;
+  ctx.save();ctx.setLineDash([10,10]);ctx.strokeStyle=col;ctx.globalAlpha=.55;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(SX0,y);ctx.lineTo(SX1,y);ctx.stroke();ctx.restore();
+  for(let i=0;i<C.length;i++){const t0=revealT(i);if(t<t0)break;const c=C[i];candle(cx(i),c.o,c.c,c.h,c.l,14,eout(prog(t,t0,t0+.18)))}
+  if(t>revealT(19)+.15){const k=eback(prog(t,revealT(19)+.15,revealT(19)+.45));ctx.save();ctx.translate(cx(19),py(126200)-48);ctx.scale(k,k);pill(0,0,'ATH $126,000',GREEN,'#04140d',`34px ${NUM}`);ctx.restore()}
+  swan(t);
+  speedLines(t);giant(t);slab(t);
+  for(const r of REC)if(t>=r.t0)candle(r.x,r.o,r.c,r.h,r.l,14,eout(prog(t,r.t0,r.t0+.3)));
+  fx(t);
+  if(t>T_LOW+.1){const k=eback(prog(t,T_LOW+.1,T_LOW+.4));ctx.save();ctx.translate(IX-44,py(102000));ctx.scale(k,k);pill(0,0,'盤中低點 ≈ $102,000',RED,'#fff',`900 32px ${TC}`,'right');ctx.restore()}
+  // 右側現價標籤
+  ctx.font=`30px ${NUM}`;ctx.fillStyle=col;ctx.fillRect(952,y-22,124,44);ctx.fillStyle='#fff';ctx.textAlign='right';ctx.textBaseline='middle';ctx.fillText(fmt(p),1066,y+1);
+}
+
+// ---------- 畫面層（不跟鏡頭動） ----------
+function header(t){
+  ctx.fillStyle='#07080c';ctx.fillRect(0,0,W,372);
+  const g=ctx.createLinearGradient(0,372,0,430);g.addColorStop(0,'rgba(7,8,12,1)');g.addColorStop(1,'rgba(7,8,12,0)');ctx.fillStyle=g;ctx.fillRect(0,372,W,58);
+  ctx.textBaseline='middle';ctx.textAlign='left';ctx.fillStyle='#8a90a0';ctx.font=`500 34px ${TC}`;ctx.fillText('BTC / USDT  永續合約',60,110);
+  const flip=Math.abs(Math.cos(Math.PI*prog(t,T_NEWS-.15,T_NEWS+.15)));const date=t<T_NEWS?'2025.10.06 週一':'2025.10.10 週五';
+  ctx.save();ctx.translate(1020,110);ctx.scale(1,Math.max(.05,flip));pill(0,0,date,t<T_NEWS?'#1b2a22':'#3a0d12',t<T_NEWS?GREEN:'#ff6b75',`900 30px ${TC}`,'right');ctx.restore();
+  const p=price(t),crash=t>=T_DIVE&&t<12.6,j=crash?(Math.sin(t*131)*9):0;
+  const ref=t<T_NEWS?112000:121500,ch=(p/ref-1)*100,col=ch>=0?GREEN:RED;
+  ctx.font=`150px ${NUM}`;ctx.textAlign='left';const s='$'+fmt(p);
+  if(crash){ctx.fillStyle='rgba(0,255,255,.55)';ctx.fillText(s,60-8+j,262);ctx.fillStyle='rgba(255,0,60,.7)';ctx.fillText(s,60+8-j,262)}
+  ctx.fillStyle=t<T_NEWS?'#fff':col;ctx.fillText(s,60+j*.3,262);
+  pill(1020,262,(ch>=0?'+':'')+ch.toFixed(2)+'%',col,'#fff',`44px ${NUM}`,'right');
+}
+function overlays(t){
+  // 新聞紅光、警報燈
+  if(t>=T_NEWS&&t<T_DIVE){const a=prog(t,T_NEWS,4.3)*(1-prog(t,9.1,T_DIVE));
+    for(const[ox,s]of[[0,1],[W,-1]]){ctx.save();ctx.translate(ox,380);ctx.rotate(s*(.6+.5*Math.sin(t*5)));const g=ctx.createLinearGradient(0,0,1400,0);
+      g.addColorStop(0,`rgba(255,20,30,${.32*a})`);g.addColorStop(1,'rgba(255,20,30,0)');ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(1400,-260);ctx.lineTo(1400,260);ctx.fill();ctx.restore()}
+    ctx.fillStyle=`rgba(120,0,10,${.12*a*(.6+.4*Math.sin(t*12))})`;ctx.fillRect(0,0,W,H)}
+  // 心跳暗角
+  let v=0;for(const b of BEATS)if(t>=b)v+=Math.exp(-(t-b)*7);
+  if(t>=TS&&t<16)v+=.55*(1-prog(t,15,16));
+  if(v>0){const g=ctx.createRadialGradient(540,1000,380,540,1000,1150);g.addColorStop(0,'rgba(160,0,0,0)');g.addColorStop(1,`rgba(170,0,0,${Math.min(.75,.55*v)})`);ctx.fillStyle=g;ctx.fillRect(0,0,W,H)}
+  // 爆倉單從天而降
+  for(const g of TAGS){if(t<g.t0||t>15.8)continue;const y=-80+g.vy*(t-g.t0);if(y>H+80)continue;
+    ctx.save();ctx.globalAlpha=1-prog(t,15.3,15.8);ctx.translate(g.x,y);ctx.rotate(g.rot);ctx.scale(g.s,g.s);
+    ctx.fillStyle='#c8102e';ctx.strokeStyle='#ff8a95';ctx.lineWidth=3;ctx.beginPath();ctx.roundRect(-170,-46,340,92,12);ctx.fill();ctx.stroke();
+    ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`40px ${NUM}`;ctx.fillText('LIQUIDATED',0,-16);ctx.font=`500 22px ${TC}`;ctx.fillText(g.txt,0,24);ctx.restore()}
+  // 底部字幕底
+  const g=ctx.createLinearGradient(0,1560,0,1700);g.addColorStop(0,'rgba(7,8,12,0)');g.addColorStop(1,'rgba(7,8,12,.92)');ctx.fillStyle=g;ctx.fillRect(0,1560,W,140);ctx.fillStyle='rgba(7,8,12,.92)';ctx.fillRect(0,1700,W,220);
+}
+function news(t){
+  if(t<T_NEWS||t>7.4)return;
+  const kin=eback(prog(t,T_NEWS,4.45)),kout=ein(prog(t,7.0,7.4));const ox=(1-kin)*1100-kout*1200;
+  ctx.save();ctx.translate(ox,0);
+  ctx.fillStyle=Math.floor(t*6)%2?'#ff1f33':'#b8001a';ctx.fillRect(40,410,1000,72);
+  ctx.fillStyle='#fff';ctx.font=`44px ${NUM}`;ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText('BREAKING NEWS',70,447);ctx.font=`900 36px ${TC}`;ctx.fillText('‧ 突發',390,447);
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.roundRect(40,482,1000,250,[0,0,20,20]);ctx.fill();
+  ctx.fillStyle='#14213d';ctx.beginPath();ctx.arc(120,560,46,0,7);ctx.fill();ctx.fillStyle='#fff';ctx.font=`900 40px ${TC}`;ctx.textAlign='center';ctx.fillText('美',120,562);
+  ctx.textAlign='left';ctx.fillStyle='#111';ctx.font=`900 40px ${TC}`;ctx.fillText('美國總統 川普宣布',190,545);
+  ctx.font=`500 26px ${TC}`;ctx.fillStyle='#666';ctx.fillText('2025.10.10 · 美股收盤後',190,592);
+  ctx.font=`900 62px ${TC}`;ctx.fillStyle='#111';ctx.fillText('對中國加徵',80,676);const w=ctx.measureText('對中國加徵 ').width;
+  ctx.fillStyle='#e00018';ctx.font=`900 78px ${NUM}`;ctx.fillText('100%',80+w,672);const w2=ctx.measureText('100% ').width;ctx.fillStyle='#111';ctx.font=`900 62px ${TC}`;ctx.fillText('關稅',80+w+w2,676);
+  ctx.restore();
+}
+function band(t){
+  if(t<4.3||t>T_HIT)return;const a=prog(t,4.3,4.6)*(1-prog(t,9.8,T_HIT));ctx.save();ctx.globalAlpha=a;
+  ctx.fillStyle='#d10f22';ctx.fillRect(0,1590,W,52);ctx.font=`900 30px ${TC}`;ctx.fillStyle='#fff';ctx.textBaseline='middle';ctx.textAlign='left';
+  const s='突發 ▸ 美中貿易戰升溫 ▸ 100% 關稅 ▸ 美股期貨重挫 ▸ 風險資產全面拋售 ▸ 槓桿多單瑟瑟發抖 ▸ ';const w=ctx.measureText(s).width;const off=((t-4)*420)%w;
+  for(let x=-off;x<W;x+=w)ctx.fillText(s,x,1617);ctx.restore();
+}
+function boom(t){
+  if(t>=T_HIT&&t<11.7){const k=eback(prog(t,T_HIT,T_HIT+.18)),a=1-prog(t,11.3,11.7);ctx.save();ctx.globalAlpha=a;ctx.translate(330,790);ctx.rotate(-.14);ctx.scale(k,k);
+    ctx.beginPath();for(let i=0;i<36;i++){const r=i%2?175:290+((i*37)%5)*14,an=i/36*Math.PI*2;ctx.lineTo(Math.cos(an)*r,Math.sin(an)*r*.82)}ctx.closePath();
+    ctx.fillStyle=YEL;ctx.fill();ctx.lineWidth=12;ctx.strokeStyle='#000';ctx.stroke();
+    ctx.font=`900 190px ${TC}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';ctx.lineWidth=26;ctx.strokeStyle='#fff';ctx.strokeText('砰!!',0,6);
+    ctx.fillStyle='#e00018';ctx.fillText('砰!!',0,6);ctx.restore()}
+  if(t>=10.45&&t<12){const k=eback(prog(t,10.45,10.65)),a=1-prog(t,11.6,12);ctx.save();ctx.globalAlpha=a;ctx.translate(560,1330);ctx.rotate(.06);ctx.scale(k,1);
+    ctx.transform(1,0,-.25,1,0,0);ctx.fillStyle='#e00018';ctx.fillRect(-380,-70,760,140);ctx.strokeStyle='#fff';ctx.lineWidth=6;ctx.strokeRect(-380,-70,760,140);
+    ctx.fillStyle='#fff';ctx.font=`900 92px ${TC}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('鐵底 碎了！',0,4);ctx.restore()}
+}
+function counter(t){
+  if(t<11.4||t>15.6)return;const a=prog(t,11.4,11.7)*(1-prog(t,15.2,15.6));
+  ctx.save();ctx.globalAlpha=a;ctx.fillStyle='rgba(7,8,12,.86)';ctx.beginPath();ctx.roundRect(60,410,960,300,26);ctx.fill();ctx.strokeStyle='rgba(234,57,67,.7)';ctx.lineWidth=3;ctx.stroke();
+  pill(540,462,'24 小時 全網爆倉金額',RED,'#fff',`900 34px ${TC}`);
+  const done=t>=14.6,v=19e9*eout(prog(t,11.5,14.6)),pulse=done?1+.05*Math.sin((t-14.6)*14)*Math.exp(-(t-14.6)*2):1;
+  ctx.save();ctx.translate(540,580);ctx.scale(pulse,pulse);ctx.font=`118px ${NUM}`;ctx.textAlign='center';ctx.textBaseline='middle';
+  const g=ctx.createLinearGradient(0,-60,0,60);g.addColorStop(0,'#ffe066');g.addColorStop(1,'#ff2a40');ctx.shadowColor='rgba(255,60,40,.8)';ctx.shadowBlur=30;ctx.fillStyle=g;
+  ctx.fillText('$'+fmt(Math.floor(v/1e5)*1e5+(done?0:(t*1e7%1e5)))+(done?'+':''),0,0);ctx.restore();
+  const n=1.6e6*eout(prog(t,12.8,14.8));ctx.font=`900 42px ${TC}`;ctx.fillStyle='#fff';ctx.textAlign='center';ctx.fillText(`${fmt(n)}${t>14.8?'+':''} 人被強制平倉`,540,672);
+  ctx.restore();
+}
+function stamp(t){
+  if(t<13.2||t>15.6)return;const k=t<T_STAMP?lerp(3.2,1,ein(prog(t,13.2,T_STAMP))):1+.04*Math.exp(-(t-T_STAMP)*8);const a=prog(t,13.2,13.3)*(1-prog(t,15.2,15.6));
+  ctx.save();ctx.globalAlpha=a*.95;ctx.translate(560,1450);ctx.rotate(-.18);ctx.scale(k,k);ctx.strokeStyle='#ff2a40';ctx.lineWidth=10;ctx.strokeRect(-370,-90,740,180);ctx.lineWidth=4;ctx.strokeRect(-350,-72,700,144);
+  ctx.fillStyle='rgba(60,0,8,.6)';ctx.fillRect(-350,-72,700,144);ctx.fillStyle='#ff2a40';ctx.font=`900 104px ${TC}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('史上最大清算',0,6);ctx.restore();
+}
+const CAPS=[[.4,3.9,['{2025.10.06} BTC 創歷史新高','市場：這波牛市還很長']],[4.4,7.2,['{10.10} 川普宣布','對中國加徵 {100%} 關稅']],[7.4,9.5,['所有人：','{$110,000} 一定守得住吧？']],
+  [11.5,15.4,['24 小時爆倉 {$190 億美元}','加密貨幣史上最大清算']],[15.7,19.3,['插針收回來了…','但被爆倉的人 {回不來了}']]];
+function captions(t){
+  for(const[a,b,lines]of CAPS){if(t<a||t>b)continue;const al=Math.min(prog(t,a,a+.25),1-prog(t,b-.25,b)),yo=(1-eout(prog(t,a,a+.3)))*30;
+    ctx.save();ctx.globalAlpha=al;ctx.font=`900 62px ${TC}`;ctx.textBaseline='middle';ctx.textAlign='left';ctx.lineJoin='round';
+    lines.forEach((ln,i)=>{const segs=ln.split(/[{}]/),ws=segs.map(s=>ctx.measureText(s).width);let x=540-ws.reduce((p,q)=>p+q,0)/2;const y=1745+i*92+yo;
+      segs.forEach((s,j)=>{ctx.lineWidth=12;ctx.strokeStyle='#000';ctx.strokeText(s,x,y);ctx.fillStyle=j%2?YEL:'#fff';ctx.fillText(s,x,y);x+=ws[j]})});ctx.restore()}
+}
+function flash(t){
+  let a=0,c='255,255,255';
+  if(t>=T_NEWS&&t<4.4){a=.45*(1-prog(t,T_NEWS,4.4));c='255,30,40'}
+  if(t>=T_HIT&&t<10.32){a=1-prog(t,T_HIT,10.32);c='255,255,255'}
+  if(t>=TS&&t<10.65){a=.75*(1-prog(t,TS,10.65));c='255,210,200'}
+  if(t>=T_STAMP&&t<13.55){a=.3*(1-prog(t,T_STAMP,13.55))}
+  if(a>0){ctx.fillStyle=`rgba(${c},${a})`;ctx.fillRect(0,0,W,H)}
+}
+const buf=document.createElement('canvas');buf.width=W;buf.height=H;const bctx=buf.getContext('2d');
+function glitch(t){
+  const on=(t>=T_HIT&&t<10.75)||(t>=T_STAMP&&t<13.5);if(!on)return;
+  bctx.clearRect(0,0,W,H);bctx.drawImage(cv,0,0);const r=rng(Math.floor(t*30));
+  for(let i=0;i<7;i++){const y=r()*H,h=20+r()*110,dx=(r()-.5)*90;ctx.drawImage(buf,0,y,W,h,dx,y,W,h)}
+}
+function endCard(t){
+  if(t<19.4)return;const a=eout(prog(t,19.4,20));ctx.fillStyle=`rgba(5,5,8,${.95*a})`;ctx.fillRect(0,0,W,H);
+  ctx.save();ctx.globalAlpha=a;ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.font=`130px ${NUM}`;ctx.fillStyle=RED;ctx.shadowColor='rgba(255,40,60,.7)';ctx.shadowBlur=40;ctx.fillText('2025.10.10',540,300);ctx.shadowBlur=0;
+  ctx.font=`900 64px ${TC}`;ctx.fillStyle='#fff';ctx.fillText('加密貨幣史上最大清算日',540,430);ctx.restore();
+  const rows=[['崩跌前 → 盤中低點','$121,500 → $102,000','#fff'],['盤中跌幅','≈ -16%',RED],['24 小時全網爆倉','$190 億美元+',YEL],['被強制平倉','160 萬人+','#fff'],['部分山寨幣盤中','-80% 以上',RED]];
+  rows.forEach(([l,v,c],k)=>{const t0=20+k*.35;if(t<t0)return;const p=eback(prog(t,t0,t0+.35)),y=590+k*165;ctx.save();ctx.globalAlpha=prog(t,t0,t0+.15);ctx.translate((1-p)*-120,0);
+    ctx.textAlign='left';ctx.textBaseline='middle';ctx.font=`500 34px ${TC}`;ctx.fillStyle='#8a90a0';ctx.fillText(l,100,y-38);
+    ctx.font=`76px ${NUM}`;ctx.fillStyle=c;ctx.fillText(v,100,y+30);ctx.fillStyle='#22252f';ctx.fillRect(100,y+86,880,2);ctx.restore()});
+  if(t>=21.6){const p=eback(prog(t,21.6,22));ctx.save();ctx.globalAlpha=prog(t,21.6,21.8);ctx.translate(540,1500);ctx.scale(p,p);ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.font=`900 70px ${TC}`;ctx.fillStyle='#fff';ctx.fillText('槓桿，',0,-50);ctx.fillStyle=YEL;ctx.fillText('是黑天鵝最愛的獵物',0,48);ctx.restore()}
+  ctx.save();ctx.globalAlpha=a*.8;ctx.font=`500 26px ${TC}`;ctx.fillStyle='#6b7180';ctx.textAlign='center';ctx.fillText('數據為約略值｜參考 CoinGlass 及各交易所盤中報價',540,1850);ctx.restore();
+}
+function render(t){
+  ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=1;ctx.fillStyle='#07080c';ctx.fillRect(0,0,W,H);
+  const c=cam(t),s=shake(t);ctx.setTransform(c.z,0,0,c.z,540+s.x-c.fx*c.z,1000+s.y-c.fy*c.z);
+  world(t);
+  ctx.setTransform(1,0,0,1,0,0);
+  overlays(t);glitch(t);header(t);news(t);band(t);counter(t);stamp(t);boom(t);captions(t);flash(t);endCard(t);
+  const fade=Math.max(1-prog(t,0,.5),prog(t,23.3,T));if(fade>0){ctx.fillStyle=`rgba(0,0,0,${fade})`;ctx.fillRect(0,0,W,H)}
+}
+
+// ---------- 音效（WebAudio 合成，即時播放與匯出共用同一份時間表） ----------
+const NB=new WeakMap();
+function noiseBuf(ac){if(!NB.has(ac)){const b=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate),d=b.getChannelData(0),r=rng(3);for(let i=0;i<d.length;i++)d[i]=r()*2-1;NB.set(ac,b)}return NB.get(ac)}
+function master(ac){const g=ac.createGain();g.gain.value=.9;const comp=ac.createDynamicsCompressor();comp.threshold.value=-14;comp.ratio.value=6;g.connect(comp).connect(ac.destination);return g}
+function scheduleAudio(ac,dest,base,from){
+  const srcs=[],at=te=>base+(te-from),r=rng(11);
+  const env=(g,t0,vol,atk,dur)=>{g.gain.setValueAtTime(.0001,t0);g.gain.exponentialRampToValueAtTime(vol,t0+atk);g.gain.exponentialRampToValueAtTime(.0001,t0+dur)};
+  const tone=(te,f0,f1,dur,type='sine',vol=.3,atk=.005)=>{if(te<from)return;const o=ac.createOscillator(),g=ac.createGain(),t0=at(te);o.type=type;
+    o.frequency.setValueAtTime(f0,t0);if(f1!==f0)o.frequency.exponentialRampToValueAtTime(f1,t0+dur);env(g,t0,vol,atk,dur);o.connect(g).connect(dest);o.start(t0);o.stop(t0+dur+.05);srcs.push(o)};
+  const noise=(te,dur,vol,type='lowpass',f0=1000,f1=f0,q=1,atk=.005)=>{if(te<from)return;const s=ac.createBufferSource(),f=ac.createBiquadFilter(),g=ac.createGain(),t0=at(te);
+    s.buffer=noiseBuf(ac);s.loop=true;f.type=type;f.Q.value=q;f.frequency.setValueAtTime(f0,t0);if(f1!==f0)f.frequency.exponentialRampToValueAtTime(f1,t0+dur);
+    env(g,t0,vol,atk,dur);s.connect(f).connect(g).connect(dest);s.start(t0,r()*1.5);s.stop(t0+dur+.05);srcs.push(s)};
+  for(let i=0;i<28;i++)tone(revealT(i),600+i*22,600+i*22,.08,'sine',.05);
+  noise(T_NEWS,.6,.5,'lowpass',900,100);tone(T_NEWS,95,40,.9,'sine',.6);
+  for(let k=0;k<12;k++)tone(4.05+k*.25,k%2?960:720,k%2?960:720,.24,'square',.04,.01);
+  tone(5.0,300,280,.12,'triangle',.1);tone(5.8,260,240,.12,'triangle',.1);
+  tone(7.55,72,34,.7,'sine',.7);noise(7.55,.45,.35,'lowpass',700,80);
+  for(const b of BEATS){tone(b,56,40,.2,'sine',.6);tone(b+.16,50,38,.2,'sine',.45)}
+  tone(T_STOMP,130,50,.3,'sine',.6);noise(T_STOMP,.15,.3,'lowpass',2000,300);
+  tone(T_DIVE,1500,240,.7,'sine',.13,.05);noise(T_DIVE,.7,.4,'bandpass',300,3500,1.2,.55);
+  noise(T_HIT,1.9,1,'lowpass',3200,60,.7);tone(T_HIT,150,28,1.9,'sine',1);tone(T_HIT,72,20,2.5,'triangle',.5);
+  noise(TS,.9,.6,'highpass',2500,6000,.7);for(let k=0;k<16;k++)noise(TS+k*.045+r()*.02,.07,.4,'bandpass',1500+r()*4500,1500+r()*4500,3);tone(TS,95,25,1.5,'sine',.8);
+  noise(10.6,4.6,.22,'lowpass',200,60,.7,1.2);
+  for(let te=11.5;te<14.6;te+=.05)tone(te,2400,2400,.02,'square',.025,.002);
+  tone(14.6,880,880,.25,'triangle',.12);
+  tone(T_STAMP,170,45,.45,'sine',.85);noise(T_STAMP,.25,.5,'lowpass',1600,200);
+  REC.forEach((c,k)=>tone(c.t0,480+k*60,480+k*60,.12,'triangle',.07));
+  for(let k=0;k<5;k++)tone(20+k*.35,700+k*80,700+k*80,.1,'triangle',.1);
+  tone(21.6,110,40,2.6,'sine',.6);noise(21.6,1,.2,'lowpass',500,80);
+  return srcs;
+}
+window.renderAudioWav=async()=>{
+  const sr=48000,oc=new OfflineAudioContext(2,sr*T,sr);scheduleAudio(oc,master(oc),0,0);const b=await oc.startRendering();
+  const n=b.length,L=b.getChannelData(0),Rc=b.getChannelData(1),ab=new ArrayBuffer(44+n*4),v=new DataView(ab);
+  const ws=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
+  ws(0,'RIFF');v.setUint32(4,36+n*4,true);ws(8,'WAVE');ws(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,2,true);v.setUint32(24,sr,true);v.setUint32(28,sr*4,true);v.setUint16(32,4,true);v.setUint16(34,16,true);ws(36,'data');v.setUint32(40,n*4,true);
+  for(let i=0;i<n;i++){v.setInt16(44+i*4,clamp(L[i],-1,1)*32767,true);v.setInt16(46+i*4,clamp(Rc[i],-1,1)*32767,true)}
+  const u=new Uint8Array(ab);let s='';for(let i=0;i<u.length;i+=32768)s+=String.fromCharCode.apply(null,u.subarray(i,i+32768));return btoa(s);
+};
+
+// ---------- 字型、播放控制 ----------
+const SRC=document.currentScript.textContent;
+window.ready=Promise.race([Promise.all([document.fonts.load(`900 60px "Noto Sans TC"`,SRC),document.fonts.load(`500 30px "Noto Sans TC"`,SRC),document.fonts.load('60px Anton','$0123456789,.%+-ABCDEFGHIJKLMNOPQRSTUVWXYZ')]),new Promise(r=>setTimeout(r,4000))]).catch(()=>{});
+window.renderAt=render;
+if(EXPORT){cv.style.width=W+'px';cv.style.height=H+'px'}
+else{
+  let t=0,playing=true,last=null,ac=null,mg=null,srcs=[],snd=false,idle;
+  const ui=document.getElementById('ui'),bPlay=document.getElementById('bPlay'),bSnd=document.getElementById('bSnd'),seek=document.getElementById('seek');
+  const fit=()=>{const s=Math.min(innerWidth/W,innerHeight/H);cv.style.width=W*s+'px';cv.style.height=H*s+'px'};addEventListener('resize',fit);fit();
+  const stopAudio=()=>{srcs.forEach(s=>{try{s.stop()}catch(e){}});srcs=[];if(mg){mg.disconnect();mg=null}};
+  const startAudio=()=>{stopAudio();if(!snd||!playing||!ac)return;mg=master(ac);srcs=scheduleAudio(ac,mg,ac.currentTime+.05,t)};
+  const setPlay=p=>{playing=p;bPlay.textContent=p?'⏸ 暫停':'▶ 播放';p?startAudio():stopAudio()};
+  bPlay.onclick=()=>setPlay(!playing);
+  document.getElementById('bRe').onclick=()=>{t=0;setPlay(true)};
+  bSnd.onclick=()=>{snd=!snd;bSnd.classList.toggle('on',snd);bSnd.textContent=snd?'🔊 音效開':'🔊 開啟音效';
+    if(snd){ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume();t=0;setPlay(true)}else stopAudio()};
+  seek.oninput=()=>{t=+seek.value;if(playing)startAudio()};
+  cv.onclick=()=>setPlay(!playing);
+  addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();setPlay(!playing)}});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)setPlay(false)});
+  const wake=()=>{ui.classList.remove('hide');clearTimeout(idle);idle=setTimeout(()=>ui.classList.add('hide'),2500)};addEventListener('pointermove',wake);addEventListener('pointerdown',wake);wake();
+  window.ready.then(()=>{
+    const loop=now=>{if(last==null)last=now;const dt=Math.min(.1,(now-last)/1000);last=now;
+      if(playing){t+=dt;if(t>=T){t=0;startAudio()}}
+      render(t);seek.value=t;requestAnimationFrame(loop)};
+    requestAnimationFrame(loop)});
+}
+</script>
+</body></html>
