@@ -155,18 +155,23 @@ function state(t){
   return{i,u,...pt,ath:Math.max(i?athL[i-1]:-9,pt.hi)};
 }
 const LMIN=Math.log10(Math.min(...MO.map(r=>r[4]))),LMAX=Math.log10(Math.max(...MO.map(r=>r[3])));
+const NORMAL_SPX=30,EVENT_SPX=110;
+function focusEv(t){for(const e of EV)if(e.ti&&t>=S[e.i]-.7&&t<S[e.i]+D[e.i]-.3)return e;return null}
 function camTarget(t){
+  const fe=focusEv(t);
+  if(fe){const r=MO[fe.i],lo=Math.log10(Math.min(r[4],fe.P)),hi=Math.log10(Math.max(r[3],fe.P));
+    return{mc:fe.i+.5,L0:(lo+hi)/2,lp:Math.log(clamp(880/(hi-lo),190,12000)),ls:Math.log(EVENT_SPX)}}
   const st=state(Math.max(t,S[0]));const e=EVI[st.i];
   const mc=e?st.i+.5:st.i+clamp((t-S[st.i])/D[st.i]);
   let lo=Math.min(winLo[st.i],st.lo),hi=Math.max(winHi[st.i],st.hi);
   if(e&&e.P&&t<S[st.i]+D[st.i]){lo=Math.min(lo,Math.log10(e.P));hi=Math.max(hi,Math.log10(e.P))}
   if(!isFinite(lo)){lo=st.lo-.3;hi=st.hi+.3}
-  return{mc,L0:(lo+hi)/2,lp:Math.log(clamp(820/(hi-lo+.14),190,2300))};
+  return{mc,L0:(lo+hi)/2,lp:Math.log(clamp(820/(hi-lo+.14),190,2300)),ls:Math.log(NORMAL_SPX)};
 }
 function cam(t){
-  let mc=0,L0=0,lp=0;const n=16;
-  for(let k=0;k<n;k++){const c=camTarget(t-k*.06);mc+=c.mc;L0+=c.L0;lp+=c.lp}
-  mc/=n;L0/=n;let ppd=Math.exp(lp/n),spx=22,ax=720;
+  let mc=0,L0=0,lp=0,ls=0;const n=16;
+  for(let k=0;k<n;k++){const c=camTarget(t-k*.06);mc+=c.mc;L0+=c.L0;lp+=c.lp;ls+=c.ls}
+  mc/=n;L0/=n;let ppd=Math.exp(lp/n),spx=Math.exp(ls/n),ax=720;
     const z=eio(prog(t,TEND+BAR,DROP-.2));
   if(z>0){const fs=930/N,fp=1080/(LMAX-LMIN);mc=lerp(mc,N/2,z);L0=lerp(L0,(LMIN+LMAX)/2,z);ppd=Math.exp(lerp(Math.log(ppd),Math.log(fp),z));spx=Math.exp(lerp(Math.log(spx),Math.log(fs),z));ax=lerp(720,505,z)}
   return{mc,L0,ppd,spx,ax};
@@ -250,9 +255,10 @@ function icon(name,x,y,s,t){
 function grid(){
   const Ltop=CAM.L0+(1000-390)/CAM.ppd,Lbot=CAM.L0-(1600-1000)/CAM.ppd;
   ctx.textAlign='right';ctx.textBaseline='middle';ctx.font=`28px ${NUM}`;
-  const fine=CAM.ppd*Math.log10(2)>60;
-  for(let d=Math.floor(Lbot);d<=Math.ceil(Ltop);d++)for(const m of[1,2,5]){
+  const ms=CAM.ppd>1800?[1,1.5,2,2.5,3,3.5,4,4.5,5,6,7,8,9]:CAM.ppd>700?[1,2,3,4,5,6,7,8,9]:[1,2,5];
+  for(let d=Math.floor(Lbot);d<=Math.ceil(Ltop);d++)for(let q=0;q<ms.length;q++){const m=ms[q];
     const L=d+Math.log10(m);if(L<Lbot||L>Ltop)continue;if(m>1&&CAM.ppd*.3<26)continue;const y=sy(L);
+    const fine=CAM.ppd*(Math.log10(ms[q+1]||10)-Math.log10(m))>40;
     ctx.strokeStyle=m===1?'#1d2230':'#12151e';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(955,y);ctx.stroke();
     if(m===1||fine){ctx.fillStyle=m===1?'#6b7385':'#454c5c';ctx.fillText(fmtAxis(Math.pow(10,L)),1062,y)}}
 }
@@ -264,11 +270,17 @@ function candle(x,Lo,Lh,Ll,Lc,w,glow){
   if(glow)ctx.restore();
 }
 function candles(t,st){
-  const w=Math.max(1.6,CAM.spx*.62),j0=Math.max(0,Math.floor(CAM.mc-CAM.ax/CAM.spx)-2);
-  for(let j=j0;j<st.i;j++){const r=MO[j];candle(sx(j+.5),Math.log10(r[2]),Math.log10(r[3]),Math.log10(r[4]),Math.log10(r[5]),w)}
+  const w=clamp(CAM.spx*.62,1.6,46),j0=Math.max(0,Math.floor(CAM.mc-CAM.ax/CAM.spx)-2);
   const e=EVI[st.i],big=e&&(e.k==='down'||e.k==='up')&&t<S[st.i]+D[st.i];
-  const ww=big?w*lerp(1,2.6,eback(prog(t,S[st.i],S[st.i]+.5))):w;
+  const dim=big?1-.55*prog(t,S[st.i]-.3,S[st.i]+.3)*(1-prog(t,S[st.i]+D[st.i]-.5,S[st.i]+D[st.i])):1;
+  ctx.save();ctx.globalAlpha*=dim;
+  for(let j=j0;j<st.i;j++){const r=MO[j];candle(sx(j+.5),Math.log10(r[2]),Math.log10(r[3]),Math.log10(r[4]),Math.log10(r[5]),w)}
+  ctx.restore();
+  const ww=big?Math.max(w,CAM.spx*lerp(.62,1.45,eback(prog(t,S[st.i],S[st.i]+.5)))):w;
   candle(sx(st.i+.5),PATHS[st.i].L[0],st.hi,st.lo,st.cur,ww,t<TEND?(big?50:14):0);
+  if(big){const o=Math.pow(10,PATHS[st.i].L[0]),pct=(Math.pow(10,st.cur)/o-1)*100,al=prog(t,S[st.i],S[st.i]+.3)*(1-prog(t,S[st.i]+D[st.i]-.4,S[st.i]+D[st.i]));
+    if(al>0){const x=sx(st.i+.5)-ww/2-28,y=clamp(sy(st.cur),470,1540);ctx.save();ctx.globalAlpha*=al;ctx.font=`150px ${NUM}`;ctx.textAlign='right';ctx.textBaseline='middle';ctx.lineJoin='round';
+      ctx.lineWidth=14;ctx.strokeStyle='#07080c';const s=(pct>=0?'+':'')+pct.toFixed(1)+'%';ctx.strokeText(s,x,y);ctx.fillStyle=pct>=0?GREEN:RED;ctx.shadowColor=ctx.fillStyle;ctx.shadowBlur=30;ctx.fillText(s,x,y);ctx.restore()}}
   if(big&&t>=e.ti&&t<e.tb+B+.2){ctx.save();ctx.shadowColor='#fff';ctx.shadowBlur=40;ctx.fillStyle='#fff6e0';ctx.fillRect(sx(st.i+.5)-ww/2-4,sy(st.cur)-5,ww+8,10);ctx.restore()}
 }
 // 地板（混凝土）或天花板（玻璃）
@@ -468,7 +480,7 @@ function hudFx(t){
   for(const e of EV){if(!e.ti||t<S[e.i]||t>S[e.i]+D[e.i]+.8)continue;const up=e.k==='up';
     const[ix,by]=[sx(e.i+.5),sy(Math.log10(e.P))];
     // 砰!!
-    if(t>=e.ti&&t<e.tb+1.3){const k=eback(prog(t,e.ti,e.ti+.18)),al=1-prog(t,e.tb+.9,e.tb+1.3);const bx=clamp(ix-340,230,850),byy=clamp(by+(up?120:-190),560,1400);
+    if(t>=e.ti&&t<e.tb+1.3){const k=eback(prog(t,e.ti,e.ti+.18)),al=1-prog(t,e.tb+.9,e.tb+1.3);const bx=clamp(ix-340,230,850),byy=clamp(by+(up?300:-300),560,1400);
       ctx.save();ctx.globalAlpha=al;ctx.translate(bx,byy);ctx.rotate(-.14);ctx.scale(k*.85,k*.85);ctx.beginPath();for(let i=0;i<36;i++){const r=i%2?175:290+((i*37)%5)*14,an=i/36*Math.PI*2;ctx.lineTo(Math.cos(an)*r,Math.sin(an)*r*.82)}ctx.closePath();
       ctx.fillStyle=up?'#7dffb0':YEL;ctx.fill();ctx.lineWidth=12;ctx.strokeStyle='#000';ctx.stroke();ctx.font=`900 180px ${TC}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';ctx.lineWidth=24;ctx.strokeStyle='#fff';ctx.strokeText(e.w,0,6);
       ctx.fillStyle=up?'#008a3e':'#e00018';ctx.fillText(e.w,0,6);ctx.restore()}
