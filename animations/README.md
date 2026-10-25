@@ -4,3 +4,7 @@
 
 匯出含音效的 MP4：`node animations/render.js btc-black-swan` → `animations/out/btc-black-swan.mp4`
 只截幾格檢查：`node animations/render.js btc-black-swan --frames 9.8,10.5,14`
+
+- `btc-history/`：BTC 全歷史大波動，從 2009 創世區塊、披薩節一路到今天。33 個大事件，每一次都是一根 K 棒砸穿地板或衝破天花板，結尾拉遠看完整 17 年。約 1 分 47 秒。
+  - 更新到最新資料：`python3 animations/btc-history/update_data.py`（Bitstamp 月線＋早期 blockchain.com 均價）
+  - 匯出影片：`node animations/render.js btc-history`

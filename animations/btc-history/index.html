@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BTC 全歷史大波動</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+TC:wght@500;900&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#000;--ui:rgba(20,22,30,.82);--fg:#fff;--accent:#f7931a}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#000}}
+  :root[data-theme="dark"]{--bg:#000}
+  html,body{margin:0;height:100%;background:var(--bg);overflow:hidden;font-family:"Noto Sans TC",sans-serif;color:var(--fg)}
+  #stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  canvas{display:block;background:#07080c}
+  #ui{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);display:flex;gap:8px;align-items:center;background:var(--ui);padding:8px 12px;border-radius:999px;transition:opacity .4s;max-width:calc(100vw - 32px);box-sizing:border-box}
+  #ui.hide{opacity:0;pointer-events:none}
+  #ui button{background:none;border:1px solid rgba(255,255,255,.25);color:var(--fg);border-radius:999px;padding:6px 12px;font:500 14px "Noto Sans TC",sans-serif;cursor:pointer;white-space:nowrap}
+  #ui button.on{background:var(--accent);border-color:var(--accent);color:#000}
+  #ui input{width:180px;min-width:0;flex:1;accent-color:var(--accent)}
+  body.export #ui{display:none}
+  body.export #stage{position:static;display:block}
+</style></head><body>
+<div id="stage"><canvas id="c"></canvas></div>
+<div id="ui">
+  <button id="bPlay">⏸ 暫停</button>
+  <button id="bRe">↺ 重播</button>
+  <input id="seek" type="range" min="0" max="100" step="0.01" value="0" aria-label="時間軸">
+  <button id="bSnd">🔊 開啟音效</button>
+</div>
+<script>
+// ===== BTC 全歷史：2009 創世區塊 → 今天，每一次大波動都是一根砸穿地板（或天花板）的 K 棒 =====
+// 整支動畫是 t（秒）的純函式：render(t) 畫出那一格，匯出影片時逐格呼叫。
+const W=1080,H=1920;
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+cv.width=W;cv.height=H;
+const EXPORT=new URLSearchParams(location.search).has('export');
+if(EXPORT)document.body.classList.add('export');
+
+// ---------- 工具 ----------
+const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,k)=>a+(b-a)*k;
+const prog=(t,a,b)=>clamp((t-a)/(b-a));
+const eio=k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+const eout=k=>1-Math.pow(1-k,3);
+const ein=k=>k*k*k;
+const eback=k=>{const c1=2.2,c3=c1+1;return 1+c3*Math.pow(k-1,3)+c1*Math.pow(k-1,2)};
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let x=Math.imul(seed^seed>>>15,1|seed);x=x+Math.imul(x^x>>>7,61|x)^x;return((x^x>>>14)>>>0)/4294967296}}
+const fmt=p=>Math.round(p).toLocaleString('en-US');
+const fmtP=p=>p>=1000?'$'+fmt(p):p>=100?'$'+p.toFixed(0):p>=10?'$'+p.toFixed(1):p>=1?'$'+p.toFixed(2):p>=.01?'$'+p.toFixed(3):'$'+p.toFixed(5);
+const fmtAxis=p=>p>=1000?'$'+fmt(p):p>=1?'$'+(+p.toPrecision(3)):'$'+(+p.toPrecision(2));
+const NUM='Anton, "Noto Sans TC", sans-serif',TC='"Noto Sans TC", sans-serif';
+const GREEN='#16c784',RED='#ea3943',YEL='#ffd400',ORANGE='#f7931a',CYAN='#7fdcff';
+
+// ---------- 月線資料 [年, 月, 開, 高, 低, 收]（update_data.py 會改寫這段） ----------
+const MO=/*DATA*/[[2010,8,0.07,0.07,0.06,0.07],[2010,9,0.07,0.15,0.06,0.06],[2010,10,0.06,0.19,0.06,0.19],[2010,11,0.19,0.47,0.19,0.28],[2010,12,0.28,0.3,0.21,0.3],[2011,1,0.3,0.48,0.3,0.48],[2011,2,0.48,1.09,0.48,0.96],[2011,3,0.96,0.97,0.79,0.8],[2011,4,0.8,3.05,0.72,3.05],[2011,5,3.05,9.23,3.05,9.12],[2011,6,9.12,31.91,9.12,17.35],[2011,7,17.35,17.38,13.8,14.06],[2011,8,14.06,14.58,9.11,9.11],[2011,9,9.11,8.89,4.8,4.82],[2011,10,4.82,6.25,2.22,3.3],[2011,11,3.3,3.795,2.25,3.19],[2011,12,3.19,4.75,2.82,4.58],[2012,1,4.58,7.38,3.8,5.3],[2012,2,5.3,6.5,4.14,4.99],[2012,3,4.99,5.44,4.54,4.9],[2012,4,4.9,5.43,4.69,5.0],[2012,5,5.0,5.17,4.86,5.17],[2012,6,5.17,6.69,5.14,6.61],[2012,7,6.61,9.28,6.36,9.28],[2012,8,9.28,16.41,7.1,10.16],[2012,9,10.16,12.66,9.49,12.22],[2012,10,12.22,12.99,9.5,11.0],[2012,11,11.0,12.74,10.25,12.43],[2012,12,12.43,13.94,12.24,13.24],[2013,1,13.24,21.0,12.77,20.46],[2013,2,20.46,34.42,19.5,33.53],[2013,3,33.53,97.0,33.0,96.15],[2013,4,96.15,259.34,45.0,139.88],[2013,5,139.88,140.3,81.5,127.91],[2013,6,127.91,128.86,86.2,89.53],[2013,7,89.53,101.0,63.0,98.28],[2013,8,98.28,134.95,90.0,128.0],[2013,9,128.0,132.09,115.0,126.25],[2013,10,126.25,206.6,85.0,203.54],[2013,11,203.54,1163.0,200.23,1119.5],[2013,12,1119.5,1153.3,382.21,732.0],[2014,1,732.0,995.0,725.0,803.0],[2014,2,803.0,827.38,400.0,551.89],[2014,3,551.89,710.0,436.0,454.83],[2014,4,454.83,548.0,339.79,448.85],[2014,5,448.85,629.4,420.27,627.8],[2014,6,627.8,683.26,538.38,641.11],[2014,7,641.11,658.88,555.9,582.04],[2014,8,582.04,607.2,442.0,479.04],[2014,9,479.04,497.0,365.2,391.09],[2014,10,391.09,417.99,275.0,337.99],[2014,11,337.99,453.92,316.61,377.01],[2014,12,377.01,383.0,304.99,321.0],[2015,1,321.0,321.0,152.4,216.9],[2015,2,216.9,267.92,208.48,253.47],[2015,3,253.47,297.95,236.4,244.24],[2015,4,244.24,262.98,210.0,236.2],[2015,5,236.2,247.01,227.01,228.91],[2015,6,228.91,268.0,219.03,262.5],[2015,7,262.5,317.99,252.4,284.33],[2015,8,284.33,285.88,198.12,229.86],[2015,9,229.86,246.24,223.0,236.2],[2015,10,236.2,334.67,235.0,310.18],[2015,11,310.18,502.0,294.0,376.71],[2015,12,376.71,467.8,348.64,430.89],[2016,1,430.89,465.0,352.0,368.49],[2016,2,368.49,447.99,365.0,435.23],[2016,3,435.23,437.5,382.0,414.66],[2016,4,414.66,470.02,412.0,448.37],[2016,5,448.37,548.5,435.0,531.84],[2016,6,531.84,778.85,525.49,667.95],[2016,7,667.95,704.99,605.5,623.83],[2016,8,623.83,630.0,465.28,570.75],[2016,9,570.75,628.99,566.86,608.23],[2016,10,608.23,717.99,604.99,697.01],[2016,11,697.01,755.07,670.32,742.06],[2016,12,742.06,980.74,740.18,966.3],[2017,1,966.3,1139.9,751.34,963.99],[2017,2,963.99,1220.0,913.73,1191.2],[2017,3,1191.2,1350.0,891.33,1070.3],[2017,4,1070.3,1356.0,1061.6,1350.2],[2017,5,1350.2,2760.1,1341.2,2298.0],[2017,6,2298.0,2980.0,2120.0,2465.5],[2017,7,2465.5,2938.0,1830.0,2855.8],[2017,8,2855.8,4765.2,2615.0,4734.3],[2017,9,4734.3,4979.9,2972.0,4326.1],[2017,10,4326.1,6449.8,4138.0,6434.2],[2017,11,6434.2,11395.0,5555.6,9947.7],[2017,12,9947.7,19666.0,9370.1,13880.0],[2018,1,13880.0,17235.0,9222.0,10149.0],[2018,2,10149.0,11780.0,5920.7,10315.0],[2018,3,10315.0,11688.0,6550.0,6928.6],[2018,4,6928.6,9755.5,6427.2,9242.2],[2018,5,9242.2,9949.0,7026.9,7492.3],[2018,6,7492.3,7790.7,5774.7,6385.7],[2018,7,6385.7,8497.0,6072.0,7725.4],[2018,8,7725.4,7761.6,5880.0,7017.4],[2018,9,7017.4,7411.9,6094.4,6597.8],[2018,10,6597.8,6756.0,6055.3,6303.3],[2018,11,6303.3,6544.0,3474.7,3971.1],[2018,12,3971.1,4265.0,3122.3,3693.3],[2019,1,3693.3,4112.0,3322.2,3413.1],[2019,2,3413.1,4190.0,3328.7,3791.4],[2019,3,3791.4,4130.4,3670.0,4096.1],[2019,4,4096.1,5627.0,4052.6,5269.0],[2019,5,5269.0,9096.8,5263.0,8547.2],[2019,6,8547.2,13880.0,7432.8,10760.0],[2019,7,10760.0,13200.0,9049.5,10085.0],[2019,8,10085.0,12325.0,9320.0,9594.1],[2019,9,9594.1,10949.0,7714.7,8298.5],[2019,10,8298.5,10350.0,7293.6,9150.1],[2019,11,9150.1,9586.5,6515.0,7550.7],[2019,12,7550.7,7772.7,6425.0,7168.4],[2020,1,7168.4,9570.0,6853.5,9327.9],[2020,2,9327.9,10500.0,8421.5,8527.7],[2020,3,8527.7,9219.1,3850.0,6421.1],[2020,4,6421.1,9485.3,6137.7,8627.3],[2020,5,8627.3,10074.0,8109.0,9446.2],[2020,6,9446.2,10429.0,8830.6,9133.0],[2020,7,9133.0,11458.0,8905.0,11357.0],[2020,8,11357.0,12473.0,10560.0,11655.0],[2020,9,11655.0,12066.0,9825.1,10778.0],[2020,10,10778.0,14100.0,10380.0,13816.0],[2020,11,13816.0,19864.0,13220.0,19700.0],[2020,12,19700.0,29300.0,17570.0,28993.0],[2021,1,28993.0,42000.0,27734.0,33141.0],[2021,2,33141.0,58354.0,32333.0,45241.0],[2021,3,45241.0,61782.0,45020.0,58783.0],[2021,4,58783.0,64895.0,47004.0,57775.0],[2021,5,57775.0,59603.0,30066.0,37341.0],[2021,6,37341.0,41342.0,28600.0,35037.0],[2021,7,35037.0,42411.0,29296.0,41490.0],[2021,8,41490.0,50562.0,37300.0,47156.0],[2021,9,47156.0,52956.0,39573.0,43834.0],[2021,10,43834.0,67016.0,43291.0,61359.0],[2021,11,61359.0,69000.0,53309.0,56974.0],[2021,12,56974.0,59100.0,41968.0,46214.0],[2022,1,46214.0,47989.0,32951.0,38492.0],[2022,2,38492.0,45850.0,34324.0,43179.0],[2022,3,43179.0,48234.0,37170.0,45517.0],[2022,4,45517.0,47458.0,37597.0,37640.0],[2022,5,37640.0,40050.0,25401.0,31763.0],[2022,6,31763.0,31963.0,17593.0,19925.0],[2022,7,19925.0,24676.0,18764.0,23323.0],[2022,8,23323.0,25212.0,19526.0,20059.0],[2022,9,20059.0,22781.0,18157.0,19425.0],[2022,10,19425.0,21078.0,18183.0,20498.0],[2022,11,20498.0,21473.0,15479.0,17170.0],[2022,12,17170.0,18373.0,16293.0,16528.0],[2023,1,16528.0,23954.0,16496.0,23127.0],[2023,2,23127.0,25270.0,21376.0,23136.0],[2023,3,23136.0,29380.0,19569.0,28476.0],[2023,4,28476.0,31035.0,26981.0,29235.0],[2023,5,29235.0,29851.0,25800.0,27219.0],[2023,6,27219.0,31458.0,24756.0,30469.0],[2023,7,30469.0,31818.0,28842.0,29231.0],[2023,8,29231.0,30210.0,25350.0,25932.0],[2023,9,25932.0,27486.0,24920.0,26966.0],[2023,10,26966.0,35198.0,26533.0,34661.0],[2023,11,34661.0,38457.0,34102.0,37719.0],[2023,12,37719.0,44729.0,37628.0,42258.0],[2024,1,42258.0,49048.0,38505.0,42558.0],[2024,2,42558.0,64000.0,41859.0,61161.0],[2024,3,61161.0,73794.0,59313.0,71285.0],[2024,4,71285.0,72756.0,59068.0,60632.0],[2024,5,60632.0,71958.0,56500.0,67477.0],[2024,6,67477.0,71949.0,58456.0,62676.0],[2024,7,62676.0,70016.0,53550.0,64612.0],[2024,8,64612.0,65568.0,49577.0,58967.0],[2024,9,58967.0,66508.0,52546.0,63302.0],[2024,10,63302.0,73600.0,58867.0,70231.0],[2024,11,70231.0,99800.0,66798.0,96441.0],[2024,12,96441.0,108360.0,91315.0,93381.0],[2025,1,93381.0,109360.0,89164.0,102410.0],[2025,2,102410.0,102750.0,78197.0,84321.0],[2025,3,84321.0,95152.0,76600.0,82538.0],[2025,4,82538.0,95857.0,74434.0,94181.0],[2025,5,94181.0,112000.0,93376.0,104650.0],[2025,6,104650.0,110590.0,98240.0,107180.0],[2025,7,107180.0,123240.0,105130.0,115750.0],[2025,8,115750.0,124520.0,107390.0,108270.0],[2025,9,108270.0,117970.0,107270.0,114060.0],[2025,10,114060.0,126270.0,103530.0,109550.0],[2025,11,109550.0,111130.0,80537.0,90382.0],[2025,12,90382.0,94652.0,83814.0,87496.0],[2026,1,87496.0,97939.0,75555.0,78635.0],[2026,2,78635.0,79322.0,59930.0,66985.0],[2026,3,66985.0,76013.0,64955.0,68215.0],[2026,4,68215.0,79500.0,65696.0,76310.0],[2026,5,76310.0,82833.0,72395.0,73568.0],[2026,6,73568.0,73984.0,58035.0,58526.0],[2026,7,58526.0,66921.0,57735.0,62818.0],[2026,8,62818.0,81455.0,62216.0,78571.0],[2026,9,78571.0,87374.0,74913.0,83563.0],[2026,10,83563.0,87219.0,79146.0,80823.0]]/*END*/;
+const TODAY='2026.10.25';
+const N=MO.length;
+const ym=i=>`${MO[i][0]}.${String(MO[i][1]).padStart(2,'0')}`;
+const idx=s=>{const[y,m]=s.split('-').map(Number);return MO.findIndex(r=>r[0]===y&&r[1]===m)};
+
+// ---------- 大事件 ----------
+// k: down 砸穿地板 / up 衝破天花板 / peak 歷史新高 / bottom 熊市底 / info 里程碑
+const EV=[
+ {d:'2011-02',k:'up',P:1,bl:'天花板  $1',t:'突破 $1',s:'第一次跟美元平起平坐',w:'破!!'},
+ {d:'2011-06',k:'down',P:20,bl:'$20',t:'Mt.Gox 被駭',s:'$31.9 泡沫頂 → 交易所被駭閃崩',w:'砰!!'},
+ {d:'2011-11',k:'bottom',t:'第一次大熊市',s:'從 $31.9 一路跌到 $2',stamp:'-93%'},
+ {d:'2012-11',k:'info',ic:'half',t:'第一次減半',s:'區塊獎勵 50 → 25 BTC'},
+ {d:'2013-04',k:'down',P:100,bl:'$100',t:'塞浦路斯危機泡沫',s:'$260 → $50，三天腰斬再腰斬',w:'崩!!'},
+ {d:'2013-11',k:'up',P:1000,bl:'天花板  $1,000',t:'第一次破 $1,000',s:'中國散戶湧入、美國國會聽證會',w:'衝!!'},
+ {d:'2013-12',k:'down',P:800,bl:'$800',t:'中國人民銀行禁令',s:'禁止金融機構碰比特幣',w:'砰!!'},
+ {d:'2014-02',k:'down',P:600,bl:'Mt.Gox',t:'Mt.Gox 倒閉',s:'最大交易所破產，85 萬顆 BTC 消失',w:'碎!!',ic:'bank'},
+ {d:'2015-01',k:'bottom',t:'熊市見底',s:'從 $1,163 跌到 $152',stamp:'-87%'},
+ {d:'2016-07',k:'info',ic:'half',t:'第二次減半',s:'區塊獎勵 25 → 12.5 BTC'},
+ {d:'2017-11',k:'up',P:10000,bl:'天花板  $10,000',t:'破 $10,000',s:'ICO 狂熱，全民炒幣',w:'衝!!'},
+ {d:'2017-12',k:'peak',t:'泡沫頂 $19,700',s:'CME 比特幣期貨上線當週見頂'},
+ {d:'2018-11',k:'down',P:6000,bl:'$6,000 鐵底',t:'$6,000 鐵底碎了',s:'守了 10 個月，BCH 算力戰引爆',w:'砰!!',stamp:'-84%'},
+ {d:'2020-03',k:'down',P:5000,bl:'$5,000',t:'312 新冠黑天鵝',s:'全球股災，一天腰斬',w:'崩!!',stamp:'-50%',ic:'virus'},
+ {d:'2020-05',k:'info',ic:'half',t:'第三次減半',s:'區塊獎勵 12.5 → 6.25 BTC'},
+ {d:'2020-12',k:'up',P:20000,bl:'2017 高點  $20,000',t:'突破 2017 高點',s:'MicroStrategy、機構開始搶幣',w:'破!!'},
+ {d:'2021-04',k:'peak',t:'Coinbase 上市 $64,900',s:'華爾街正式擁抱加密'},
+ {d:'2021-05',k:'down',P:40000,bl:'$40,000',t:'中國全面清退挖礦',s:'519 大屠殺，一天 -30%',w:'砰!!'},
+ {d:'2021-11',k:'peak',t:'歷史新高 $69,000',s:'第二波大牛市頂'},
+ {d:'2022-05',k:'down',P:30000,bl:'LUNA / UST',t:'LUNA 歸零',s:'穩定幣 UST 脫鉤，400 億美元蒸發',w:'崩!!',ic:'moon'},
+ {d:'2022-06',k:'down',P:20000,bl:'$20,000',t:'Celsius、三箭資本爆雷',s:'跌破 2017 年高點',w:'砰!!'},
+ {d:'2022-11',k:'down',P:18000,bl:'FTX',t:'FTX 倒閉',s:'SBF 挪用用戶資金，一週崩塌',w:'碎!!',stamp:'-77%',ic:'bank'},
+ {d:'2023-03',k:'up',P:25000,bl:'$25,000',t:'矽谷銀行倒閉',s:'銀行出事，比特幣反而噴',w:'衝!!'},
+ {d:'2024-01',k:'info',ic:'etf',t:'美國現貨 ETF 通過',s:'貝萊德等 11 檔 ETF 上市'},
+ {d:'2024-03',k:'peak',t:'歷史新高 $73,800',s:'ETF 買盤，減半前就創新高'},
+ {d:'2024-04',k:'info',ic:'half',t:'第四次減半',s:'區塊獎勵 6.25 → 3.125 BTC'},
+ {d:'2024-08',k:'down',P:55000,bl:'$55,000',t:'日圓套利平倉',s:'8/5 全球股災，一度跌到 $49,000',w:'砰!!'},
+ {d:'2024-12',k:'up',P:100000,bl:'天花板  $100,000',t:'破 $100,000',s:'川普勝選，加密總統行情',w:'破!!'},
+ {d:'2025-04',k:'down',P:80000,bl:'$80,000',t:'解放日關稅',s:'對等關稅震撼，跌到 $74,000',w:'砰!!',ord:'olhc'},
+ {d:'2025-10',k:'down',P:110000,bl:'$110,000 鐵底',t:'10.10 黑天鵝',s:'10/6 才創新高 $126K，100% 關稅砸盤',w:'砰!!',swan:1,stamp:'$190 億爆倉',ic:'swan'},
+ {d:'2026-02',k:'down',P:70000,bl:'$70,000',t:'2/5 單日 -14%',s:'降息預期落空、ETF 資金出逃',w:'砰!!'},
+ {d:'2026-06',k:'down',P:60000,bl:'$60,000',t:'跌破 $60,000',s:'AI 股拋售、ETF 流出、Strategy 融資疑慮',w:'崩!!',stamp:'-54%'},
+ {d:'2026-08',k:'up',P:80000,bl:'$80,000',t:'重回 $80,000',s:'美債回購、ETF 流入、空頭被軋',w:'衝!!'},
+];
+
+// ---------- 每根 K 棒的走法與時間表 ----------
+const EVI=[];
+const PATHS=MO.map((r,i)=>{
+  const e=EV.find(e=>idx(e.d)===i);if(e){e.i=i;EVI[i]=e}
+  const[, ,o,h,l,c]=r;
+  const ord=e&&e.ord||(e&&e.k==='down'?'ohlc':e&&(e.k==='up'||e.k==='peak')?'olhc':c>=o?'olhc':'ohlc');
+  const L=(ord==='ohlc'?[o,h,l,c]:[o,l,h,c]).map(Math.log10),cum=[0];
+  for(let k=1;k<4;k++)cum.push(cum[k-1]+Math.abs(L[k]-L[k-1])+1e-9);
+  return{L,cum:cum.map(s=>s/cum[3]),ord};
+});
+function partial(p,u){
+  let cur=p.L[0],hi=cur,lo=cur;
+  for(let k=1;k<4;k++){
+    if(u>=p.cum[k]){cur=p.L[k]}else{cur=lerp(p.L[k-1],p.L[k],clamp((u-p.cum[k-1])/(p.cum[k]-p.cum[k-1])));hi=Math.max(hi,cur);lo=Math.min(lo,cur);break}
+    hi=Math.max(hi,cur);lo=Math.min(lo,cur);
+  }
+  return{cur,hi,lo};
+}
+const BASE=.13,A=.75,HH=.22,B=.42,R=.5,I0=8;
+const DUR={down:2.3,up:2.3,peak:1.5,info:1.3,bottom:1.5};
+const S=[],D=[];
+{let acc=I0;for(let i=0;i<N;i++){const e=EVI[i];D[i]=e?(e.swan?3.4:DUR[e.k]):BASE;S[i]=acc;acc+=D[i]}}
+const TEND=S[N-1]+D[N-1],T=TEND+10.5;
+for(const e of EV){
+  const p=PATHS[e.i];e.pre=e.swan?1.1:0;
+  if(e.k==='down'||e.k==='up'){
+    const lp=Math.log10(e.P);
+    for(let k=1;k<4;k++){const a=p.L[k-1],b=p.L[k];if(e.k==='down'?(a>lp&&b<=lp):(a<lp&&b>=lp)){e.uP=p.cum[k-1]+(a-lp)/(a-b)*(p.cum[k]-p.cum[k-1]);e.uE=p.cum[k];break}}
+    e.uH=p.cum[1];e.u0=e.swan?e.uH:0;
+    e.ti=S[e.i]+e.pre+A;e.tb=e.ti+HH;
+  }
+  if(e.k==='peak'){e.uH=p.ord==='olhc'?p.cum[2]:p.cum[1];e.tPk=S[e.i]+.55}
+}
+function uOf(i,t){
+  const e=EVI[i],tau=t-S[i];
+  if(!e)return eio(clamp(tau/D[i]));
+  if(e.k==='down'||e.k==='up'){
+    let x=tau;if(x<e.pre)return e.uH*eio(x/e.pre);x-=e.pre;
+    if(x<A)return lerp(e.u0,e.uP,ein(x/A));x-=A;if(x<HH)return e.uP;x-=HH;
+    if(x<B)return lerp(e.uP,e.uE,eout(x/B));x-=B;if(x<R)return lerp(e.uE,1,eio(x/R));return 1;
+  }
+  if(e.k==='peak')return tau<.55?lerp(0,e.uH,eio(tau/.55)):lerp(e.uH,1,eio(clamp((tau-.55)/.35)));
+  return eio(clamp(tau/.45));
+}
+function monthAt(t){if(t<S[0])return -1;let a=0,b=N-1;while(a<b){const m=(a+b+1)>>1;if(S[m]<=t)a=m;else b=m-1}return a}
+// 視窗內的高低點（決定鏡頭縮放）
+const WIN=28,winLo=[],winHi=[],athL=[];
+for(let i=0;i<N;i++){let lo=Infinity,hi=-Infinity;for(let j=Math.max(0,i-WIN);j<i;j++){lo=Math.min(lo,Math.log10(MO[j][4]));hi=Math.max(hi,Math.log10(MO[j][3]))}
+  winLo[i]=lo;winHi[i]=hi;athL[i]=Math.max(i?athL[i-1]:-9,Math.log10(MO[i][3]))}
+function state(t){
+  const i=Math.min(monthAt(t),N-1);if(i<0)return null;
+  const u=t>=TEND?1:uOf(i,t),pt=partial(PATHS[i],u);
+  return{i,u,...pt,ath:Math.max(i?athL[i-1]:-9,pt.hi)};
+}
+const LMIN=Math.log10(Math.min(...MO.map(r=>r[4]))),LMAX=Math.log10(Math.max(...MO.map(r=>r[3])));
+function camTarget(t){
+  const st=state(Math.max(t,S[0]));const e=EVI[st.i];
+  const mc=e?st.i+.5:st.i+clamp((t-S[st.i])/D[st.i]);
+  let lo=Math.min(winLo[st.i],st.lo),hi=Math.max(winHi[st.i],st.hi);
+  if(e&&e.P&&t<S[st.i]+D[st.i]){lo=Math.min(lo,Math.log10(e.P));hi=Math.max(hi,Math.log10(e.P))}
+  if(!isFinite(lo)){lo=st.lo-.3;hi=st.hi+.3}
+  return{mc,L0:(lo+hi)/2,lp:Math.log(clamp(820/(hi-lo+.14),190,2300))};
+}
+const IMPACTS=EV.filter(e=>e.ti).flatMap(e=>[[e.ti,.12],[e.tb,.06]]);
+function cam(t){
+  let mc=0,L0=0,lp=0;const n=16;
+  for(let k=0;k<n;k++){const c=camTarget(t-k*.06);mc+=c.mc;L0+=c.L0;lp+=c.lp}
+  mc/=n;L0/=n;let ppd=Math.exp(lp/n),spx=22,ax=720;
+  let bump=0;for(const[t0,a]of IMPACTS)if(t>=t0&&t<t0+1.5)bump+=a*Math.exp(-(t-t0)*5);
+  ppd*=1+bump;spx*=1+bump;
+  const z=eio(prog(t,TEND+2,TEND+4.5));
+  if(z>0){const fs=930/N,fp=1080/(LMAX-LMIN);mc=lerp(mc,N/2,z);L0=lerp(L0,(LMIN+LMAX)/2,z);ppd=Math.exp(lerp(Math.log(ppd),Math.log(fp),z));spx=Math.exp(lerp(Math.log(spx),Math.log(fs),z));ax=lerp(720,505,z)}
+  return{mc,L0,ppd,spx,ax};
+}
+let CAM;
+const sx=m=>CAM.ax+(m-CAM.mc)*CAM.spx;
+const sy=L=>1000-(L-CAM.L0)*CAM.ppd;
+
+// 震動
+const SHAKES=[];for(const e of EV){if(e.ti){SHAKES.push([e.ti,e.swan?70:50,4.5],[e.tb,e.swan?50:34,3.5]);if(e.stamp)SHAKES.push([e.tb+.66,20,7])}
+  if(e.swan)SHAKES.push([S[e.i]+e.pre,14,10]);if(e.tPk)SHAKES.push([e.tPk,10,6]);if(e.k==='bottom')SHAKES.push([S[e.i]+.66,18,7])}
+SHAKES.push([TEND+4.6,10,4]);
+function shake(t){let a=0;for(const[t0,amp,d]of SHAKES)if(t>=t0&&t<t0+2)a+=amp*Math.exp(-(t-t0)*d);
+  return{x:a*(Math.sin(t*97.3)+Math.sin(t*61.7))*.5,y:a*(Math.sin(t*83.1)+Math.cos(t*71.9))*.5}}
+
+// ---------- 碎片、粒子（固定亂數種子；座標以撞擊點為原點） ----------
+const r2=rng(99),RR=(a,b)=>a+(b-a)*r2();
+const X0=-700,X1=230;
+const DEBRIS=[...Array(150)].map(()=>{const up=r2()<.75;const a=up?RR(-Math.PI*.95,-Math.PI*.05):RR(Math.PI*.2,Math.PI*.8);const sp=RR(300,1500);
+  return{x:RR(-50,50),y:RR(-5,15),vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,s:RR(3,14),w:RR(-12,12),hot:r2()<.3,c:RR(35,70)|0}});
+const SPARKS=[...Array(80)].map(()=>{const a=RR(-Math.PI,0),sp=RR(800,2300);return{vx:Math.cos(a)*sp,vy:Math.sin(a)*sp}});
+const DUST=[...Array(22)].map(()=>({x:RR(-300,300),y:RR(-50,40),r:RR(130,250),d:RR(0,.25)}));
+const SPEED=[...Array(36)].map(()=>({x:RR(-280,280),y0:RR(0,2600),len:RR(140,380),w:RR(2,6)}));
+const SPECK=[...Array(140)].map(()=>[RR(X0,X1),RR(.25,1),RR(1,3),r2()<.5]);
+const FIRE=[...Array(60)].map(()=>({a:RR(0,Math.PI*2),sp:RR(250,700),h:[45,30,140,190,330][r2()*5|0]}));
+const SH=48;
+const CHUNKS=[];
+{const r=rng(42),j=(x,a)=>x+(r()-.5)*a;
+ const cuts=[[[X0,0],[X0,SH*.35],[X0,SH*.7],[X0,SH]]];let x=X0;
+ while(x<X1){x+=Math.abs(x)<240?26+r()*26:70+r()*60;if(x>X1-20)x=X1;
+  cuts.push(x===X1?[[x,0],[x,SH*.35],[x,SH*.7],[x,SH]]:[[j(x,16),0],[j(x,28),SH*.35],[j(x,28),SH*.7],[j(x,16),SH]])}
+ for(let i=0;i<cuts.length-1;i++){const L=cuts[i],Rt=cuts[i+1];const mx=(L[0][0]+Rt[0][0])/2;const near=Math.abs(mx)<220;
+  const polys=near?[[L[0],L[1],Rt[1],Rt[0]],[L[1],L[2],L[3],Rt[3],Rt[2],Rt[1]]]:[[...L,...[...Rt].reverse()]];
+  for(const pts of polys){const cx=pts.reduce((s,p)=>s+p[0],0)/pts.length,cy=pts.reduce((s,p)=>s+p[1],0)/pts.length;
+   const dir=Math.sign(cx)||1,dd=Math.abs(cx),close=clamp(1-(dd-220)/300);
+   CHUNKS.push({pts,cx,cy,near,vx:dir*(200+r()*800)*(1-dd/440),vy:dd<60?300+r()*600:-(100+r()*600),w:(r()-.5)*12,sag:(cx<0?1:-1)*.09*close,sagY:12*close})}}}
+const CRACKS=[...Array(12)].map((_,k)=>{const r=rng(500+k);let x=(r()-.5)*30,y=r()*8,a=(k%2?0:Math.PI)+(r()-.5)*.6;const pts=[[x,y]];
+  for(let s=0;s<9;s++){a+=(r()-.5)*.9;a=k%2?clamp(a,-.6,.6):clamp(a,Math.PI-.6,Math.PI+.6);x+=Math.cos(a)*(28+r()*24);y=clamp(y+Math.sin(a)*(18+r()*18),2,SH-2);pts.push([x,y])}return pts});
+
+// ---------- 繪圖元件 ----------
+function pill(x,y,txt,bg,fg,font,align='center',h=60){
+  ctx.font=font;const w=ctx.measureText(txt).width+36;const x0=align==='center'?x-w/2:align==='right'?x-w:x;
+  ctx.fillStyle=bg;ctx.beginPath();ctx.roundRect(x0,y-h/2,w,h,h/2);ctx.fill();ctx.fillStyle=fg;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(txt,x0+w/2,y+2);
+}
+function coinB(x,y,r){
+  ctx.save();ctx.translate(x,y);ctx.fillStyle=ORANGE;ctx.beginPath();ctx.arc(0,0,r,0,7);ctx.fill();ctx.strokeStyle='#ffc46b';ctx.lineWidth=r*.12;ctx.stroke();
+  ctx.fillStyle='#fff';ctx.font=`${r*1.25}px ${NUM}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('B',0,r*.05);
+  const bw=r*.09,bh=r*.26;ctx.fillRect(-r*.2,-r*.8,bw,bh);ctx.fillRect(r*.06,-r*.8,bw,bh);ctx.fillRect(-r*.2,r*.54,bw,bh);ctx.fillRect(r*.06,r*.54,bw,bh);ctx.restore();
+}
+function wing(a,col){
+  ctx.save();ctx.translate(8,-20);ctx.rotate(-a);ctx.fillStyle=col;ctx.beginPath();
+  ctx.moveTo(34,0);ctx.quadraticCurveTo(-20,-78,-160,-46);ctx.lineTo(-128,-30);ctx.lineTo(-150,-16);ctx.lineTo(-112,-10);ctx.lineTo(-124,2);ctx.quadraticCurveTo(-40,14,-26,10);ctx.closePath();ctx.fill();ctx.restore();
+}
+function swanShape(x,y,s,f,glow){
+  ctx.save();ctx.translate(x,y);ctx.scale(s,s);ctx.shadowColor=`rgba(255,40,40,${.85*glow})`;ctx.shadowBlur=36;
+  wing(f*.9+.15,'#1a1a1f');ctx.fillStyle='#000';ctx.strokeStyle='#000';
+  ctx.beginPath();ctx.ellipse(0,0,74,36,0,0,7);ctx.fill();ctx.beginPath();ctx.moveTo(-60,-6);ctx.lineTo(-112,-34);ctx.lineTo(-84,14);ctx.fill();
+  ctx.lineWidth=19;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(46,-8);ctx.bezierCurveTo(100,-42,20,-84,62,-122);ctx.stroke();
+  ctx.beginPath();ctx.ellipse(68,-126,17,13,.3,0,7);ctx.fill();wing(f,'#000');
+  ctx.shadowBlur=0;ctx.fillStyle='#d4141e';ctx.beginPath();ctx.moveTo(80,-132);ctx.lineTo(116,-114);ctx.lineTo(78,-116);ctx.fill();
+  ctx.shadowColor='#f00';ctx.shadowBlur=24*glow;ctx.fillStyle='#ff3030';ctx.beginPath();ctx.arc(68,-130,5,0,7);ctx.fill();ctx.restore();
+}
+function icon(name,x,y,s,t){
+  ctx.save();ctx.translate(x,y);ctx.scale(s,s);
+  if(name==='swan'){ctx.restore();swanShape(x+10*s,y+40*s,.42*s,Math.sin(t*10)*.7,1);return}
+  if(name==='virus'){ctx.rotate(t*1.5);ctx.strokeStyle='#ff4d5e';ctx.fillStyle='#ff4d5e';ctx.lineWidth=6;for(let k=0;k<10;k++){const a=k/10*Math.PI*2;ctx.beginPath();ctx.moveTo(Math.cos(a)*30,Math.sin(a)*30);ctx.lineTo(Math.cos(a)*48,Math.sin(a)*48);ctx.stroke();ctx.beginPath();ctx.arc(Math.cos(a)*50,Math.sin(a)*50,7,0,7);ctx.fill()}
+    ctx.fillStyle='#b3122a';ctx.beginPath();ctx.arc(0,0,34,0,7);ctx.fill()}
+  else if(name==='moon'){ctx.fillStyle='#ffe28a';ctx.beginPath();ctx.arc(0,0,44,0,7);ctx.fill();ctx.fillStyle='#d9b85c';for(const[a,b,r]of[[-14,-10,9],[14,12,7],[8,-20,5]]){ctx.beginPath();ctx.arc(a,b,r,0,7);ctx.fill()}
+    ctx.strokeStyle='#07080c';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(-6,-44);ctx.lineTo(4,-12);ctx.lineTo(-10,8);ctx.lineTo(6,44);ctx.stroke()}
+  else if(name==='half'){const d=6+Math.abs(Math.sin(t*3))*12;ctx.save();ctx.translate(-d,0);ctx.beginPath();ctx.rect(-80,-60,80,120);ctx.clip();coinB(0,0,44);ctx.restore();ctx.save();ctx.translate(d,0);ctx.beginPath();ctx.rect(0,-60,80,120);ctx.clip();coinB(0,0,44);ctx.restore()}
+  else if(name==='etf'){ctx.fillStyle=GREEN;ctx.beginPath();ctx.roundRect(-52,-36,104,72,12);ctx.fill();ctx.fillStyle='#04140d';ctx.font=`40px ${NUM}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('ETF',0,2)}
+  else if(name==='bank'){ctx.rotate(Math.sin(t*6)*.12);ctx.fillStyle='#c9ced8';ctx.beginPath();ctx.moveTo(-50,-14);ctx.lineTo(0,-46);ctx.lineTo(50,-14);ctx.fill();for(let k=-2;k<=2;k++)ctx.fillRect(k*20-5,-10,10,40);ctx.fillRect(-52,32,104,10);
+    ctx.strokeStyle=RED;ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(-50,-50);ctx.lineTo(50,46);ctx.moveTo(50,-50);ctx.lineTo(-50,46);ctx.stroke()}
+  else if(name==='crown'){ctx.fillStyle=YEL;ctx.beginPath();ctx.moveTo(-48,30);ctx.lineTo(-52,-24);ctx.lineTo(-24,4);ctx.lineTo(0,-36);ctx.lineTo(24,4);ctx.lineTo(52,-24);ctx.lineTo(48,30);ctx.closePath();ctx.fill()}
+  else if(name==='down'||name==='up'){ctx.fillStyle=name==='down'?RED:GREEN;if(name==='down')ctx.rotate(Math.PI);ctx.beginPath();ctx.moveTo(0,-48);ctx.lineTo(40,0);ctx.lineTo(14,0);ctx.lineTo(14,46);ctx.lineTo(-14,46);ctx.lineTo(-14,0);ctx.lineTo(-40,0);ctx.closePath();ctx.fill()}
+  else if(name==='skull'){ctx.fillStyle='#e8e8e8';ctx.beginPath();ctx.arc(0,-8,38,0,7);ctx.fill();ctx.fillRect(-22,18,44,24);ctx.fillStyle='#07080c';ctx.beginPath();ctx.arc(-14,-8,10,0,7);ctx.arc(14,-8,10,0,7);ctx.fill();for(let k=-1;k<=1;k++)ctx.fillRect(k*12-2,26,4,16)}
+  ctx.restore();
+}
+
+// ---------- 世界：網格、K 棒 ----------
+function grid(){
+  const Ltop=CAM.L0+(1000-390)/CAM.ppd,Lbot=CAM.L0-(1600-1000)/CAM.ppd;
+  ctx.textAlign='right';ctx.textBaseline='middle';ctx.font=`28px ${NUM}`;
+  const fine=CAM.ppd*Math.log10(2)>60;
+  for(let d=Math.floor(Lbot);d<=Math.ceil(Ltop);d++)for(const m of[1,2,5]){
+    const L=d+Math.log10(m);if(L<Lbot||L>Ltop)continue;if(m>1&&CAM.ppd*.3<26)continue;const y=sy(L);
+    ctx.strokeStyle=m===1?'#1d2230':'#12151e';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(955,y);ctx.stroke();
+    if(m===1||fine){ctx.fillStyle=m===1?'#6b7385':'#454c5c';ctx.fillText(fmtAxis(Math.pow(10,L)),1062,y)}}
+}
+function candle(x,Lo,Lh,Ll,Lc,w,glow){
+  const col=Lc>=Lo?GREEN:RED;ctx.strokeStyle=col;ctx.fillStyle=col;
+  if(glow){ctx.save();ctx.shadowColor=col;ctx.shadowBlur=glow}
+  ctx.lineWidth=clamp(w*.18,1,3.5);ctx.beginPath();ctx.moveTo(x,sy(Lh));ctx.lineTo(x,sy(Ll));ctx.stroke();
+  const y0=sy(Math.max(Lo,Lc)),y1=sy(Math.min(Lo,Lc));ctx.fillRect(x-w/2,y0,w,Math.max(2,y1-y0));
+  if(glow)ctx.restore();
+}
+function candles(t,st){
+  const w=Math.max(1.6,CAM.spx*.62),j0=Math.max(0,Math.floor(CAM.mc-CAM.ax/CAM.spx)-2);
+  for(let j=j0;j<st.i;j++){const r=MO[j];candle(sx(j+.5),Math.log10(r[2]),Math.log10(r[3]),Math.log10(r[4]),Math.log10(r[5]),w)}
+  const e=EVI[st.i],big=e&&(e.k==='down'||e.k==='up')&&t<S[st.i]+D[st.i];
+  const ww=big?w*lerp(1,2.6,eback(prog(t,S[st.i],S[st.i]+.5))):w;
+  candle(sx(st.i+.5),PATHS[st.i].L[0],st.hi,st.lo,st.cur,ww,t<TEND?(big?50:14):0);
+  if(big&&t>=e.ti&&t<e.tb+B+.2){ctx.save();ctx.shadowColor='#fff';ctx.shadowBlur=40;ctx.fillStyle='#fff6e0';ctx.fillRect(sx(st.i+.5)-ww/2-4,sy(st.cur)-5,ww+8,10);ctx.restore()}
+}
+// 地板（混凝土）或天花板（玻璃）
+function slabFace(e){
+  if(e.k==='down'){
+    const g=ctx.createLinearGradient(0,0,0,SH);g.addColorStop(0,'#9aa0aa');g.addColorStop(.2,'#636872');g.addColorStop(1,'#2a2d33');ctx.fillStyle=g;ctx.fillRect(X0,0,X1-X0,SH);
+    ctx.fillStyle=YEL;ctx.fillRect(X0,0,X1-X0,10);ctx.fillStyle='#111';
+    for(let x=X0-20;x<X1;x+=32){ctx.beginPath();ctx.moveTo(x,10);ctx.lineTo(x+16,0);ctx.lineTo(x+28,0);ctx.lineTo(x+12,10);ctx.fill()}
+    for(const[x,y,s,d]of SPECK){ctx.fillStyle=d?'rgba(0,0,0,.35)':'rgba(255,255,255,.18)';ctx.fillRect(x,y*SH,s,s)}
+    ctx.fillStyle='#f4f4f4';
+  }else{
+    const g=ctx.createLinearGradient(0,0,0,SH);g.addColorStop(0,'rgba(200,240,255,.75)');g.addColorStop(.5,'rgba(110,190,240,.45)');g.addColorStop(1,'rgba(60,140,210,.6)');ctx.fillStyle=g;ctx.fillRect(X0,0,X1-X0,SH);
+    ctx.strokeStyle='rgba(255,255,255,.55)';ctx.lineWidth=5;for(let x=X0;x<X1;x+=140){ctx.beginPath();ctx.moveTo(x,SH);ctx.lineTo(x+40,0);ctx.stroke()}
+    ctx.fillStyle='#fff';ctx.fillRect(X0,0,X1-X0,3);ctx.fillStyle='#ffffff';
+  }
+  ctx.font=`900 30px ${NUM}`;ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText(e.bl,X0+40,SH/2+2);ctx.fillText(e.bl,-200,SH/2+2);
+}
+function barrier(t,e,ix,by){
+  const t0=S[e.i]+(e.swan?e.pre-.5:0),tEnd=S[e.i]+D[e.i]+.9;if(t<t0||t>tEnd)return;
+  const appear=eback(prog(t,t0,t0+.3)),fade=1-prog(t,tEnd-.5,tEnd);
+  const up=e.k==='up',top=up?by-SH:by;
+  ctx.save();ctx.globalAlpha=fade*prog(t,t0,t0+.12);ctx.translate(ix,top);
+  const trem=t>e.ti-.5&&t<e.ti?Math.sin(t*120)*2.5:0;
+  for(const ch of CHUNKS){
+    let dx=trem,dy=0,rot=0;
+    if(t>=e.tb&&ch.near){const d=t-e.tb;dx=ch.vx*d;dy=(up?-Math.abs(ch.vy)-400:ch.vy)*d+1200*d*d;rot=ch.w*d}
+    else if(t>=e.tb){const p=eout(prog(t,e.tb,e.tb+.6));rot=ch.sag*p*(up?-1:1);dy=ch.sagY*p*(up?-1:1)}
+    else if(t>=e.ti)dy=(up?-16:16)*Math.exp(-Math.abs(ch.cx)/110);
+    if(Math.abs(dy)>1600)continue;
+    ctx.save();ctx.translate(ch.cx+dx,ch.cy+dy);ctx.rotate(rot);ctx.scale(Math.min(1,appear*1.0+.0),1);ctx.translate(-ch.cx,-ch.cy);
+    ctx.beginPath();ch.pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();
+    ctx.save();ctx.clip();slabFace(e);ctx.restore();
+    if(t>=e.ti){ctx.strokeStyle=up?'rgba(255,255,255,.7)':'rgba(0,0,0,.7)';ctx.lineWidth=2;ctx.stroke()}
+    ctx.restore();
+  }
+  if(t>=e.ti&&t<e.tb){const k=eout(prog(t,e.ti,e.ti+.2));ctx.save();ctx.beginPath();ctx.rect(X0,0,X1-X0,SH);ctx.clip();
+    for(const c of CRACKS){const n=Math.max(1,Math.floor(c.length*k));ctx.beginPath();for(let i=0;i<n;i++)i?ctx.lineTo(c[i][0],c[i][1]):ctx.moveTo(c[i][0],c[i][1]);
+      ctx.strokeStyle=up?'#fff':'#0b0b0b';ctx.lineWidth=up?3:5;ctx.stroke()}ctx.restore()}
+  ctx.restore();
+}
+function smashFx(t,e,ix,by){
+  const up=e.k==='up';
+  // 速度線
+  const a=prog(t,e.ti-.45,e.ti-.2)*(1-prog(t,e.tb+.2,e.tb+.6));
+  if(a>0){ctx.save();ctx.globalAlpha=a*.5;ctx.strokeStyle=up?'#e9fff3':'#ffe9e9';for(const s of SPEED){const y=(((up?-1:1)*(s.y0-t*4200))%2600+2600)%2600-300;ctx.lineWidth=s.w;ctx.beginPath();ctx.moveTo(ix+s.x,y);ctx.lineTo(ix+s.x,y+s.len);ctx.stroke()}ctx.restore()}
+  // 火花
+  if(t>=e.ti&&t<e.ti+.8){const d=t-e.ti,al=1-d/.8;ctx.save();ctx.strokeStyle=`rgba(255,230,140,${al})`;ctx.lineWidth=4;ctx.shadowColor='#ffb300';ctx.shadowBlur=14;
+    for(const s of SPARKS){const p=k=>[ix+s.vx*k,by+(up?-1:1)*Math.abs(s.vy)*k*(up?1:-1)+900*k*k];const[x1,y1]=p(d),[x2,y2]=p(Math.max(0,d-.035));ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x1,y1);ctx.stroke()}ctx.restore()}
+  // 衝擊波
+  for(const[t0,c]of[[e.ti,'255,255,255'],[e.tb,up?'120,230,255':'255,60,60']]){if(t<t0||t>t0+.8)continue;const p=prog(t,t0,t0+.8),rx=950*eout(p);
+    ctx.save();ctx.strokeStyle=`rgba(${c},${1-p})`;ctx.lineWidth=34*(1-p)+2;ctx.beginPath();ctx.ellipse(ix,by,rx,rx*.26,0,0,7);ctx.stroke();ctx.restore()}
+  // 碎石 / 玻璃渣
+  if(t>=e.tb&&t<e.tb+2.4){const d=t-e.tb,al=1-prog(t,e.tb+1.6,e.tb+2.4);ctx.save();ctx.globalAlpha=al;
+    for(const b of DEBRIS){const x=ix+b.x+b.vx*d,y=by+b.y+(up?-Math.abs(b.vy)-200:b.vy)*d+1200*d*d;if(y>2300||y<-400)continue;ctx.save();ctx.translate(x,y);ctx.rotate(b.w*d);
+      ctx.fillStyle=up?(b.hot?'#fff':`hsla(195,90%,${b.c+20}%,.85)`):(b.hot?`hsl(${30+b.c%15},100%,60%)`:`hsl(220,6%,${b.c}%)`);
+      if(up){ctx.beginPath();ctx.moveTo(0,-b.s);ctx.lineTo(b.s*.5,b.s*.6);ctx.lineTo(-b.s*.6,b.s*.3);ctx.fill()}else ctx.fillRect(-b.s/2,-b.s/2,b.s,b.s*.8);ctx.restore()}ctx.restore()}
+  // 煙塵
+  if(t>=e.tb&&t<e.tb+3){for(const u of DUST){const p=prog(t,e.tb+u.d,e.tb+3);if(p<=0)continue;const r=40+u.r*eout(p),x=ix+u.x,y=by+u.y-p*60;const g=ctx.createRadialGradient(x,y,0,x,y,r);
+    const c=up?'170,220,255':'150,140,130';g.addColorStop(0,`rgba(${c},${.32*(1-p)})`);g.addColorStop(1,`rgba(${c},0)`);ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fill()}}
+  // 深淵紅光
+  if(!up&&t>=e.tb&&t<S[e.i]+D[e.i]+.9){const al=prog(t,e.tb,e.tb+.4)*(1-prog(t,S[e.i]+D[e.i]+.3,S[e.i]+D[e.i]+.9))*(.75+.25*Math.sin(t*5));
+    const g=ctx.createRadialGradient(ix,by+420,20,ix,by+420,520);g.addColorStop(0,`rgba(255,60,0,${.5*al})`);g.addColorStop(.5,`rgba(180,10,10,${.28*al})`);g.addColorStop(1,'rgba(80,0,0,0)');ctx.fillStyle=g;ctx.fillRect(ix-560,by,1120,1000)}
+}
+function fireworks(t,e,x,y){
+  if(t<e.tPk||t>e.tPk+1.6)return;
+  for(const[k,ox,oy]of[[0,0,-60],[.18,-170,-150],[.32,150,-170]]){const d=t-e.tPk-k;if(d<0||d>1.2)continue;const al=1-d/1.2;
+    for(const f of FIRE){const r=f.sp*eout(d/1.2)*.7,px=x+ox+Math.cos(f.a)*r,py=y+oy+Math.sin(f.a)*r+120*d*d;ctx.fillStyle=`hsla(${f.h},100%,65%,${al})`;ctx.beginPath();ctx.arc(px,py,5*al+1,0,7);ctx.fill()}}
+}
+function world(t,st){
+  grid();
+  const e=EVI[st.i],act=EV.filter(v=>v.ti&&t>=S[v.i]-.01&&t<S[v.i]+D[v.i]+.9);
+  for(const v of act){const ix=sx(v.i+.5),by=sy(Math.log10(v.P));if(v.k==='down'&&t>=v.tb)smashFx(t,v,ix,by)}
+  // 現價虛線
+  if(t<TEND+2){const y=sy(st.cur),col=st.cur>=PATHS[st.i].L[0]?GREEN:RED;ctx.save();ctx.setLineDash([10,10]);ctx.strokeStyle=col;ctx.globalAlpha=.5;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(955,y);ctx.stroke();ctx.restore()}
+  candles(t,st);
+  for(const v of act){const ix=sx(v.i+.5),by=sy(Math.log10(v.P));barrier(t,v,ix,by);if(v.k==='up'||t<v.tb)smashFx(t,v,ix,by)}
+  // 歷史新高煙火、熊市底、減半等
+  for(const v of EV){
+    const x=sx(v.i+.5),t0=S[v.i];
+    if(v.k==='peak'&&t>=v.tPk&&t<t0+D[v.i]+2.5){const yh=sy(Math.log10(MO[v.i][3]));fireworks(t,v,x,yh);const k=eback(prog(t,v.tPk,v.tPk+.3)),al=1-prog(t,t0+D[v.i]+1.8,t0+D[v.i]+2.5);
+      ctx.save();ctx.globalAlpha=al;ctx.translate(x,yh-70);ctx.scale(k,k);icon('crown',0,-40,.8,t);pill(0,24,'新高 '+fmtP(MO[v.i][3]),GREEN,'#04140d',`32px ${NUM}`);ctx.restore()}
+    if(v.k==='bottom'&&t>=t0+.5&&t<t0+D[v.i]+1.6){const yl=sy(Math.log10(MO[v.i][4]));const k=t<t0+.66?lerp(3,1,ein(prog(t,t0+.5,t0+.66))):1,al=prog(t,t0+.5,t0+.6)*(1-prog(t,t0+D[v.i]+1.1,t0+D[v.i]+1.6));
+      ctx.save();ctx.globalAlpha=al;ctx.translate(x-30,yl+90);ctx.rotate(-.16);ctx.scale(k,k);ctx.strokeStyle='#ff2a40';ctx.lineWidth=8;ctx.strokeRect(-150,-62,300,124);ctx.fillStyle='rgba(60,0,8,.6)';ctx.fillRect(-150,-62,300,124);
+      ctx.fillStyle='#ff2a40';ctx.font=`96px ${NUM}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(v.stamp,0,4);ctx.restore();
+      ctx.save();ctx.globalAlpha=al;pill(x-70,yl+10,'熊市底 '+fmtP(MO[v.i][4]),RED,'#fff',`30px ${NUM}`,'right',52);ctx.restore()}
+    if(v.k==='info'&&t>=t0+.3&&t<t0+D[v.i]+2){const k=eback(prog(t,t0+.3,t0+.6)),al=1-prog(t,t0+D[v.i]+1.4,t0+D[v.i]+2);const yh=sy(Math.max(st.i===v.i?st.hi:Math.log10(MO[v.i][3])))-130;
+      ctx.save();ctx.globalAlpha=al;ctx.translate(x,yh);ctx.scale(k*1.5,k*1.5);icon(v.ic,0,0,1,t);ctx.restore();
+      ctx.save();ctx.globalAlpha=al;pill(x,yh+95,v.ic==='half'?'減半':'ETF 通過',v.ic==='half'?ORANGE:GREEN,'#000',`900 30px ${TC}`,'center',52);ctx.restore()}
+    // 黑天鵝：飛進來，踩在最高點上
+    if(v.swan&&t>=t0&&t<v.tb+1.6){const yt=sy(st.i===v.i?st.hi:Math.log10(MO[v.i][3]))-56;let px,py,f,s=.8;
+      const tl=t0+v.pre;
+      if(t<tl-.25){const k=eio(prog(t,t0,tl-.25));px=lerp(-250,x-10,k);py=lerp(450,yt-120,k)-Math.sin(k*Math.PI)*120;f=Math.sin(t*16)*.9}
+      else if(t<tl){px=x-10;py=lerp(yt-120,yt,ein(prog(t,tl-.25,tl)));f=1.2}
+      else if(t<v.tb+.6){px=x-10;py=yt+Math.sin(t*5)*3;f=.55+Math.sin(t*4)*.12}
+      else{const k=ein(prog(t,v.tb+.6,v.tb+1.6));px=lerp(x-10,1400,k);py=lerp(yt,150,k);f=Math.sin(t*18)}
+      swanShape(px,py,s,f,1)}
+  }
+  // 右側現價標籤
+  if(t<TEND+2){const y=sy(st.cur),col=st.cur>=PATHS[st.i].L[0]?GREEN:RED;ctx.font=`28px ${NUM}`;ctx.fillStyle=col;ctx.fillRect(958,y-21,120,42);ctx.fillStyle='#fff';ctx.textAlign='right';ctx.textBaseline='middle';ctx.fillText(fmtP(Math.pow(10,st.cur)),1070,y+1)}
+}
+
+// ---------- 畫面層 ----------
+const TODAY_P=N?MO[N-1][5]:0;
+function bigNum(v){return v>=1e8?(v/1e8).toFixed(2)+' 億':v>=1e4?(v/1e4).toFixed(v>=1e6?0:1)+' 萬':fmt(v)}
+function header(t,st){
+  ctx.fillStyle='#07080c';ctx.fillRect(0,0,W,372);
+  const g=ctx.createLinearGradient(0,372,0,430);g.addColorStop(0,'rgba(7,8,12,1)');g.addColorStop(1,'rgba(7,8,12,0)');ctx.fillStyle=g;ctx.fillRect(0,372,W,58);
+  ctx.textBaseline='middle';ctx.textAlign='left';ctx.fillStyle='#8a90a0';ctx.font=`500 34px ${TC}`;ctx.fillText('BTC / USD  比特幣全歷史',60,100);
+  let p,date,col='#fff';
+  if(!st){p=t<2.8?0:t<5.2?.00076:.0041;date=t<2.8?'2009.01.03':t<5.2?'2009.10':'2010.05.22'}
+  else{p=Math.pow(10,st.cur);date=t>=TEND?TODAY:ym(st.i);col=st.cur>=PATHS[st.i].L[0]?GREEN:RED}
+  pill(1020,100,date,'#2a1a05',ORANGE,`40px ${NUM}`,'right',64);
+  const e=st&&EVI[st.i],crash=e&&e.ti&&t>=e.ti-.3&&t<e.tb+.8,j=crash?Math.sin(t*131)*9:0;
+  ctx.font=`140px ${NUM}`;ctx.textAlign='left';const s=p?fmtP(p):'$0';
+  if(crash){ctx.fillStyle='rgba(0,255,255,.55)';ctx.fillText(s,60-8+j,240);ctx.fillStyle='rgba(255,0,60,.7)';ctx.fillText(s,60+8-j,240)}
+  ctx.fillStyle=col;ctx.fillText(s,60+j*.3,240);
+  if(p>=.00076)pill(1020,240,'x'+bigNum(p/.00076),'#1b2a22',GREEN,`900 36px ${NUM}`,'right',58);
+  if(st){const ath=Math.pow(10,st.ath),dd=(p/ath-1)*100;ctx.font=`500 30px ${TC}`;ctx.fillStyle='#8a90a0';ctx.textAlign='left';
+    ctx.fillText(`歷史高點 ${fmtP(ath)}`,64,334);if(dd<-1){ctx.fillStyle=RED;ctx.fillText(`距高點 ${dd.toFixed(0)}%`,420,334)}else{ctx.fillStyle=GREEN;ctx.fillText('正在創新高',420,334)}
+    ctx.textAlign='right';ctx.fillStyle='#5b6170';ctx.fillText('對比第一個報價 $0.00076',1020,334)}
+  else{ctx.font=`500 30px ${TC}`;ctx.fillStyle='#5b6170';ctx.textAlign='left';ctx.fillText('還沒有交易所，也還沒有價格',64,334)}
+}
+function intro(t){
+  if(t>=I0+.4)return;ctx.save();ctx.globalAlpha=1-prog(t,I0-.3,I0+.4);ctx.textAlign='center';ctx.textBaseline='middle';
+  // 1. 創世區塊
+  if(t<2.9){const a=prog(t,.2,.6)*(1-prog(t,2.5,2.9));ctx.globalAlpha*=a;const s=eback(prog(t,.2,.7));
+    ctx.save();ctx.translate(540,800);ctx.scale(s,s);ctx.rotate(Math.sin(t*1.2)*.05);ctx.shadowColor=ORANGE;ctx.shadowBlur=60;
+    const c=150;ctx.fillStyle='#f7931a';ctx.beginPath();ctx.moveTo(0,-c);ctx.lineTo(c*.87,-c/2);ctx.lineTo(0,0);ctx.lineTo(-c*.87,-c/2);ctx.fill();
+    ctx.fillStyle='#c46f0b';ctx.beginPath();ctx.moveTo(-c*.87,-c/2);ctx.lineTo(0,0);ctx.lineTo(0,c);ctx.lineTo(-c*.87,c/2);ctx.fill();
+    ctx.fillStyle='#8f4f05';ctx.beginPath();ctx.moveTo(c*.87,-c/2);ctx.lineTo(0,0);ctx.lineTo(0,c);ctx.lineTo(c*.87,c/2);ctx.fill();
+    ctx.shadowBlur=0;ctx.fillStyle='#fff';ctx.font=`70px ${NUM}`;ctx.fillText('#0',0,-c/2+4);ctx.restore();
+    ctx.font=`110px ${NUM}`;ctx.fillStyle=ORANGE;ctx.fillText('2009.01.03',540,1100);ctx.font=`900 66px ${TC}`;ctx.fillStyle='#fff';ctx.fillText('比特幣創世區塊誕生',540,1220);
+    const q='"Chancellor on brink of second bailout for banks"',n=Math.floor(q.length*prog(t,.8,2.2));ctx.font=`500 30px ${TC}`;ctx.fillStyle='#8a90a0';ctx.fillText('The Times 03/Jan/2009',540,1320);ctx.fillText(q.slice(0,n),540,1366)}
+  // 2. 第一個報價
+  else if(t<5.3){const a=prog(t,2.9,3.2)*(1-prog(t,4.9,5.3)),k=eback(prog(t,3.0,3.4));ctx.globalAlpha*=a;
+    ctx.font=`90px ${NUM}`;ctx.fillStyle=ORANGE;ctx.fillText('2009.10',540,620);ctx.font=`900 64px ${TC}`;ctx.fillStyle='#fff';ctx.fillText('第一個公開報價',540,740);
+    ctx.save();ctx.translate(540,920);ctx.scale(k,k);ctx.font=`130px ${NUM}`;ctx.fillStyle=GREEN;ctx.fillText('$1 = 1,309 BTC',0,0);ctx.restore();
+    coinB(540,1170,90);ctx.font=`900 56px ${TC}`;ctx.fillStyle='#fff';ctx.fillText('1 顆 ≈ $0.00076',540,1340)}
+  // 3. 披薩節
+  else{const a=prog(t,5.3,5.6),k=eback(prog(t,5.4,5.9));ctx.globalAlpha*=a;
+    ctx.font=`90px ${NUM}`;ctx.fillStyle=ORANGE;ctx.fillText('2010.05.22',540,560);ctx.font=`900 64px ${TC}`;ctx.fillStyle='#fff';ctx.fillText('比特幣披薩節',540,680);
+    for(const[px,d]of[[380,0],[700,.15]]){const s=eback(prog(t,5.5+d,5.9+d));ctx.save();ctx.translate(px,900);ctx.scale(s,s);ctx.rotate(t*.6+d*4);
+      ctx.fillStyle='#e8a33d';ctx.beginPath();ctx.arc(0,0,130,0,7);ctx.fill();ctx.fillStyle='#ffd36b';ctx.beginPath();ctx.arc(0,0,112,0,7);ctx.fill();ctx.fillStyle='#c0392b';
+      for(let i=0;i<8;i++){const an=i/8*Math.PI*2+.3;ctx.beginPath();ctx.arc(Math.cos(an)*66,Math.sin(an)*66,17,0,7);ctx.fill()}ctx.beginPath();ctx.arc(0,0,18,0,7);ctx.fill();
+      ctx.strokeStyle='rgba(120,60,0,.5)';ctx.lineWidth=4;for(let i=0;i<4;i++){const an=i/4*Math.PI;ctx.beginPath();ctx.moveTo(Math.cos(an)*-112,Math.sin(an)*-112);ctx.lineTo(Math.cos(an)*112,Math.sin(an)*112);ctx.stroke()}ctx.restore()}
+    ctx.save();ctx.translate(540,1130);ctx.scale(k,k);ctx.font=`900 60px ${TC}`;ctx.fillStyle='#fff';ctx.fillText('10,000 BTC 換 2 片披薩',0,0);ctx.restore();
+    if(t>6.4){const k2=eback(prog(t,6.4,6.8));ctx.save();ctx.translate(540,1260);ctx.scale(k2,k2);ctx.font=`900 56px ${TC}`;ctx.fillStyle=YEL;ctx.fillText(`那些 BTC 今天 ≈ $${(10000*TODAY_P/1e8).toFixed(0)} 億美元`,0,0);ctx.restore()}}
+  ctx.restore();
+}
+function eventCard(t){
+  // 目前顯示哪一張事件卡
+  let cur=null;for(const e of EV)if(t>=S[e.i])cur=e;
+  if(t>=TEND)return outroCard(t);
+  if(!cur)return;
+  const t0=S[cur.i],end=t0+D[cur.i]+3.2,nxt=EV[EV.indexOf(cur)+1],stop=nxt?Math.min(end,S[nxt.i]):end;if(t>stop)return;
+  const k=eback(prog(t,t0,t0+.35)),al=prog(t,t0,t0+.15)*(1-prog(t,stop-.25,stop));
+  const col=cur.k==='down'||cur.k==='bottom'?RED:cur.k==='info'?ORANGE:GREEN;
+  ctx.save();ctx.globalAlpha=al;ctx.translate((1-k)*-200,0);
+  ctx.fillStyle='rgba(16,18,26,.96)';ctx.beginPath();ctx.roundRect(40,1600,1000,270,22);ctx.fill();ctx.fillStyle=col;ctx.beginPath();ctx.roundRect(40,1600,16,270,[22,0,0,22]);ctx.fill();
+  ctx.textAlign='left';ctx.textBaseline='middle';ctx.font=`44px ${NUM}`;ctx.fillStyle=YEL;ctx.fillText(ym(cur.i),90,1660);
+  ctx.font=`900 64px ${TC}`;ctx.fillStyle='#fff';ctx.fillText(cur.t,90,1748);
+  ctx.font=`500 34px ${TC}`;ctx.fillStyle='#c9ced8';ctx.fillText(cur.s,90,1826);
+  icon(cur.ic||(cur.k==='peak'?'crown':cur.k==='bottom'?'skull':cur.k),940,1690,1,t);
+  ctx.restore();
+}
+function outroCard(t){
+  const a=TEND;
+  if(t<a+4.6){const k=eback(prog(t,a,a+.35)),al=1-prog(t,a+4.2,a+4.6);ctx.save();ctx.globalAlpha=al;ctx.translate((1-k)*-200,0);
+    ctx.fillStyle='rgba(16,18,26,.96)';ctx.beginPath();ctx.roundRect(40,1600,1000,270,22);ctx.fill();ctx.fillStyle=ORANGE;ctx.beginPath();ctx.roundRect(40,1600,16,270,[22,0,0,22]);ctx.fill();
+    ctx.textAlign='left';ctx.textBaseline='middle';ctx.font=`44px ${NUM}`;ctx.fillStyle=YEL;ctx.fillText('今天 '+TODAY,90,1660);
+    ctx.font=`900 64px ${TC}`;ctx.fillStyle='#fff';ctx.fillText(`BTC ≈ ${fmtP(TODAY_P)}`,90,1748);
+    ctx.font=`500 34px ${TC}`;ctx.fillStyle='#c9ced8';ctx.fillText(`距歷史高點 ${fmtP(Math.pow(10,LMAX))} 約 ${((TODAY_P/Math.pow(10,LMAX)-1)*100).toFixed(0)}%`,90,1826);coinB(940,1700,52);ctx.restore()}
+  const lines=[['17 年：','$0.00076 → $126,000',ORANGE],['每一個鐵底，','都可能被砸穿',RED],['每一個天花板，','也是',GREEN]];
+  lines.forEach(([l,r,c],k)=>{const t0=a+4.8+k*.6;if(t<t0)return;const p=eback(prog(t,t0,t0+.35));ctx.save();ctx.globalAlpha=prog(t,t0,t0+.15);ctx.translate(540,1630+k*88);ctx.scale(p,p);
+    ctx.font=`900 58px ${TC}`;ctx.textBaseline='middle';const w1=ctx.measureText(l).width,w2=ctx.measureText(r).width;ctx.textAlign='left';ctx.lineJoin='round';
+    ctx.lineWidth=10;ctx.strokeStyle='#000';ctx.strokeText(l,-(w1+w2)/2,0);ctx.fillStyle='#fff';ctx.fillText(l,-(w1+w2)/2,0);ctx.strokeText(r,-(w1+w2)/2+w1,0);ctx.fillStyle=c;ctx.fillText(r,-(w1+w2)/2+w1,0);ctx.restore()});
+  if(t>a+7){ctx.save();ctx.globalAlpha=prog(t,a+7,a+7.4)*.85;ctx.font=`500 24px ${TC}`;ctx.fillStyle='#6b7180';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(`價格：Bitstamp 月線（2011.09 起），更早為 blockchain.com 均價｜資料至 ${TODAY}`,540,1885);ctx.restore()}
+}
+// 全歷史縮圖上的事件標記
+const MARKS=['2011-06','2014-02','2017-12','2018-11','2020-03','2021-11','2022-05','2022-11','2024-12','2025-10','2026-06'].map(d=>EV.find(e=>e.d===d));
+const MARK_TXT={'2011-06':'Mt.Gox 被駭','2014-02':'Mt.Gox 倒閉','2017-12':'$19.7K','2018-11':'$6K 碎','2020-03':'312','2021-11':'$69K','2022-05':'LUNA','2022-11':'FTX','2024-12':'$100K','2025-10':'10.10','2026-06':'$60K'};
+function marks(t){
+  const a=TEND+3.2;if(t<a)return;
+  MARKS.forEach((e,k)=>{const t0=a+k*.12;if(t<t0)return;const p=eback(prog(t,t0,t0+.3));const up=e.k==='peak'||e.k==='up';const L=Math.log10(up?MO[e.i][3]:MO[e.i][4]);
+    const x=sx(e.i+.5),y=sy(L)+(up?-1:1)*(24+(k%2)*46);ctx.save();ctx.translate(x,y);ctx.scale(p,p);pill(0,0,MARK_TXT[e.d],up?GREEN:RED,up?'#04140d':'#fff',`900 24px ${TC}`,'center',40);ctx.restore()});
+}
+function timeline(t,st){
+  if(t>=TEND+6.8||t<I0-.5)return;const al=prog(t,I0-.5,I0)*(1-prog(t,TEND+6.4,TEND+6.8));const x0=60,x1=1020,y=1895;
+  const f=st?(st.i+(t>=TEND?1:st.u))/N:0;ctx.save();ctx.globalAlpha=al;ctx.fillStyle='#22252f';ctx.fillRect(x0,y-3,x1-x0,6);ctx.fillStyle=ORANGE;ctx.fillRect(x0,y-3,(x1-x0)*f,6);
+  for(const e of EV){const x=x0+(x1-x0)*(e.i+.5)/N;ctx.fillStyle=(e.k==='down'||e.k==='bottom')?RED:e.k==='info'?ORANGE:GREEN;ctx.globalAlpha=al*(t>=S[e.i]?1:.35);ctx.beginPath();ctx.arc(x,y,5,0,7);ctx.fill()}
+  ctx.globalAlpha=al;ctx.font=`22px ${NUM}`;ctx.fillStyle='#6b7180';ctx.textBaseline='middle';ctx.textAlign='left';ctx.fillText(String(MO[0][0]),x0,y-22);ctx.textAlign='right';ctx.fillText(String(MO[N-1][0]),x1,y-22);ctx.restore();
+}
+function hudFx(t){
+  for(const e of EV){if(!e.ti||t<S[e.i]||t>S[e.i]+D[e.i]+.8)continue;const up=e.k==='up';
+    const[ix,by]=[sx(e.i+.5),sy(Math.log10(e.P))];
+    // 砰!!
+    if(t>=e.ti&&t<e.tb+1.3){const k=eback(prog(t,e.ti,e.ti+.18)),al=1-prog(t,e.tb+.9,e.tb+1.3);const bx=clamp(ix-340,230,850),byy=clamp(by+(up?120:-190),560,1400);
+      ctx.save();ctx.globalAlpha=al;ctx.translate(bx,byy);ctx.rotate(-.14);ctx.scale(k*.85,k*.85);ctx.beginPath();for(let i=0;i<36;i++){const r=i%2?175:290+((i*37)%5)*14,an=i/36*Math.PI*2;ctx.lineTo(Math.cos(an)*r,Math.sin(an)*r*.82)}ctx.closePath();
+      ctx.fillStyle=up?'#7dffb0':YEL;ctx.fill();ctx.lineWidth=12;ctx.strokeStyle='#000';ctx.stroke();ctx.font=`900 180px ${TC}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';ctx.lineWidth=24;ctx.strokeStyle='#fff';ctx.strokeText(e.w,0,6);
+      ctx.fillStyle=up?'#008a3e':'#e00018';ctx.fillText(e.w,0,6);ctx.restore()}
+    // 大印章
+    if(e.stamp&&t>=e.tb+.5&&t<S[e.i]+D[e.i]+.8){const tS=e.tb+.66,k=t<tS?lerp(3.2,1,ein(prog(t,e.tb+.5,tS))):1+.04*Math.exp(-(t-tS)*8),al=prog(t,e.tb+.5,e.tb+.6)*(1-prog(t,S[e.i]+D[e.i]+.4,S[e.i]+D[e.i]+.8));
+      ctx.save();ctx.globalAlpha=al*.95;ctx.translate(560,1400);ctx.rotate(-.16);ctx.scale(k,k);ctx.font=`900 100px ${NUM}`;const w=Math.max(380,ctx.measureText(e.stamp).width+100);
+      ctx.strokeStyle='#ff2a40';ctx.lineWidth=10;ctx.strokeRect(-w/2,-86,w,172);ctx.lineWidth=4;ctx.strokeRect(-w/2+18,-68,w-36,136);ctx.fillStyle='rgba(60,0,8,.65)';ctx.fillRect(-w/2+18,-68,w-36,136);
+      ctx.fillStyle='#ff2a40';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(e.stamp,0,6);ctx.restore()}}
+}
+function flash(t){
+  let a=0,c='255,255,255';
+  for(const e of EV){if(!e.ti)continue;
+    if(t>=e.ti&&t<e.ti+.2){a=Math.max(a,.85*(1-prog(t,e.ti,e.ti+.2)));c='255,255,255'}
+    if(t>=e.tb&&t<e.tb+.3){a=Math.max(a,.55*(1-prog(t,e.tb,e.tb+.3)));c=e.k==='up'?'200,255,220':'255,190,180'}}
+  for(const e of EV)if(e.tPk&&t>=e.tPk&&t<e.tPk+.25){a=Math.max(a,.3*(1-prog(t,e.tPk,e.tPk+.25)));c='255,240,200'}
+  if(a>0){ctx.fillStyle=`rgba(${c},${a})`;ctx.fillRect(0,0,W,H)}
+}
+function vignette(t){
+  let v=0;for(const e of EV){if(!e.ti)continue;if(t>e.ti-.8&&t<e.ti)v+=.4*prog(t,e.ti-.8,e.ti);if(e.k==='down'&&t>=e.ti&&t<S[e.i]+D[e.i]+.6)v+=.5*(1-prog(t,S[e.i]+D[e.i],S[e.i]+D[e.i]+.6))}
+  if(v>0){const g=ctx.createRadialGradient(540,1000,380,540,1000,1150);g.addColorStop(0,'rgba(160,0,0,0)');g.addColorStop(1,`rgba(170,0,0,${Math.min(.7,v)})`);ctx.fillStyle=g;ctx.fillRect(0,0,W,H)}
+}
+const buf=document.createElement('canvas');buf.width=W;buf.height=H;const bctx=buf.getContext('2d');
+function glitch(t){
+  let on=false;for(const e of EV)if(e.ti&&t>=e.ti&&t<e.tb+.35)on=true;if(!on)return;
+  bctx.clearRect(0,0,W,H);bctx.drawImage(cv,0,0);const r=rng(Math.floor(t*30));
+  for(let i=0;i<6;i++){const y=r()*H,h=20+r()*100,dx=(r()-.5)*80;ctx.drawImage(buf,0,y,W,h,dx,y,W,h)}
+}
+function render(t){
+  ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=1;ctx.fillStyle='#07080c';ctx.fillRect(0,0,W,H);
+  const st=t>=S[0]?state(t):null;
+  if(st){CAM=cam(t);const s=shake(t);ctx.save();ctx.translate(s.x,s.y);ctx.globalAlpha=prog(t,I0-.2,I0+.4);world(t,st);marks(t);ctx.restore()}
+  intro(t);vignette(t);glitch(t);
+  const s=shake(t);ctx.save();ctx.translate(s.x*.4,s.y*.4);header(t,st);ctx.restore();
+  hudFx(t);
+  const g=ctx.createLinearGradient(0,1560,0,1600);g.addColorStop(0,'rgba(7,8,12,0)');g.addColorStop(1,'rgba(7,8,12,.9)');ctx.fillStyle=g;ctx.fillRect(0,1560,W,40);ctx.fillStyle='rgba(7,8,12,.9)';ctx.fillRect(0,1600,W,320);
+  eventCard(t);timeline(t,st);flash(t);
+  const fade=Math.max(1-prog(t,0,.5),prog(t,T-.8,T));if(fade>0){ctx.fillStyle=`rgba(0,0,0,${fade})`;ctx.fillRect(0,0,W,H)}
+}
+
+// ---------- 音效（WebAudio 合成；即時播放與匯出共用同一份時間表） ----------
+const NB=new WeakMap();
+function noiseBuf(ac){if(!NB.has(ac)){const b=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate),d=b.getChannelData(0),r=rng(3);for(let i=0;i<d.length;i++)d[i]=r()*2-1;NB.set(ac,b)}return NB.get(ac)}
+function master(ac){const g=ac.createGain();g.gain.value=.9;const comp=ac.createDynamicsCompressor();comp.threshold.value=-14;comp.ratio.value=6;g.connect(comp).connect(ac.destination);return g}
+function scheduleAudio(ac,dest,base,from){
+  const srcs=[],at=te=>base+(te-from),r=rng(11);
+  const env=(g,t0,vol,atk,dur)=>{g.gain.setValueAtTime(.0001,t0);g.gain.exponentialRampToValueAtTime(vol,t0+atk);g.gain.exponentialRampToValueAtTime(.0001,t0+dur)};
+  const tone=(te,f0,f1,dur,type='sine',vol=.3,atk=.005)=>{if(te<from)return;const o=ac.createOscillator(),g=ac.createGain(),t0=at(te);o.type=type;
+    o.frequency.setValueAtTime(f0,t0);if(f1!==f0)o.frequency.exponentialRampToValueAtTime(f1,t0+dur);env(g,t0,vol,atk,dur);o.connect(g).connect(dest);o.start(t0);o.stop(t0+dur+.05);srcs.push(o)};
+  const noise=(te,dur,vol,type='lowpass',f0=1000,f1=f0,q=1,atk=.005)=>{if(te<from)return;const s=ac.createBufferSource(),f=ac.createBiquadFilter(),g=ac.createGain(),t0=at(te);
+    s.buffer=noiseBuf(ac);s.loop=true;f.type=type;f.Q.value=q;f.frequency.setValueAtTime(f0,t0);if(f1!==f0)f.frequency.exponentialRampToValueAtTime(f1,t0+dur);
+    env(g,t0,vol,atk,dur);s.connect(f).connect(g).connect(dest);s.start(t0,r()*1.5);s.stop(t0+dur+.05);srcs.push(s)};
+  // 開場
+  tone(.1,55,55,2.6,'sawtooth',.06,.8);for(let k=0;k<26;k++)tone(.8+k*.054,1800+r()*600,1800,.02,'square',.02,.002);
+  tone(.4,196,196,1.8,'sine',.12,.3);tone(3.0,330,330,.5,'triangle',.15);tone(3.15,495,495,.6,'triangle',.12);
+  tone(5.5,260,520,.15,'sine',.25);tone(5.65,330,660,.15,'sine',.25);tone(6.4,523,523,.4,'triangle',.15);tone(6.55,784,784,.6,'triangle',.15);
+  // 每根月 K：音高跟著價格走
+  for(let i=0;i<N;i++){if(EVI[i])continue;const L=Math.log10(MO[i][5]),f=110*Math.pow(2,3*(L+1.5)/6.8);tone(S[i],f,f,.12,MO[i][5]>=MO[i][2]?'triangle':'sine',.07)}
+  for(let te=I0;te<TEND;te+=.5)tone(te,60,40,.12,'sine',.12);
+  for(const e of EV){const t0=S[e.i];
+    if(e.ti){const up=e.k==='up';
+      if(e.swan){noise(t0+.1,.9,.15,'bandpass',800,2400,2,.4);tone(t0+e.pre-.25,900,500,.35,'sawtooth',.08);tone(t0+e.pre,130,50,.3,'sine',.6)}
+      tone(e.ti-A,up?250:1500,up?1500:250,A,'sine',.13,.05);noise(e.ti-A,A,.35,'bandpass',up?3500:300,up?300:3500,1.2,.5);
+      noise(e.ti,1.8,1,'lowpass',3200,60,.7);tone(e.ti,150,28,1.8,'sine',1);tone(e.ti,72,20,2.3,'triangle',.45);
+      noise(e.tb,.8,.6,'highpass',2500,6000,.7);for(let k=0;k<14;k++)noise(e.tb+k*.045+r()*.02,.07,.38,'bandpass',1500+r()*4500,1500+r()*4500,3);
+      if(up)for(let k=0;k<6;k++)tone(e.tb+k*.06,1800+r()*1600,1800+r()*1600,.25,'sine',.06);else tone(e.tb,95,25,1.3,'sine',.7);
+      if(e.stamp){tone(e.tb+.66,170,45,.45,'sine',.8);noise(e.tb+.66,.25,.5,'lowpass',1600,200)}}
+    if(e.tPk){for(let k=0;k<3;k++){noise(e.tPk+[0,.18,.32][k],.5,.4,'bandpass',2000,600,1.5);tone(e.tPk+[0,.18,.32][k],[784,988,1175][k],[784,988,1175][k],.5,'triangle',.12)}}
+    if(e.k==='info'){tone(t0+.3,1320,1320,.5,'sine',.18);tone(t0+.45,1760,1760,.7,'sine',.15)}
+    if(e.k==='bottom'){tone(t0+.66,170,45,.45,'sine',.8);noise(t0+.66,.25,.5,'lowpass',1600,200)}}
+  // 結尾
+  tone(TEND,523,523,.5,'triangle',.15);tone(TEND+2,110,110,4,'sine',.25,1);tone(TEND+2,165,165,4,'sine',.15,1);tone(TEND+2,220,220,4,'sine',.12,1);
+  for(let k=0;k<3;k++)tone(TEND+4.8+k*.6,[440,554,659][k],[440,554,659][k],.5,'triangle',.14);
+  tone(TEND+4.6,110,40,2.5,'sine',.5);
+  return srcs;
+}
+window.renderAudioWav=async()=>{
+  const sr=48000,oc=new OfflineAudioContext(2,Math.ceil(sr*T),sr);scheduleAudio(oc,master(oc),0,0);const b=await oc.startRendering();
+  const n=b.length,L=b.getChannelData(0),Rc=b.getChannelData(1),ab=new ArrayBuffer(44+n*4),v=new DataView(ab);
+  const ws=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
+  ws(0,'RIFF');v.setUint32(4,36+n*4,true);ws(8,'WAVE');ws(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,2,true);v.setUint32(24,sr,true);v.setUint32(28,sr*4,true);v.setUint16(32,4,true);v.setUint16(34,16,true);ws(36,'data');v.setUint32(40,n*4,true);
+  for(let i=0;i<n;i++){v.setInt16(44+i*4,clamp(L[i],-1,1)*32767,true);v.setInt16(46+i*4,clamp(Rc[i],-1,1)*32767,true)}
+  const u=new Uint8Array(ab);let s='';for(let i=0;i<u.length;i+=32768)s+=String.fromCharCode.apply(null,u.subarray(i,i+32768));return btoa(s);
+};
+
+// ---------- 字型、播放控制 ----------
+const SRC=document.currentScript.textContent.replace(/\/\*DATA\*\/.*?\/\*END\*\//s,'');
+window.T=T;
+window.ready=Promise.race([Promise.all([document.fonts.load(`900 60px "Noto Sans TC"`,SRC),document.fonts.load(`500 30px "Noto Sans TC"`,SRC),document.fonts.load('60px Anton','$0123456789,.%+-×→ABCDEFGHIJKLMNOPQRSTUVWXYZ')]),new Promise(r=>setTimeout(r,4000))]).catch(()=>{});
+window.renderAt=render;
+if(EXPORT){cv.style.width=W+'px';cv.style.height=H+'px'}
+else{
+  let t=0,playing=true,last=null,ac=null,mg=null,srcs=[],snd=false,idle;
+  const ui=document.getElementById('ui'),bPlay=document.getElementById('bPlay'),bSnd=document.getElementById('bSnd'),seek=document.getElementById('seek');seek.max=T;
+  const fit=()=>{const s=Math.min(innerWidth/W,innerHeight/H);cv.style.width=W*s+'px';cv.style.height=H*s+'px'};addEventListener('resize',fit);fit();
+  const stopAudio=()=>{srcs.forEach(s=>{try{s.stop()}catch(e){}});srcs=[];if(mg){mg.disconnect();mg=null}};
+  const startAudio=()=>{stopAudio();if(!snd||!playing||!ac)return;mg=master(ac);srcs=scheduleAudio(ac,mg,ac.currentTime+.05,t)};
+  const setPlay=p=>{playing=p;bPlay.textContent=p?'⏸ 暫停':'▶ 播放';p?startAudio():stopAudio()};
+  bPlay.onclick=()=>setPlay(!playing);
+  document.getElementById('bRe').onclick=()=>{t=0;setPlay(true)};
+  bSnd.onclick=()=>{snd=!snd;bSnd.classList.toggle('on',snd);bSnd.textContent=snd?'🔊 音效開':'🔊 開啟音效';
+    if(snd){ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume();t=0;setPlay(true)}else stopAudio()};
+  seek.oninput=()=>{t=+seek.value;if(playing)startAudio()};
+  cv.onclick=()=>setPlay(!playing);
+  addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();setPlay(!playing)}});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)setPlay(false)});
+  const wake=()=>{ui.classList.remove('hide');clearTimeout(idle);idle=setTimeout(()=>ui.classList.add('hide'),2500)};addEventListener('pointermove',wake);addEventListener('pointerdown',wake);wake();
+  window.ready.then(()=>{
+    const loop=now=>{if(last==null)last=now;const dt=Math.min(.1,(now-last)/1000);last=now;
+      if(playing){t+=dt;if(t>=T){t=0;startAudio()}}
+      render(t);seek.value=t;requestAnimationFrame(loop)};
+    requestAnimationFrame(loop)});
+}
+</script>
+</body></html>
