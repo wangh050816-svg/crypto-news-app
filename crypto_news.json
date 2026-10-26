@@ -1,43 +1,67 @@
 [
   {
     "source": "動區動趨 BlockTempo",
-    "title": "AI 版瞞天過海》標籤調包騙過機場，兩棧板 RTX 5090 明目張膽竊走",
-    "link": "https://www.blocktempo.com/brazil-guarulhos-airport-rtx-5090-label-swap-truck-stolen-gpus/",
-    "published": "Sun, 25 Oct 2026 03:11:44 +0000",
-    "summary": "<p>巴西機場兩棧板 RTX 5090 失竊案有了新進展：機場內部調查認為標籤遭調包，貨被一輛有權提領別批貨的卡車載 [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/brazil-gua...",
+    "title": "英國砸 1 億英鎊建 AI 生物安全實驗室！OpenAI、Anthropic 再加碼 2 億額度",
+    "link": "https://www.blocktempo.com/uk-ai-biosecurity-lab-openai-anthropic/",
+    "published": "Mon, 26 Oct 2026 03:10:37 +0000",
+    "summary": "<p>英國政府砸約 1 億英鎊設立全球首座 AI 生物安全實驗室（AIBL），OpenAI 與 Anthropic  [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/uk-ai-bios...",
     "category": "AI"
   },
   {
     "source": "動區動趨 BlockTempo",
-    "title": "PHP 又爆新漏洞尚未修補版！官方：風險低，關掉上傳進度最保險",
-    "link": "https://www.blocktempo.com/php-session-upload-progress-advisory-unlikely-rce-disable-feature-patch/",
-    "published": "Sun, 25 Oct 2026 02:29:41 +0000",
-    "summary": "<p>PHP 昨日揭露新漏洞 CVE-2026-115560。官方說要三個條件同時成立才會中，預設設定不符合；但目前 [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/php-sessio...",
-    "category": "非加密貨幣"
+    "title": "Vitalik 表態接受 Kimi 拿掉進攻性網路訓練：歧視用例遠比歧視用戶好",
+    "link": "https://www.blocktempo.com/vitalik-kimi-offensive-cyber-training/",
+    "published": "Mon, 26 Oct 2026 02:26:39 +0000",
+    "summary": "<p>以太坊共同創辦人 Vitalik Buterin 公開表態，可接受 Kimi 刻意從訓練資料拿掉頂級進攻性網路 [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/vitalik-ki...",
+    "category": "Ethereum"
   },
   {
     "source": "動區動趨 BlockTempo",
-    "title": "愛爾蘭央行重罰 Coinbase 360 萬美元：5 年未妥善保障使用者資金",
-    "link": "https://www.blocktempo.com/coinbase-ireland-fine-360000-central-bank-oversight-safeguard-failures/",
-    "published": "Sun, 25 Oct 2026 01:25:56 +0000",
-    "summary": "<p>愛爾蘭央行 22 日公布執法行動，Coinbase 愛爾蘭分公司在 2020-2025 年間未妥善保障使用者資 [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/coinbase-i...",
-    "category": "非加密貨幣"
+    "title": "比爾・蓋茲：AI 終將帶來「真正富足」，但此前人類將經歷 20 年「超級動蕩期」",
+    "link": "https://www.blocktempo.com/bill-gates-ai-abundance-20-years-tumult/",
+    "published": "Mon, 26 Oct 2026 02:15:07 +0000",
+    "summary": "<p>微軟共同創辦人比爾・蓋茲在 Decoder 播客直言：人工智慧終將帶來「真正富足」，但之前約 20 年過渡期， [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/bill-gates...",
+    "category": "AI"
   },
   {
     "source": "動區動趨 BlockTempo",
-    "title": "美國中東大撤退！WSJ 曝伊朗「致命謀殺」升階，比特幣閃崩 8 萬美元",
-    "link": "https://www.blocktempo.com/bitcoin-drops-below-80k-as-us-evacuates-mideast/",
-    "published": "Sat, 24 Oct 2026 17:19:03 +0000",
-    "summary": "<p>美國中東撤僑行動急速升級，DNI 備忘錄披露伊朗針對美國公民的「致命謀殺」已達高階階段。比特幣 24 小時內跌 [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/bitcoin-dr...",
+    "title": "Coinbase 比特幣溢價連 33 天負值！美國買盤持續疲軟",
+    "link": "https://www.blocktempo.com/coinbase-bitcoin-premium-negative-33-days/",
+    "published": "Mon, 26 Oct 2026 02:02:07 +0000",
+    "summary": "<p>Coinbase 比特幣溢價指數連 33 日錄得負值，截至台北時間 10 月 26 日最新報 -0.1259% [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/coinbase-b...",
     "category": "Bitcoin"
   },
   {
     "source": "動區動趨 BlockTempo",
-    "title": "Jack Dorsey 發表語音 AI「Dessa」社群驚呼太像人！可本地運行於 MacBook Pro",
-    "link": "https://www.blocktempo.com/block-dessa-voice-ai-human-scam-fears-cz/",
-    "published": "Sat, 24 Oct 2026 17:13:52 +0000",
-    "summary": "<p>Jack Dorsey 的支付公司 Block 發布語音 AI「Dessa」，稱只用人類語音訓練、可直接處理音 [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/block-dess...",
+    "title": "猶他貂場 H5N1 禽流感失控逾兩月！專家憂恐成跨物種中繼站，聯邦卻無病貂撲殺規則",
+    "link": "https://www.blocktempo.com/utah-mink-farm-bird-flu-propublica/",
+    "published": "Mon, 26 Oct 2026 01:49:24 +0000",
+    "summary": "<p>猶他州 Provo 以西貂毛皮場 H5N1 禽流感失控逾兩個月，州與聯邦未下令撲殺、也未主動監測工人。專家警告 [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/utah-mink-...",
+    "category": "非加密貨幣"
+  },
+  {
+    "source": "CoinDesk",
+    "title": "Elon Musk confirms $40 billion SpaceX debt deal for AI chips, warns of neocloud shakeout",
+    "link": "https://www.coindesk.com/markets/2026/10/26/elon-musk-confirms-usd40-billion-spacex-debt-deal-for-ai-chips-warns-of-neocloud-shakeout",
+    "published": "Mon, 26 Oct 2026 03:11:39 +0000",
+    "summary": "...",
     "category": "AI"
+  },
+  {
+    "source": "CoinDesk",
+    "title": "Latvia targets tokenization rules in 2027 with commercial property in focus",
+    "link": "https://www.coindesk.com/business/2026/10/25/latvia-targets-tokenization-rules-in-2027-with-commercial-property-in-focus",
+    "published": "Sun, 25 Oct 2026 15:00:00 +0000",
+    "summary": "...",
+    "category": "非加密貨幣"
+  },
+  {
+    "source": "CoinDesk",
+    "title": "UK banks face 10,000 complaints in 3 months over crypto restrictions",
+    "link": "https://www.coindesk.com/policy/2026/10/22/uk-banks-face-10-000-complaints-in-3-months-over-crypto-restrictions",
+    "published": "Sun, 25 Oct 2026 13:00:00 +0000",
+    "summary": "...",
+    "category": "非加密貨幣"
   },
   {
     "source": "CoinDesk",
@@ -56,67 +80,43 @@
     "category": "AI"
   },
   {
-    "source": "CoinDesk",
-    "title": "Crypto under weekend pressure, bitcoin slides below $80,000 on U.S. Middle East evacuations",
-    "link": "https://www.coindesk.com/markets/2026/10/24/crypto-under-weekend-pressure-bitcoin-slides-below-usd80-000-on-u-s-middle-east-evacuations",
-    "published": "Sat, 24 Oct 2026 15:11:24 +0000",
-    "summary": "...",
+    "source": "CoinTelegraph",
+    "title": "Keystone says website breach exposed hardware wallet buyers’ addresses",
+    "link": "https://cointelegraph.com/news/keystone-says-website-breach-exposed-hardware-wallet-buyers-addresses?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "published": "Mon, 26 Oct 2026 02:24:04 +0000",
+    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"Keystone says website breach exposed hardware wa...",
+    "category": "非加密貨幣"
+  },
+  {
+    "source": "CoinTelegraph",
+    "title": "Standard Chartered-led Anchorpoint says it’s not rushing retail stablecoin",
+    "link": "https://cointelegraph.com/news/standard-chartered-led-anchorpoint-says-its-not-rushing-retail-stablecoin?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "published": "Mon, 26 Oct 2026 00:13:29 +0000",
+    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"Standard Chartered-led Anchorpoint says it’s not...",
+    "category": "非加密貨幣"
+  },
+  {
+    "source": "CoinTelegraph",
+    "title": "AI agents help rescue ETH’s Glamsterdam fork, ‘Steal My Bitcoin’ site: Hodler’s Digest",
+    "link": "https://cointelegraph.com/magazine/ai-agents-help-rescue-eths-glamsterdam-fork-steal-my-bitcoin-site-hodlers-digest?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "published": "Sun, 25 Oct 2026 22:48:40 +0000",
+    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"AI agents help rescue ETH’s Glamsterdam fork, ‘S...",
     "category": "Bitcoin"
   },
   {
-    "source": "CoinDesk",
-    "title": "Why McDonalds, Microsoft and Google saying no to tokenized stocks isn't a dealbreaker",
-    "link": "https://www.coindesk.com/business/2026/10/23/why-mcdonalds-microsoft-and-google-saying-no-to-tokenized-stocks-isn-t-a-dealbreaker",
-    "published": "Sat, 24 Oct 2026 15:00:00 +0000",
-    "summary": "...",
-    "category": "非加密貨幣"
-  },
-  {
-    "source": "CoinDesk",
-    "title": "Argentina drops criminal probe into President Milei over crashed memecoin LIBRA",
-    "link": "https://www.coindesk.com/business/2026/10/24/argentina-drops-criminal-probe-into-president-milei-over-crashed-memecoin-libra",
-    "published": "Sat, 24 Oct 2026 14:38:47 +0000",
-    "summary": "...",
+    "source": "CoinTelegraph",
+    "title": "ECB official sees digital euro as key to protecting EU ‘sovereignty’",
+    "link": "https://cointelegraph.com/news/ecb-official-sees-digital-euro-tool-to-protect-eu-sovereignty?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "published": "Sun, 25 Oct 2026 15:11:00 +0000",
+    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"ECB official sees digital euro as key to protect...",
     "category": "非加密貨幣"
   },
   {
     "source": "CoinTelegraph",
-    "title": "Wells Fargo and five others object to OKX-ICE tokenized stock listings: Report",
-    "link": "https://cointelegraph.com/news/nasdaq-companies-object-tokenized-stock-listings-okx-ice?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-    "published": "Fri, 23 Oct 2026 21:32:16 +0000",
-    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"Wells Fargo and five others object to OKX-ICE to...",
-    "category": "非加密貨幣"
-  },
-  {
-    "source": "CoinTelegraph",
-    "title": "IRS plans lower tax disclosure penalties, including for crypto: Forbes",
-    "link": "https://cointelegraph.com/news/irs-plans-lower-penalties-for-crypto-tax-disclosures-forbes-reports?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-    "published": "Fri, 23 Oct 2026 20:54:17 +0000",
-    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"IRS plans lower tax disclosure penalties, includ...",
-    "category": "非加密貨幣"
-  },
-  {
-    "source": "CoinTelegraph",
-    "title": "Initia halts blockchain after exploit reportedly drains over $2.6M",
-    "link": "https://cointelegraph.com/news/initia-halts-blockchain-exploit-drained?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-    "published": "Fri, 23 Oct 2026 18:39:02 +0000",
-    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"Initia halts blockchain after exploit reportedly...",
-    "category": "Ethereum"
-  },
-  {
-    "source": "CoinTelegraph",
-    "title": "US senator probes Tether after reported deal with ex-Trump crypto adviser",
-    "link": "https://cointelegraph.com/news/us-senator-probe-bo-hines-trump-crypto-adviser-tether-deal?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-    "published": "Fri, 23 Oct 2026 17:42:12 +0000",
-    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"US senator probes Tether after reported deal wit...",
-    "category": "非加密貨幣"
-  },
-  {
-    "source": "CoinTelegraph",
-    "title": "SEC flags tokenization as high-risk area in 2027 market examinations",
-    "link": "https://cointelegraph.com/news/sec-adds-tokenized-securities-to-2027-examination-priorities?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-    "published": "Fri, 23 Oct 2026 16:08:40 +0000",
-    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"SEC flags tokenization as high-risk area in 2027...",
+    "title": "Netanyahu floats use of blockchain as solution to potential financial sanctions",
+    "link": "https://cointelegraph.com/news/netanyahu-floats-use-of-blockchain-as-solution-to-potential-financial-sanctions?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "published": "Sun, 25 Oct 2026 11:42:00 +0000",
+    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"Netanyahu floats use of blockchain as solution t...",
     "category": "非加密貨幣"
   }
 ]
