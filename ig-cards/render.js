@@ -17,6 +17,13 @@ function SET({title,cards}){
     if(!S[k+'Top']||!S[k+'Bot']) throw new Error('找不到場景 '+k+'Top / '+k+'Bot');
     return \`<div class="card" id="card\${i+1}"><h1>\${title}</h1>\${S[k+'Top']()}<div class="cap"><b>\${a}</b><span>\${ae}</span></div>\${S[k+'Bot']()}<div class="cap"><b>\${b}</b><span>\${be}</span></div></div>\`}).join('');
 }
+// 單格語錄卡：一張一句話，場景是 S[key+'Q']（960×640）
+function QUOTES({series,by,cards}){
+  document.getElementById('root').innerHTML=cards.map(([k,zh,en],i)=>{
+    if(!S[k+'Q']) throw new Error('找不到場景 '+k+'Q');
+    const n=String(i+1).padStart(2,'0'),t=String(cards.length).padStart(2,'0');
+    return \`<div class="card q" id="card\${i+1}"><div class="qhead">\${series}<i>\${n} / \${t}</i></div>\${S[k+'Q']()}<div class="qbody"><b>\${zh}</b><span>\${en}</span><em>— \${by}</em></div></div>\`}).join('');
+}
 ${read(setFile)}
 </script></body></html>`;
 const tmp=path.join(out,'_page.html');fs.writeFileSync(tmp,html);
