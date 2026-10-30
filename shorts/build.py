@@ -58,8 +58,9 @@ clips = []
 t_out = 0.0
 for c in P['CLIPS']:
     s, e = snap(c['s']), snap(c['e'])
-    n = round((e - s) * FPS)
-    clips.append(dict(c, s=s, e=e, n=n, t0=t_out))
+    nv = round((e - s) * FPS)
+    n = nv + round(P.get('GAP', 0) * FPS)
+    clips.append(dict(c, s=s, e=e, n=n, nv=nv, t0=t_out))
     t_out += n / FPS
 END = P.get('END_CARD', {}).get('dur', 0)
 TOTAL = t_out + END
@@ -152,6 +153,7 @@ def title_imgs(ch_):
 booms = [c['t0'] + (b - c['s']) for c in clips for b in c.get('boom', [])]
 flashes = [c['t0'] for i, c in enumerate(clips) if i == 0 or c['chapter'] != clips[i - 1]['chapter']]
 rnd = random.Random(3)
+SHAKE, FLASH = P.get('SHAKE', 6), P.get('FLASH', 70)   # 晃動幅度（像素）、白閃強度（0–255）
 
 FOOT = text_img(P['FOOTER'], 26 if LAND else 30, (200, 205, 215) if LAND else C['dim'], C['dim'], stroke=3 if LAND else 0) if P.get('FOOTER') else None
 
@@ -159,7 +161,7 @@ def compose_land(chart, t, ch_, ch_start):
     dx = dy = 0
     for b in booms:
         if 0 <= t - b < .35:
-            k = (1 - (t - b) / .35) * 12; dx, dy = rnd.uniform(-k, k), rnd.uniform(-k, k)
+            k = (1 - (t - b) / .35) * SHAKE; dx, dy = rnd.uniform(-k, k), rnd.uniform(-k, k)
     im = Image.new('RGBA', (W, H))
     im.paste(chart.resize((W + 32, H + 18), Image.BILINEAR), (int(-16 + dx), int(-9 + dy)))
     im.alpha_composite(SHADE)
@@ -176,7 +178,7 @@ def compose_land(chart, t, ch_, ch_start):
     if FOOT: im.alpha_composite(FOOT, (W - FOOT.width - 30, H - FOOT.height - 12))
     for fl in flashes + booms:
         if 0 <= t - fl < .18:
-            im.alpha_composite(Image.new('RGBA', (W, H), (255, 255, 255, int(150 * (1 - (t - fl) / .18)))))
+            im.alpha_composite(Image.new('RGBA', (W, H), (255, 255, 255, int(FLASH * (1 - (t - fl) / .18)))))
     return im.convert('RGB')
 
 def compose(chart, t, ch_, ch_start):
@@ -186,7 +188,7 @@ def compose(chart, t, ch_, ch_start):
     dx = dy = 0
     for b in booms:
         if 0 <= t - b < .35:
-            k = (1 - (t - b) / .35) * 14; dx, dy = rnd.uniform(-k, k), rnd.uniform(-k, k)
+            k = (1 - (t - b) / .35) * SHAKE; dx, dy = rnd.uniform(-k, k), rnd.uniform(-k, k)
     d = ImageDraw.Draw(im)
     d.rounded_rectangle((CX0 + 14, CY - 6, CX0 + CW - 14, CY + CH + 6), 22, outline=C['panel'] + (255,), width=4)
     mask = Image.new('L', (CW - 36, CH)); ImageDraw.Draw(mask).rounded_rectangle((0, 0, CW - 37, CH - 1), 18, fill=255)
@@ -211,7 +213,7 @@ def compose(chart, t, ch_, ch_start):
     # 白閃
     for fl in flashes + booms:
         if 0 <= t - fl < .18:
-            im.alpha_composite(Image.new('RGBA', (W, H), (255, 255, 255, int(150 * (1 - (t - fl) / .18)))))
+            im.alpha_composite(Image.new('RGBA', (W, H), (255, 255, 255, int(FLASH * (1 - (t - fl) / .18)))))
     return im.convert('RGB')
 
 LUT = np.clip((np.arange(256) / 255) ** .85 * 255 * 1.12, 0, 255).astype(np.uint8)
@@ -261,7 +263,7 @@ enc.stdin.close(); enc.wait()
 N = int(TOTAL * SR)
 voice = np.zeros(N, np.float32)
 for c in clips:
-    seg = VOICE[int(c['s'] * SR): int(c['s'] * SR) + int(c['n'] / FPS * SR)].copy()
+    seg = VOICE[int(c['s'] * SR): int(c['s'] * SR) + int(c['nv'] / FPS * SR)].copy()
     f = min(len(seg) // 2, int(.012 * SR)); seg[:f] *= np.linspace(0, 1, f); seg[-f:] *= np.linspace(1, 0, f)
     a = int(c['t0'] * SR); voice[a:a + len(seg)] = seg
 voice *= .2 / (np.sqrt(np.mean(voice[np.abs(voice) > .01] ** 2)) + 1e-9)
@@ -302,9 +304,10 @@ wt = np.arange(int(.5 * SR)) / SR
 lp, y_, out = np.exp(-2 * np.pi * (300 + 6000 * (wt / .5) ** 2) / SR), 0.0, np.zeros(len(wt), np.float32)
 for i in range(len(wt)): y_ = lp[i] * y_ + (1 - lp[i]) * noise[i]; out[i] = y_
 whoosh = out * np.sin(np.pi * wt / .5) ** 2 * 1.2
-for b in booms: add(boom, b - .02)
-for fl in flashes[1:]: add(whoosh, fl - .35)
-if END: add(boom * .8, t_out)
+for b in booms: add(boom * P.get('BOOM_VOL', .5), b - .02)
+if P.get('WHOOSH_VOL', 0): 
+    for fl in flashes[1:]: add(whoosh * P['WHOOSH_VOL'], fl - .35)
+if END: add(boom * P.get('BOOM_VOL', .5), t_out)
 
 mix = voice + music * P.get('MUSIC_VOL', .5) + sfx * .5
 mix = np.tanh(mix * 1.1) * .9
