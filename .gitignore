@@ -2,3 +2,5 @@ __pycache__/
 *.pyc
 .venv/
 venv/
+shorts/out/
+shorts/src/
