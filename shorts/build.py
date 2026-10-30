@@ -59,6 +59,40 @@ def read_wav(path):
     w = wave.open(path); a = np.frombuffer(w.readframes(w.getnframes()), np.int16).astype(np.float32) / 32768
     return a.reshape(-1, w.getnchannels()).mean(1)
 wav = os.path.join(OUT, 'src.wav')
+# ---------- 去滑鼠／鍵盤點擊聲 ----------
+def declick(a, SR, ratio=7.0, maxdur=.007, gain_db=-30):
+    # 滑鼠點擊：4kHz 以上突然暴增（>7 倍背景）而且 7ms 內就結束；講話的子音不到 3 倍、持續 15ms 以上
+    X = np.fft.rfft(a); f = np.fft.rfftfreq(len(a), 1 / SR)
+    det = np.fft.irfft(X * (f > 4000), len(a))
+    hi = np.fft.irfft(X * (f > 1500), len(a)); lo = a - hi
+    h = int(SR * .0005); n = len(a) // h
+    env = np.sqrt((det[:n * h] ** 2).reshape(n, h).mean(1))
+    base = np.median(np.lib.stride_tricks.sliding_window_view(np.pad(env, 50, mode='edge'), 101)[:n], 1)
+    g = np.ones(len(a)); k = 10 ** (gain_db / 20); ramp = int(SR * .001)
+    clicks, i = [], 0
+    while i < n:
+        if env[i] > ratio * base[i] and env[i] > .0015:
+            j = i + int(np.argmax(env[i:i + 10]))
+            dur = int((env[max(j - 4, 0):j + 30] > env[j] / 3).sum()) * h / SR
+            if dur <= maxdur:
+                s = max(j * h - int(.002 * SR), 0); e = min(j * h + int(.010 * SR), len(a))
+                seg = np.full(e - s, k); seg[:ramp] = np.linspace(1, k, ramp); seg[-ramp:] = np.linspace(k, 1, ramp)
+                g[s:e] = np.minimum(g[s:e], seg); clicks.append(round(j * h / SR, 3))
+            i = j + 20
+        i += 1
+    return lo + hi * g, clicks
+
+VSRC = SRC
+if P.get('DECLICK'):
+    raw = os.path.join(OUT, 'raw.wav')
+    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', SRC, '-ac', '1', '-ar', str(SR), raw], check=True)
+    x = read_wav(raw); n_cl = 0
+    for _ in range(3):
+        x, cl = declick(x, SR); n_cl += len(cl)
+    print(f'去掉 {n_cl} 個點擊聲')
+    with wave.open(raw, 'w') as w_:
+        w_.setnchannels(1); w_.setsampwidth(2); w_.setframerate(SR); w_.writeframes((np.clip(x, -1, 1) * 32767).astype(np.int16).tobytes())
+    VSRC = raw
 af = 'anull'
 if P.get('DENOISE'):   # 人聲降噪：RNNoise 語音模型 + FFT 降噪，去掉底噪和嘶嘶聲
     md = os.path.join(os.path.dirname(__file__), 'out', '_models'); os.makedirs(md, exist_ok=True)
@@ -66,8 +100,13 @@ if P.get('DENOISE'):   # 人聲降噪：RNNoise 語音模型 + FFT 降噪，去�
     if not os.path.exists(m):
         urllib.request.urlretrieve('https://cdn.jsdelivr.net/gh/GregorR/rnnoise-models@master/somnolent-hogwash-2018-09-01/sh.rnnn', m)
     af = f'highpass=f=80,arnndn=m={m}:mix=0.9,afftdn=nf=-50:tn=1'
-subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', SRC, '-af', af, '-ac', '1', '-ar', str(SR), wav], check=True)
+subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', VSRC, '-af', af, '-ac', '1', '-ar', str(SR), wav], check=True)
 VOICE = read_wav(wav)
+if P.get('DECLICK'):   # 降噪後背景變乾淨，原本被底噪蓋住的小點擊會浮出來，再清一次
+    n_cl = 0
+    for _ in range(2):
+        VOICE, cl = declick(VOICE, SR); n_cl += len(cl)
+    print(f'降噪後再去掉 {n_cl} 個點擊聲')
 hop = SR // 100
 rms = np.sqrt(np.convolve(VOICE ** 2, np.ones(hop) / hop, 'same'))[::hop]
 def snap(t, win=.12):
@@ -358,6 +397,6 @@ subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', os.path.join(OUT, 'video.mp
 cv = P.get('COVER_AT', .6)
 subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', str(cv), '-i', os.path.join(OUT, 'final.mp4'), '-frames:v', '1', os.path.join(OUT, 'cover.png')], check=True)
 open(os.path.join(OUT, 'caption.txt'), 'w').write(P.get('CAPTION', '').strip() + '\n')
-for f in ('video.mp4', 'audio.wav', 'src.wav', 'clean.mp4'):
+for f in ('video.mp4', 'audio.wav', 'src.wav', 'clean.mp4', 'raw.wav'):
     if os.path.exists(os.path.join(OUT, f)): os.remove(os.path.join(OUT, f))
 print('完成 →', os.path.join(OUT, 'final.mp4'))
