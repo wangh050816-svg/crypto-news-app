@@ -272,7 +272,7 @@ for c in clips:
 if END:
     ec = P['END_CARD']
     base = compose(last, t_out, clips[-1]['chapter'], -9).filter(ImageFilter.GaussianBlur(18))
-    lines = [text_img(l, sz, C['text'], C['accent'], stroke=8) for l, sz in ec['lines']]
+    lines = [text_img(l, sz, C['text'], tuple(ec.get('kwcolor', C['accent'])), stroke=8) for l, sz in ec['lines']]
     # 每行間隔 step 秒慢慢浮現；最後 out 秒整個畫面淡到全黑
     step, fin, fout = ec.get('step', .25), ec.get('fade', .3), ec.get('out', 0)
     gap_ = 40
