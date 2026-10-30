@@ -248,15 +248,23 @@ for c in clips:
 if END:
     ec = P['END_CARD']
     base = compose(last, t_out, clips[-1]['chapter'], -9).filter(ImageFilter.GaussianBlur(18))
-    base = Image.blend(base, Image.new('RGB', (W, H), (0, 0, 0)), .55).convert('RGBA')
     lines = [text_img(l, sz, C['text'], C['accent'], stroke=8) for l, sz in ec['lines']]
+    # 每行間隔 step 秒慢慢浮現；最後 out 秒整個畫面淡到全黑
+    step, fin, fout = ec.get('step', .25), ec.get('fade', .3), ec.get('out', 0)
+    gap_ = 40
+    y0 = (H - sum(l.height for l in lines) - gap_ * (len(lines) - 1)) // 2 if LAND else 560
+    black = Image.new('RGB', (W, H), (0, 0, 0))
     for i in range(round(END * FPS)):
-        t = i / FPS; im = base.copy(); y = 250 if LAND else 560
+        t = i / FPS
+        dark = .4 + .45 * ease(t / max(END - fout, .1)) if fout else .55
+        im = Image.blend(base, black, dark).convert('RGBA'); y = y0
         for j, l in enumerate(lines):
-            a = ease((t - j * .25) / .3)
+            a = min(max((t - .4 - j * step) / fin, 0), 1) if fout else ease((t - j * step) / fin)
             lay = l.copy(); lay.putalpha(lay.split()[3].point(lambda v: int(v * a)))
-            im.alpha_composite(lay, ((W - l.width) // 2, int(y + (1 - a) * 50))); y += l.height + 30
-        enc.stdin.write(im.convert('RGB').tobytes())
+            im.alpha_composite(lay, ((W - l.width) // 2, int(y + (1 - a) * (12 if fout else 50)))); y += l.height + gap_
+        im = im.convert('RGB')
+        if fout: im = Image.blend(im, black, min(max((t - (END - fout)) / (fout - .6), 0), 1))
+        enc.stdin.write(im.tobytes())
 enc.stdin.close(); enc.wait()
 
 # ---------- 聲音：人聲 + 背景音樂（人聲出現時自動壓低）+ 音效 ----------
@@ -284,11 +292,13 @@ pulse = np.exp(-((t % beat) / beat) * 4)
 music += np.sin(np.cumsum(2 * np.pi * bassf / SR)) * .22 * pulse
 # 鼓：越後面越緊湊
 intense = np.interp(t, [0, t_out * .5, t_out], [.4, .7, 1])
-kt = t % beat; music += np.sin(2 * np.pi * (50 + 90 * np.exp(-kt * 30)) * kt) * np.exp(-kt * 9) * .45 * intense
+body = np.clip((t_out + .8 - t) / .8, 0, 1)   # 片尾只留和弦，鼓停掉
+kt = t % beat; music += body * np.sin(2 * np.pi * (50 + 90 * np.exp(-kt * 30)) * kt) * np.exp(-kt * 9) * .45 * intense
 ht = (t + beat / 2) % beat; noise = np.random.default_rng(1).standard_normal(N).astype(np.float32)
 hp = noise - np.concatenate([[0], noise[:-1]])
-music += hp * np.exp(-ht * 60) * .05 * (intense > .55)
-music *= np.minimum(1, t / 1.5) * np.minimum(1, (TOTAL - t) / 1.2)
+music += body * hp * np.exp(-ht * 60) * .05 * (intense > .55)
+tail = np.clip((TOTAL - .6 - t) / max(TOTAL - .6 - t_out, .1), 0, 1) if END else 1
+music *= np.minimum(1, t / 1.5) * np.minimum(1, (TOTAL - t) / 1.2) * np.where(t > t_out, tail ** 1.5, 1)
 # 人聲閃避
 env = np.convolve(np.abs(voice), np.ones(SR // 20) / (SR // 20), 'same')
 duck = np.convolve((env > .01).astype(np.float32), np.ones(SR // 5) / (SR // 5), 'same')
@@ -307,7 +317,7 @@ whoosh = out * np.sin(np.pi * wt / .5) ** 2 * 1.2
 for b in booms: add(boom * P.get('BOOM_VOL', .5), b - .02)
 if P.get('WHOOSH_VOL', 0): 
     for fl in flashes[1:]: add(whoosh * P['WHOOSH_VOL'], fl - .35)
-if END: add(boom * P.get('BOOM_VOL', .5), t_out)
+if END and P['END_CARD'].get('boom', True): add(boom * P.get('BOOM_VOL', .5), t_out)
 
 mix = voice + music * P.get('MUSIC_VOL', .5) + sfx * .5
 mix = np.tanh(mix * 1.1) * .9
