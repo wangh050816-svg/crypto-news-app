@@ -59,7 +59,14 @@ def read_wav(path):
     w = wave.open(path); a = np.frombuffer(w.readframes(w.getnframes()), np.int16).astype(np.float32) / 32768
     return a.reshape(-1, w.getnchannels()).mean(1)
 wav = os.path.join(OUT, 'src.wav')
-subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', SRC, '-ac', '1', '-ar', str(SR), wav], check=True)
+af = 'anull'
+if P.get('DENOISE'):   # 人聲降噪：RNNoise 語音模型 + FFT 降噪，去掉底噪和嘶嘶聲
+    md = os.path.join(os.path.dirname(__file__), 'out', '_models'); os.makedirs(md, exist_ok=True)
+    m = os.path.join(md, 'sh.rnnn')
+    if not os.path.exists(m):
+        urllib.request.urlretrieve('https://cdn.jsdelivr.net/gh/GregorR/rnnoise-models@master/somnolent-hogwash-2018-09-01/sh.rnnn', m)
+    af = f'highpass=f=80,arnndn=m={m}:mix=0.9,afftdn=nf=-50:tn=1'
+subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', SRC, '-af', af, '-ac', '1', '-ar', str(SR), wav], check=True)
 VOICE = read_wav(wav)
 hop = SR // 100
 rms = np.sqrt(np.convolve(VOICE ** 2, np.ones(hop) / hop, 'same'))[::hop]
@@ -313,7 +320,7 @@ body = np.clip((t_out + .8 - t) / .8, 0, 1)   # 片尾只留和弦，鼓停掉
 kt = t % beat; music += body * np.sin(2 * np.pi * (50 + 90 * np.exp(-kt * 30)) * kt) * np.exp(-kt * 9) * .45 * intense
 ht = (t + beat / 2) % beat; noise = np.random.default_rng(1).standard_normal(N).astype(np.float32)
 hp = noise - np.concatenate([[0], noise[:-1]])
-music += body * hp * np.exp(-ht * 60) * .05 * (intense > .55)
+music += body * hp * np.exp(-ht * 60) * .05 * (intense > .55) * P.get('HATS', 1)
 tail = np.clip((TOTAL - .6 - t) / max(TOTAL - .6 - t_out, .1), 0, 1) if END else 1
 music *= np.minimum(1, t / 1.5) * np.minimum(1, (TOTAL - t) / 1.2) * np.where(t > t_out, tail ** 1.5, 1)
 # 人聲閃避
