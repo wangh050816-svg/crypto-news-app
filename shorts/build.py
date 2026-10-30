@@ -13,6 +13,19 @@ os.makedirs(OUT, exist_ok=True)
 P = {}
 exec(open(proj, encoding='utf-8').read(), P)
 SRC = os.path.expanduser(P['SRC'])
+# 原片裡的廣告／彈窗：用彈出前的乾淨畫面蓋掉那一塊（PATCHES：t=(開始, 結束)、box=(x, y, w, h)、clean=取乾淨畫面的秒數）
+if P.get('PATCHES'):
+    clean = os.path.join(OUT, 'clean.mp4')
+    args, fl, last_ = ['ffmpeg', '-v', 'error', '-y', '-i', SRC], [], '0:v'
+    for i, pt in enumerate(P['PATCHES']):
+        x, y, w, h = pt['box']
+        args += ['-ss', str(pt['clean']), '-i', SRC]
+        fl.append(f"[{i + 1}:v]trim=end_frame=1,crop={w}:{h}:{x}:{y},setpts=0[p{i}];"
+                  f"[{last_}][p{i}]overlay={x}:{y}:eof_action=repeat:enable='between(t,{pt['t'][0]},{pt['t'][1]})'[v{i}]")
+        last_ = f'v{i}'
+    args += ['-filter_complex', ';'.join(fl), '-map', f'[{last_}]', '-map', '0:a', '-c:v', 'libx264', '-crf', '14', '-preset', 'fast', '-c:a', 'copy', clean]
+    subprocess.run(args, check=True)
+    SRC = clean
 SPEED = P.get('SPEED', 1.0)
 LAND = P.get('LAYOUT') == 'landscape'      # landscape：1920×1080 給 YouTube；預設直式 1080×1920
 if LAND: W, H = 1920, 1080
@@ -334,5 +347,6 @@ subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', os.path.join(OUT, 'video.mp
 cv = P.get('COVER_AT', .6)
 subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', str(cv), '-i', os.path.join(OUT, 'final.mp4'), '-frames:v', '1', os.path.join(OUT, 'cover.png')], check=True)
 open(os.path.join(OUT, 'caption.txt'), 'w').write(P.get('CAPTION', '').strip() + '\n')
-for f in ('video.mp4', 'audio.wav', 'src.wav'): os.remove(os.path.join(OUT, f))
+for f in ('video.mp4', 'audio.wav', 'src.wav', 'clean.mp4'):
+    if os.path.exists(os.path.join(OUT, f)): os.remove(os.path.join(OUT, f))
 print('完成 →', os.path.join(OUT, 'final.mp4'))
