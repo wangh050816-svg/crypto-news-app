@@ -312,7 +312,7 @@ for k in range(3):
     ph = np.cumsum(2 * np.pi * fr / SR)
     music += (.5 * np.sin(ph) + .2 * np.sin(2 * ph) + .1 * np.sin(3 * ph)) * .06
 bassf = np.array([note(ch_[0] - 24) for ch_ in prog])[ci]
-pulse = np.exp(-((t % beat) / beat) * 4)
+pulse = np.exp(-((t % beat) / beat) * 4) * np.minimum(1, (t % beat) / .015)   # 15ms 起音，不然每拍都會爆一下
 music += np.sin(np.cumsum(2 * np.pi * bassf / SR)) * .22 * pulse
 # 鼓：越後面越緊湊
 intense = np.interp(t, [0, t_out * .5, t_out], [.4, .7, 1])
