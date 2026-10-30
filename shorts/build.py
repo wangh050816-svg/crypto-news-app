@@ -67,10 +67,14 @@ def snap(t, win=.12):
     i0, i1 = int((t - win) * 100), int((t + win) * 100)
     return (i0 + int(np.argmin(rms[max(i0, 0):i1]))) / 100
 
+THR = np.percentile(rms, 30) * 1.5   # 低於這個音量算靜音
 clips = []
 t_out = 0.0
 for c in P['CLIPS']:
     s, e = snap(c['s']), snap(c['e'])
+    if P.get('TIGHT'):   # 把段落頭尾的靜音修掉，句子之間不留停頓
+        v = np.where(rms[int(s * 100):int(e * 100)] > THR)[0]
+        if len(v): s, e = s + max(v[0] / 100 - .06, 0), min(s + v[-1] / 100 + .12, e)
     nv = round((e - s) * FPS)
     n = nv + round(P.get('GAP', 0) * FPS)
     clips.append(dict(c, s=s, e=e, n=n, nv=nv, t0=t_out))

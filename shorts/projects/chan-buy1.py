@@ -2,7 +2,8 @@
 # 原片放在 SRC，不 commit 影片本身。時間都是原片秒數；字幕時間來自 faster-whisper 的逐字時間戳，文字已人工校正。
 SRC = 'shorts/src/chan-buy1.mp4'   # 原片放這裡（已 gitignore）
 SPEED = 1.0             # 原速
-GAP = 0.3               # 每段講完留一點點空檔（0.8 會覺得停頓太久）
+GAP = 0                 # 講完不要停頓，直接接下一句
+TIGHT = True            # 修掉每段頭尾的靜音
 SHAKE, FLASH = 6, 60    # 晃動和白閃都輕一點
 BOOM_VOL, WHOOSH_VOL = .45, 0   # 換章節不要轉場音效
 LAYOUT = 'landscape'      # 橫式 16:9 給 YouTube
