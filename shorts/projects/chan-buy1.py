@@ -1,7 +1,7 @@
 # 纏論｜第一類買點 精華（原片：2:23 TradingView 教學錄影，1920×1080）
 # 原片放在 SRC，不 commit 影片本身。時間都是原片秒數；字幕時間來自 faster-whisper 的逐字時間戳，文字已人工校正。
 SRC = 'shorts/src/chan-buy1.mp4'   # 原片放這裡（已 gitignore）
-SPEED = 1.08            # 整支加速，節奏更緊
+SPEED = 1.0             # 原速
 LAYOUT = 'landscape'      # 橫式 16:9 給 YouTube
 CROP_LANDSCAPE = (70, 140, 1456, 818)  # 橫式用：整個 K 線圖區
 CROP = (174, 130, 1344, 870)  # 原片裡 K 線圖的區域（去掉工具列、右邊報價欄、價格軸）
