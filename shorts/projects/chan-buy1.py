@@ -15,6 +15,7 @@ CROP = (174, 130, 1344, 870)  # 原片裡 K 線圖的區域（去掉工具列、
 PATCHES = [dict(t=(19.6, 22.2), box=(36, 800, 660, 252), clean=19.3),    # 左下角跳出的 easyMarkets 廣告
            dict(t=(68.6, 69.4), box=(1130, 370, 480, 690), clean=68.5)]   # 右鍵選單
 CAPTION_STYLE = 'plain'   # 普通白色字幕
+BADGE = dict(path='shorts/assets/xiaoyi-badge.png', width=170, opacity=.92, skip=['hook'])   # 講師徽章放右上角，開頭鉤子先不出現
 FOOTER = '教學分享・非投資建議'
 
 CHAPTERS = {
@@ -60,12 +61,11 @@ CLIPS = [
          caps=[(97.85, '如果出現第一類買點'), (99.3, '代表什麼？'), (100.0, '市場可能要迎來[反彈]')]),
 ]
 
-END_CARD = dict(dur=12, step=1.4, fade=1.2, out=3.0, boom=False, kwcolor=(232, 186, 110), lines=[   # 慢慢浮現、保持神秘，最後淡到全黑；內容照週末直播預告圖
+END_CARD = dict(dur=12, step=1.3, badge=270, fade=1.2, out=3.0, boom=False, kwcolor=(232, 186, 110), lines=[   # 慢慢浮現、保持神秘，最後淡到全黑；內容照週末直播預告圖
     ('下跌，真的結束了嗎？', 84),
     ('下一集　[第二類買賣點]', 70),
     ('[纏道漫長]　週末直播', 52),
     ('每週六、日 [15:00-16:00]　Discord 見', 46),
-    ('脆上分析師・小益 Yi', 38),
 ])
 COVER_AT = 0.5
 

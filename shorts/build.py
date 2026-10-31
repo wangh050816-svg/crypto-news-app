@@ -220,6 +220,15 @@ SHAKE, FLASH = P.get('SHAKE', 6), P.get('FLASH', 70)   # 晃動幅度（像素�
 
 FOOT = text_img(P['FOOTER'], 26 if LAND else 30, (200, 205, 215) if LAND else C['dim'], C['dim'], stroke=3 if LAND else 0) if P.get('FOOTER') else None
 
+# 講師徽章：開頭鉤子不出現，之後固定在右上角
+BD = P.get('BADGE')
+if BD:
+    BADGE = Image.open(BD['path']).convert('RGBA')
+    bw = BD.get('width', 170)
+    BADGE_S = BADGE.resize((bw, round(BADGE.height * bw / BADGE.width)), Image.LANCZOS)
+    BADGE_S.putalpha(BADGE_S.split()[3].point(lambda v: int(v * BD.get('opacity', .92))))
+    BADGE_T0 = next((c['t0'] for c in clips if c['chapter'] not in BD.get('skip', [])), 0)
+
 def compose_land(chart, t, ch_, ch_start):
     dx = dy = 0
     for b in booms:
@@ -239,6 +248,9 @@ def compose_land(chart, t, ch_, ch_start):
     for s, e, img in caps:
         if s <= t < e: im.alpha_composite(img, ((W - img.width) // 2, H - 95 - img.height // 2))
     if FOOT: im.alpha_composite(FOOT, (W - FOOT.width - 30, H - FOOT.height - 12))
+    if BD and t >= BADGE_T0 and ch_ not in BD.get('skip', []):
+        a = ease((t - BADGE_T0) / .6); b = BADGE_S.copy(); b.putalpha(b.split()[3].point(lambda v: int(v * a)))
+        im.alpha_composite(b, (W - b.width - 36, 28))
     for fl in flashes + booms:
         if 0 <= t - fl < .18:
             im.alpha_composite(Image.new('RGBA', (W, H), (255, 255, 255, int(FLASH * (1 - (t - fl) / .18)))))
@@ -312,6 +324,8 @@ if END:
     ec = P['END_CARD']
     base = compose(last, t_out, clips[-1]['chapter'], -9).filter(ImageFilter.GaussianBlur(18))
     lines = [text_img(l, sz, C['text'], tuple(ec.get('kwcolor', C['accent'])), stroke=8) for l, sz in ec['lines']]
+    if BD and ec.get('badge'):   # 片尾最後放大徽章
+        bh = ec['badge']; lines.append(BADGE.resize((round(BADGE.width * bh / BADGE.height), bh), Image.LANCZOS))
     # 每行間隔 step 秒慢慢浮現；最後 out 秒整個畫面淡到全黑
     step, fin, fout = ec.get('step', .25), ec.get('fade', .3), ec.get('out', 0)
     gap_ = 40
