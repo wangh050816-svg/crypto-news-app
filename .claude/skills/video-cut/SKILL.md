@@ -25,7 +25,7 @@ description: 把一支教學錄影（例如 TradingView 畫圖講解）剪成精
 - `LAYOUT = 'landscape'`：1920×1080，給 YouTube 用。不設就是直式 1080×1920（Shorts / Reels）。
 - `CAPTION_STYLE = 'plain'`：普通白色字幕（使用者偏好）。不設就是大字跳動、關鍵字變黃。
 - `SPEED = 1.0`：使用者要原速，不要加速。
-- `DECLICK = True`（最重要）：去掉滑鼠點擊、打字聲。判斷：4kHz 以上瞬間暴增超過背景 7 倍、7ms 內結束（子音不到 3 倍、持續 15ms 以上）；只壓 1.5kHz 以上，不傷人聲。降噪前清 3 次、降噪後再清 2 次（底噪拿掉後小點擊會浮出來）。ffmpeg 的 adeclick 對滑鼠聲沒用。
+- `DECLICK = True`（最重要）：去掉滑鼠點擊、滾輪、打字聲。偵測用 6–12kHz：突然暴增超過 ±30ms 中位數 4 倍、6ms 內結束；間隔 <15ms 的規律脈衝串是人聲的聲帶脈衝，要跳過。只壓 2kHz 以上（-35dB，峰值前 4ms 到後 7ms），2kHz 以下不動，所以不傷人聲。降噪前清 3 次、降噪後再清 2 次。驗收：用同一個偵測器掃成品，剩下的峰值要跟人聲的高頻差不多。不要用 LPC 補洞（會吃掉人聲），也不要用 ffmpeg adeclick（對滑鼠聲沒用）。
 - `DENOISE = True`、`HATS = 0`：人聲要降噪（RNNoise＋FFT 降噪，模型自動下載），背景音樂不要用白噪音做的鈸聲。
 - `GAP = 0`、`TIGHT = True`：使用者不要講完話後停頓，句子要直接接下一句。TIGHT 會修掉每段頭尾的靜音；段落內部超過 0.5 秒的停頓也要切掉（用 RMS 掃描）。
 - 原片裡跳出的廣告／通知（TradingView 左下角常有）要掃出來，用 `PATCHES` 拿彈出前的乾淨畫面蓋掉。偵測方式：抽那個角落的灰階畫面，和中位數相比差異很大的時間點就是。
@@ -38,4 +38,5 @@ description: 把一支教學錄影（例如 TradingView 畫圖講解）剪成精
 - 鏡頭要穩（使用者偏好）：同一個場景的段落用同一個 zoom（起始倍率＝結束倍率），整支只留 1–2 個慢推鏡和 `boom`，不要用 `punch`。
 - `WHOOSH_VOL = 0`（換章節不要翻頁音效），`SHAKE, FLASH = 6, 60`，`BOOM_VOL = .45`。
 - 講師徽章 `BADGE`：`shorts/assets/xiaoyi-badge.png`（講師｜小益 Yi，已去背），寬 170、透明度 .92，固定右上角，開頭鉤子先不出現；片尾 `END_CARD` 加 `badge=270` 在最後放大浮現。
+- 片尾文字可以用 `{discord}` 插入 `ICONS` 裡的圖示（`shorts/assets/discord.png`）。
 - 片尾加 `FOOTER = '教學分享・非投資建議'`。不推薦特定幣種，也不保證報酬。

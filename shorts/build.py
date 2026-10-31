@@ -1,7 +1,7 @@
 # 用法：python3 shorts/build.py shorts/projects/<名稱>.py
 # 把一支橫式教學錄影剪成 1080×1920 直式短片：大字跳出字幕、關鍵字變色、推鏡、衝擊音效、背景音樂自動避讓人聲。
 # 輸出：shorts/out/<名稱>/final.mp4、cover.png、caption.txt
-import sys, os, math, subprocess, wave, random, urllib.request
+import sys, os, re, math, subprocess, wave, random, urllib.request
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
@@ -60,27 +60,34 @@ def read_wav(path):
     return a.reshape(-1, w.getnchannels()).mean(1)
 wav = os.path.join(OUT, 'src.wav')
 # ---------- 去滑鼠／鍵盤點擊聲 ----------
-def declick(a, SR, ratio=7.0, maxdur=.007, gain_db=-30):
-    # 滑鼠點擊：4kHz 以上突然暴增（>7 倍背景）而且 7ms 內就結束；講話的子音不到 3 倍、持續 15ms 以上
+def declick(a, SR, ratio=4.0, floor=.0008, maxdur=.006, cut=2000, gain_db=-35, pre=.004, post=.007):
+    # 滑鼠點擊：6–12kHz 突然暴增（>4 倍、±30ms 中位數），6ms 內結束。
+    # 間隔 <15ms 連續出現的是人聲的聲帶脈衝（例如 7.5ms＝133Hz），不是滑鼠，跳過。
+    # 只壓 2kHz 以上，2kHz 以下的人聲完全不動。
     X = np.fft.rfft(a); f = np.fft.rfftfreq(len(a), 1 / SR)
-    det = np.fft.irfft(X * (f > 4000), len(a))
-    hi = np.fft.irfft(X * (f > 1500), len(a)); lo = a - hi
+    b = np.fft.irfft(X * ((f > 6000) & (f < 13000)), len(a))
+    hi = np.fft.irfft(X * (f > cut), len(a)); lo = a - hi
     h = int(SR * .0005); n = len(a) // h
-    env = np.sqrt((det[:n * h] ** 2).reshape(n, h).mean(1))
-    base = np.median(np.lib.stride_tricks.sliding_window_view(np.pad(env, 50, mode='edge'), 101)[:n], 1)
-    g = np.ones(len(a)); k = 10 ** (gain_db / 20); ramp = int(SR * .001)
-    clicks, i = [], 0
-    while i < n:
-        if env[i] > ratio * base[i] and env[i] > .0015:
-            j = i + int(np.argmax(env[i:i + 10]))
-            dur = int((env[max(j - 4, 0):j + 30] > env[j] / 3).sum()) * h / SR
-            if dur <= maxdur:
-                s = max(j * h - int(.002 * SR), 0); e = min(j * h + int(.010 * SR), len(a))
-                seg = np.full(e - s, k); seg[:ramp] = np.linspace(1, k, ramp); seg[-ramp:] = np.linspace(k, 1, ramp)
-                g[s:e] = np.minimum(g[s:e], seg); clicks.append(round(j * h / SR, 3))
-            i = j + 20
-        i += 1
-    return lo + hi * g, clicks
+    env = np.sqrt((b[:n * h] ** 2).reshape(n, h).mean(1))
+    base = np.median(np.lib.stride_tricks.sliding_window_view(np.pad(env, 60, mode='edge'), 121)[:n], 1)
+    pk = []; j = 10
+    while j < n - 40:
+        v = env[j]
+        if v > ratio * base[j] and v > floor and v == env[j - 6:j + 7].max() and (env[j - 10:j + 30] > v / 3).sum() * h / SR <= maxdur:
+            pk.append(j * h); j += 12; continue
+        j += 1
+    pk = np.array(pk)
+    keep = []
+    for i, p in enumerate(pk):
+        near = np.abs(pk - p)
+        if ((near > 0) & (near < .015 * SR)).sum() >= 2: continue   # 規律的脈衝串＝人聲
+        keep.append(p)
+    g = np.ones(len(a)); k = 10 ** (gain_db / 20); r = int(SR * .001)
+    for p in keep:
+        s = max(p - int(pre * SR), 0); e = min(p + int(post * SR), len(a))
+        seg = np.full(e - s, k); seg[:r] = np.linspace(1, k, r); seg[-r:] = np.linspace(k, 1, r)
+        g[s:e] = np.minimum(g[s:e], seg)
+    return lo + hi * g, [round(p / SR, 3) for p in keep]
 
 VSRC = SRC
 if P.get('DECLICK'):
@@ -323,7 +330,21 @@ for c in clips:
 if END:
     ec = P['END_CARD']
     base = compose(last, t_out, clips[-1]['chapter'], -9).filter(ImageFilter.GaussianBlur(18))
-    lines = [text_img(l, sz, C['text'], tuple(ec.get('kwcolor', C['accent'])), stroke=8) for l, sz in ec['lines']]
+    # 文字裡的 {名稱} 換成 ICONS 的圖示（例如 {discord}）
+    def line_img(l, sz):
+        parts, out = re.split(r'\{(\w+)\}', l), []
+        for k, part in enumerate(parts):
+            if k % 2:
+                ic = Image.open(P['ICONS'][part]).convert('RGBA'); ih = int(sz * 1.25)
+                out.append(ic.resize((round(ic.width * ih / ic.height), ih), Image.LANCZOS))
+            elif part.strip():
+                out.append(text_img(part, sz, C['text'], tuple(ec.get('kwcolor', C['accent'])), stroke=8))
+        if len(out) == 1: return out[0]
+        hh = max(o.height for o in out); im_ = Image.new('RGBA', (sum(o.width for o in out) + 6 * len(out), hh))
+        x_ = 0
+        for o in out: im_.alpha_composite(o, (x_, (hh - o.height) // 2)); x_ += o.width + 6
+        return im_
+    lines = [line_img(l, sz) for l, sz in ec['lines']]
     if BD and ec.get('badge'):   # 片尾最後放大徽章
         bh = ec['badge']; lines.append(BADGE.resize((round(BADGE.width * bh / BADGE.height), bh), Image.LANCZOS))
     # 每行間隔 step 秒慢慢浮現；最後 out 秒整個畫面淡到全黑
