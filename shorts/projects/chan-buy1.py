@@ -7,6 +7,7 @@ TIGHT = True            # 修掉每段頭尾的靜音
 DENOISE = True          # 人聲降噪
 DECLICK = True          # 去掉滑鼠點擊、打字聲
 HATS = 0                # 背景音樂不要沙沙的鈸聲
+MUSIC_VOL = 0           # 背景音樂關掉
 SHAKE, FLASH = 6, 60    # 晃動和白閃都輕一點
 BOOM_VOL, WHOOSH_VOL = .45, 0   # 換章節不要轉場音效
 LAYOUT = 'landscape'      # 橫式 16:9 給 YouTube
