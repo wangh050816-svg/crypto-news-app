@@ -1,122 +1,122 @@
 [
   {
     "source": "動區動趨 BlockTempo",
-    "title": "英特爾 Intel 為什麼跌這麼慘？華爾街點名 PC 修正與代工進度",
-    "link": "https://www.blocktempo.com/intel-stock-plunge-why-wall-street-analysts-pc-slump-foundry/",
-    "published": "Sat, 31 Oct 2026 03:22:56 +0000",
-    "summary": "<p>英特爾 10 月 30 日股價重挫 28.6%，是 1970 年代以來最慘的單日表現，主因是第四季財測遠低於預 [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/intel-stoc...",
-    "category": "非加密貨幣"
-  },
-  {
-    "source": "動區動趨 BlockTempo",
-    "title": "法國議會通過「流量稅」，Netflix 每 GB 要繳 5.5 歐分",
-    "link": "https://www.blocktempo.com/france-national-assembly-bandwidth-tax-netflix-google-meta-gigabyte-amendment/",
-    "published": "Sat, 31 Oct 2026 03:22:16 +0000",
-    "summary": "<p>法國國民議會 10 月 30 日以 11 票對 10 票，通過社會黨議員提出的 2027 年預算案修正案，內容 [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/france-nat...",
-    "category": "非加密貨幣"
-  },
-  {
-    "source": "動區動趨 BlockTempo",
-    "title": "思科給 27 歲員工「無限 token」，兩個人重寫全公司 98% 舊程式碼",
-    "link": "https://www.blocktempo.com/cisco-jeetu-patel-unlimited-ai-tokens-engineer-rewrite-legacy-code/",
-    "published": "Sat, 31 Oct 2026 03:19:55 +0000",
-    "summary": "<p>據 Fortune 報導，思科（Cisco）總裁暨產品長 Jeetu Patel 給 27 歲工程師 Padm [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/cisco-jeet...",
+    "title": "Northflank 遭駭「金鑰全外洩」，Zeabur、Railway…部署平台連環爆",
+    "link": "https://www.blocktempo.com/northflank-breach-environment-variables-decrypted-ai-keys-abused-rotate-credentials/",
+    "published": "Sun, 01 Nov 2026 03:31:17 +0000",
+    "summary": "<p>Zeabur、Railway 之後，又一家部署平台出事。Northflank 要所有用戶立刻換金鑰，已有人的  [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/northflank...",
     "category": "AI"
   },
   {
     "source": "動區動趨 BlockTempo",
-    "title": "Google 的太空 AI 運算衛星首次回傳答案：第一題是寫俳句",
-    "link": "https://www.blocktempo.com/google-suncatcher-satellite-tpu-gemma-haiku-orbit-first-ai-response/",
-    "published": "Sat, 31 Oct 2026 03:17:45 +0000",
-    "summary": "<p>Google Project Suncatcher 原型衛星本週首次在軌道上用 TPU 產生 AI 回應。地面 [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/google-sun...",
-    "category": "AI"
+    "title": "瑞士首檔比特幣 ETF：BBIT 本月 SIX 掛牌，海外券商可下單",
+    "link": "https://www.blocktempo.com/swiss-first-spot-bitcoin-etf-bbit-november-six-overseas-brokers/",
+    "published": "Sun, 01 Nov 2026 03:17:40 +0000",
+    "summary": "<p>瑞士首檔現貨比特幣 ETF 將在 11 月於 SIX 瑞士交易所掛牌，BBIT 開放海外銀行與券商下單，公開發 [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/swiss-firs...",
+    "category": "Bitcoin"
   },
   {
     "source": "動區動趨 BlockTempo",
-    "title": "Sam Altman：個人電腦裡面的 RAM 都放著沒用，真的很糟",
-    "link": "https://www.blocktempo.com/sam-altman-pc-ram-quite-terrible-dram-shortage-gamers-backlash/",
-    "published": "Sat, 31 Oct 2026 03:12:01 +0000",
-    "summary": "<p>OpenAI 執行長 Sam Altman 在 Podcast 節目中表示，每個人電腦裡都放著一堆 DRAM， [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/sam-altman...",
+    "title": "鏈上分析公司 Chainalysis 也爆資安事件：客戶全名、郵件地址等個資外洩",
+    "link": "https://www.blocktempo.com/chainalysis-security-incident-customer-data-exposure-binance-unrelated/",
+    "published": "Sun, 01 Nov 2026 03:05:49 +0000",
+    "summary": "<p>鏈上分析公司 Chainalysis 證實遭網路安全事件入侵，部分非敏感客戶資料被讀取，但官方強調調查內容、驗 [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/chainalysi...",
+    "category": "非加密貨幣"
+  },
+  {
+    "source": "動區動趨 BlockTempo",
+    "title": "質押量新高、報酬卻縮水！以太坊殖利率降至 2.6%、Solana 約 6%",
+    "link": "https://www.blocktempo.com/ethereum-solana-staking-yields-q3-2026-bitwise/",
+    "published": "Sun, 01 Nov 2026 02:51:03 +0000",
+    "summary": "<p>以太坊質押量第三季寫下 4,380 萬枚 ETH 的歷史新高，同期毛年化殖利率則從 2.81% 降到 2.63 [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/ethereum-s...",
+    "category": "Ethereum"
+  },
+  {
+    "source": "動區動趨 BlockTempo",
+    "title": "比特幣白皮書問世 18 週年，但離「拿來買咖啡」的原始設想似乎愈來愈遠",
+    "link": "https://www.blocktempo.com/bitcoin-whitepaper-18th-anniversary-price-tokenization-wall-street/",
+    "published": "Sun, 01 Nov 2026 02:05:22 +0000",
+    "summary": "<p>比特幣白皮書在 2008 年 10 月 31 日問世滿 18 年，這份 9 頁的點對點電子現金提案，如今催生出 [&#8230;]</p>\n〈<a href=\"https://www.blocktempo.com/bitcoin-wh...",
+    "category": "Bitcoin"
+  },
+  {
+    "source": "CoinDesk",
+    "title": "FBI confirms North Korea's role in $6 billion Binance hack, asks DeFi community to block BTC, ETH, SOL addresses",
+    "link": "https://www.coindesk.com/policy/2026/10/31/fbi-confirms-north-korea-s-role-in-usd6-billion-binance-hack-asks-defi-community-to-block-btc-eth-sol-addresses",
+    "published": "Sun, 01 Nov 2026 01:10:05 +0000",
+    "summary": "...",
+    "category": "Bitcoin"
+  },
+  {
+    "source": "CoinDesk",
+    "title": "Bitcoin's white paper turns 18, and small businesses are still paying for the bailouts it answered",
+    "link": "https://www.coindesk.com/opinion/2026/10/31/bitcoin-s-white-paper-turns-18-and-small-businesses-are-still-paying-for-the-bailouts-it-answered",
+    "published": "Sat, 31 Oct 2026 18:00:00 +0000",
+    "summary": "...",
+    "category": "Bitcoin"
+  },
+  {
+    "source": "CoinDesk",
+    "title": "A stolen iPhone, $14,000 in losses and London's crypto theft problem",
+    "link": "https://www.coindesk.com/business/2026/11/01/a-stolen-iphone-usd14-000-in-losses-and-london-s-crypto-theft-problem",
+    "published": "Sat, 31 Oct 2026 16:09:30 +0000",
+    "summary": "...",
     "category": "非加密貨幣"
   },
   {
     "source": "CoinDesk",
-    "title": "OpenAI reportedly cuts fundraising and valuation targets amid AI jitters",
-    "link": "https://www.coindesk.com/business/2026/10/30/openai-reportedly-cuts-fundraising-target-amid-ai-jitters",
-    "published": "Sat, 31 Oct 2026 00:48:56 +0000",
-    "summary": "...",
-    "category": "AI"
-  },
-  {
-    "source": "CoinDesk",
-    "title": "Experts divided over Binance hack asset freezes, warn recovery is another matter",
-    "link": "https://www.coindesk.com/business/2026/10/30/experts-divided-over-binance-hack-asset-freezes-warn-recovery-is-another-matter",
-    "published": "Fri, 30 Oct 2026 19:55:00 +0000",
+    "title": "Traders are already placing leveraged bets on Anthropic’s IPO using crypto contracts",
+    "link": "https://www.coindesk.com/business/2026/10/31/traders-are-already-placing-leveraged-bets-on-anthropic-s-ipo-using-crypto-contracts",
+    "published": "Sat, 31 Oct 2026 16:00:00 +0000",
     "summary": "...",
     "category": "非加密貨幣"
   },
   {
     "source": "CoinDesk",
-    "title": "Binance uncovers wider breach in $6.3 billion exploit, targets Sunday withdrawal restart",
-    "link": "https://www.coindesk.com/tech/2026/10/30/binance-uncovers-wider-breach-in-usd6-3-billion-exploit-targets-sunday-withdrawal-restart",
-    "published": "Fri, 30 Oct 2026 16:31:17 +0000",
-    "summary": "...",
-    "category": "非加密貨幣"
-  },
-  {
-    "source": "CoinDesk",
-    "title": "Wall Street analysts urge investors to buy crypto stocks after $6.3 billion Binance hack",
-    "link": "https://www.coindesk.com/markets/2026/10/30/wall-street-analysts-urge-investors-to-buy-crypto-stocks-on-weakness-after-usd6-3-billion-binance-hack",
-    "published": "Fri, 30 Oct 2026 14:13:34 +0000",
-    "summary": "...",
-    "category": "非加密貨幣"
-  },
-  {
-    "source": "CoinDesk",
-    "title": "Binance arranges $6.34 billion to cover losses from record crypto hack",
-    "link": "https://www.coindesk.com/business/2026/10/30/binance-arranges-usd6-34-billion-to-cover-losses-from-record-crypto-hack",
-    "published": "Fri, 30 Oct 2026 12:13:02 +0000",
+    "title": "Binance says it has replaced 90% of stolen crypto after massive $6.3 billion breach",
+    "link": "https://www.coindesk.com/business/2026/10/31/binance-says-it-has-replaced-90-of-stolen-crypto-after-massive-usd6-3-billion-breach",
+    "published": "Sat, 31 Oct 2026 15:24:10 +0000",
     "summary": "...",
     "category": "非加密貨幣"
   },
   {
     "source": "CoinTelegraph",
-    "title": "Binance hackers raced to move billions before it could be frozen",
-    "link": "https://cointelegraph.com/magazine/binance-hackers-raced-to-move-billions-before-could-be-frozen?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-    "published": "Fri, 30 Oct 2026 22:00:00 +0000",
-    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"Binance hackers raced to move billions before it...",
+    "title": "Binance says 90% of stolen assets replenished, targets Sunday withdrawals",
+    "link": "https://cointelegraph.com/news/binance-hack-90-percent-replenished?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "published": "Sat, 31 Oct 2026 15:36:01 +0000",
+    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"Binance says 90% of stolen assets replenished, t...",
     "category": "非加密貨幣"
   },
   {
     "source": "CoinTelegraph",
-    "title": "Tether’s excess reserves nearly double to $8B as Q3 profit hits $1.5B",
-    "link": "https://cointelegraph.com/news/tethers-excess-reserves-nearly-double-to-8b-as-q3-profit-hits-15b?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-    "published": "Fri, 30 Oct 2026 19:01:58 +0000",
-    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"Tether’s excess reserves nearly double to $8B as...",
+    "title": "Bitcoin held up better than expected after Binance hack, Strive CEO says",
+    "link": "https://cointelegraph.com/markets/bitcoin-binance-hack-strive-ceo?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "published": "Sat, 31 Oct 2026 15:26:46 +0000",
+    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"Bitcoin held up better than expected after Binan...",
     "category": "Bitcoin"
   },
   {
     "source": "CoinTelegraph",
-    "title": "Coinbase leads crypto stock selloff following $6.3B Binance hack",
-    "link": "https://cointelegraph.com/markets/coinbase-leads-crypto-stock-selloff-shares-tumble?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-    "published": "Fri, 30 Oct 2026 17:48:27 +0000",
-    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"Coinbase leads crypto stock selloff following $6...",
+    "title": "Here’s what happened in crypto today",
+    "link": "https://cointelegraph.com/news/what-happened-in-crypto-today?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "published": "Sat, 31 Oct 2026 15:09:55 +0000",
+    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"Here’s what happened in crypto today\" class=\"typ...",
     "category": "Bitcoin"
   },
   {
     "source": "CoinTelegraph",
-    "title": "Crypto Biz: Bitcoin’s quantum threat is becoming an economic problem",
-    "link": "https://cointelegraph.com/news/bitcoin-quantum-threat-ripple-bank-usdc-vaneck-crypto-biz?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-    "published": "Fri, 30 Oct 2026 17:09:31 +0000",
-    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"Crypto Biz: Bitcoin’s quantum threat is becoming...",
+    "title": "Bitcoin turns 18: Has the original rebel grown up?",
+    "link": "https://cointelegraph.com/magazine/bitcoin-turns-18-has-the-original-rebel-grown-up?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "published": "Sat, 31 Oct 2026 14:27:52 +0000",
+    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"Bitcoin turns 18: Has the original rebel grown u...",
     "category": "Bitcoin"
   },
   {
     "source": "CoinTelegraph",
-    "title": "Recap: How Binance’s record $6.3B hack unfolded",
-    "link": "https://cointelegraph.com/news/recap-binances-record-63b-hack-unfolded?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-    "published": "Fri, 30 Oct 2026 16:53:46 +0000",
-    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"Recap: How Binance’s record $6.3B hack unfolded\"...",
+    "title": "Texas brothers sentenced to 15 years in prison for armed crypto robbery, kidnapping",
+    "link": "https://cointelegraph.com/news/texas-brothers-sentenced-to-15-years-in-prison-for-armed-crypto-robbery-kidnapping?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "published": "Sat, 31 Oct 2026 13:37:49 +0000",
+    "summary": "<p style=\"float: right; margin: 0 0 10px 15px; width: 240px;\"><img alt=\"Texas brothers sentenced to 15 years in prison f...",
     "category": "非加密貨幣"
   }
 ]
