@@ -60,7 +60,7 @@ def read_wav(path):
     return a.reshape(-1, w.getnchannels()).mean(1)
 wav = os.path.join(OUT, 'src.wav')
 # ---------- 去滑鼠／鍵盤點擊聲 ----------
-def declick(a, SR, ratio=4.0, floor=.0008, maxdur=.006, cut=2000, gain_db=-35, pre=.004, post=.007):
+def declick(a, SR, ratio=4.0, floor=.0008, maxdur=.006, cut=2000, gain_db=-35, pre=.004, post=.007, skip_voiced=False):
     # 滑鼠點擊：6–12kHz 突然暴增（>4 倍、±30ms 中位數），6ms 內結束。
     # 間隔 <15ms 連續出現的是人聲的聲帶脈衝（例如 7.5ms＝133Hz），不是滑鼠，跳過。
     # 只壓 2kHz 以上，2kHz 以下的人聲完全不動。
@@ -78,9 +78,14 @@ def declick(a, SR, ratio=4.0, floor=.0008, maxdur=.006, cut=2000, gain_db=-35, p
         j += 1
     pk = np.array(pk)
     keep = []
+    if skip_voiced:   # 講話很大聲（低頻遠大於那一下高頻）時跳過：多半是聲帶脈衝，就算是點擊也被人聲蓋住
+        lo_ = np.fft.irfft(X * (f < 1500), len(a))
     for i, p in enumerate(pk):
         near = np.abs(pk - p)
         if ((near > 0) & (near < .015 * SR)).sum() >= 2: continue   # 規律的脈衝串＝人聲
+        if skip_voiced:
+            w_ = slice(max(p - int(.015 * SR), 0), p + int(.015 * SR))
+            if np.sqrt((lo_[w_] ** 2).mean()) > 4 * np.abs(b[w_]).max(): continue
         keep.append(p)
     g = np.ones(len(a)); k = 10 ** (gain_db / 20); r = int(SR * .001)
     for p in keep:
@@ -95,7 +100,7 @@ if P.get('DECLICK'):
     subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', SRC, '-ac', '1', '-ar', str(SR), raw], check=True)
     x = read_wav(raw); n_cl = 0
     for _ in range(3):
-        x, cl = declick(x, SR); n_cl += len(cl)
+        x, cl = declick(x, SR, skip_voiced=P.get('SMOOTH_CUTS', False)); n_cl += len(cl)
     print(f'去掉 {n_cl} 個點擊聲')
     with wave.open(raw, 'w') as w_:
         w_.setnchannels(1); w_.setsampwidth(2); w_.setframerate(SR); w_.writeframes((np.clip(x, -1, 1) * 32767).astype(np.int16).tobytes())
@@ -112,22 +117,28 @@ VOICE = read_wav(wav)
 if P.get('DECLICK'):   # 降噪後背景變乾淨，原本被底噪蓋住的小點擊會浮出來，再清一次
     n_cl = 0
     for _ in range(2):
-        VOICE, cl = declick(VOICE, SR); n_cl += len(cl)
+        VOICE, cl = declick(VOICE, SR, skip_voiced=P.get('SMOOTH_CUTS', False)); n_cl += len(cl)
     print(f'降噪後再去掉 {n_cl} 個點擊聲')
 hop = SR // 100
 rms = np.sqrt(np.convolve(VOICE ** 2, np.ones(hop) / hop, 'same'))[::hop]
 def snap(t, win=.12):
     i0, i1 = int((t - win) * 100), int((t + win) * 100)
     return (i0 + int(np.argmin(rms[max(i0, 0):i1]))) / 100
+SMOOTH = P.get('SMOOTH_CUTS')   # 切點找真正的字間空隙、頭尾多留一點、接縫淡入淡出拉長，講話才不會卡卡的
+rms30 = np.convolve(rms, np.ones(3) / 3, 'same')
+def snap_in(t, a, b):   # 在 [t-a, t+b] 找最安靜的點
+    i0, i1 = max(int((t - a) * 100), 0), int((t + b) * 100)
+    return (i0 + int(np.argmin(rms30[i0:i1]))) / 100
 
 THR = np.percentile(rms, 30) * 1.5   # 低於這個音量算靜音
 clips = []
 t_out = 0.0
 for c in P['CLIPS']:
-    s, e = snap(c['s']), snap(c['e'])
+    s, e = (snap_in(c['s'], .2, .06), snap_in(c['e'], .06, .2)) if SMOOTH else (snap(c['s']), snap(c['e']))
     if P.get('TIGHT'):   # 把段落頭尾的靜音修掉，句子之間不留停頓
+        pa, pb = (.1, .18) if SMOOTH else (.06, .12)
         v = np.where(rms[int(s * 100):int(e * 100)] > THR)[0]
-        if len(v): s, e = s + max(v[0] / 100 - .06, 0), min(s + v[-1] / 100 + .12, e)
+        if len(v): s, e = s + max(v[0] / 100 - pa, 0), min(s + v[-1] / 100 + pb, e)
     nv = round((e - s) * FPS)
     n = nv + round(P.get('GAP', 0) * FPS)
     clips.append(dict(c, s=s, e=e, n=n, nv=nv, t0=t_out))
@@ -370,7 +381,7 @@ N = int(TOTAL * SR)
 voice = np.zeros(N, np.float32)
 for c in clips:
     seg = VOICE[int(c['s'] * SR): int(c['s'] * SR) + int(c['nv'] / FPS * SR)].copy()
-    f = min(len(seg) // 2, int(.012 * SR)); seg[:f] *= np.linspace(0, 1, f); seg[-f:] *= np.linspace(1, 0, f)
+    f = min(len(seg) // 2, int((.035 if SMOOTH else .012) * SR)); seg[:f] *= np.linspace(0, 1, f); seg[-f:] *= np.linspace(1, 0, f)
     a = int(c['t0'] * SR); voice[a:a + len(seg)] = seg
 voice *= .2 / (np.sqrt(np.mean(voice[np.abs(voice) > .01] ** 2)) + 1e-9)
 
