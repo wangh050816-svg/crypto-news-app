@@ -140,17 +140,20 @@ for c in P['CLIPS']:
         v = np.where(rms[int(s * 100):int(e * 100)] > THR)[0]
         if len(v): s, e = s + max(v[0] / 100 - pa, 0), min(s + v[-1] / 100 + pb, e)
     segs = [(s, e)]
-    if c.get('squeeze'):   # 這段的聲音把句中停頓拿掉（>0.15 秒的留頭尾各 60ms），畫面照原片繼續播、不跟著剪
+    sq = c.get('squeeze', P.get('SQUEEZE'))
+    if sq:   # 把句中停頓拿掉（超過門檻秒數的停頓留頭尾各 60ms）；free_video 的畫面照原片繼續播，其他段畫面跟著聲音剪
+        mn = round((.15 if sq is True else sq) * 100)
         segs, cur, i = [], s, int(s * 100)
         while i < int(e * 100):
             if rms30[i] < THR:
                 j = i
                 while j + 1 < int(e * 100) and rms30[j + 1] < THR: j += 1
-                if (j - i + 1) >= 15:
+                if (j - i + 1) >= mn:
                     segs.append((cur, i / 100 + .06)); cur = (j + 1) / 100 - .06
                 i = j + 1
             else: i += 1
         segs.append((cur, e)); segs = [(a_, b_) for a_, b_ in segs if b_ - a_ > .03]
+    segs = [(a_, a_ + max(round((b_ - a_) * FPS), 1) / FPS) for a_, b_ in segs]   # 每小段剛好整數幀，聲音和畫面才會對齊
     nv = round(sum(b_ - a_ for a_, b_ in segs) * FPS)
     n = nv + round(P.get('GAP', 0) * FPS)
     clips.append(dict(c, s=s, e=e, n=n, nv=nv, t0=t_out, segs=segs))
@@ -341,19 +344,23 @@ ch_start, prev = 0, None
 last = None
 for c in clips:
     if c['chapter'] != prev: ch_start, prev = c['t0'], c['chapter']
-    dec = subprocess.Popen(['ffmpeg', '-v', 'error', '-ss', f"{c['s']:.3f}", '-i', SRC, '-t', f"{c['n'] / FPS:.3f}", '-r', str(FPS), '-frames:v', str(c['n']),
-                            '-vf', f'crop={cw}:{ch}:{cx}:{cy}', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'], stdout=subprocess.PIPE)
+    plan = [(c['s'], c['n'])] if (c.get('free_video') or len(c['segs']) == 1) else \
+           [(a_, round((b_ - a_) * FPS)) for a_, b_ in c['segs']] + ([(c['segs'][-1][1], c['n'] - c['nv'])] if c['n'] > c['nv'] else [])
+    def frames():
+        for a_, m_ in plan:
+            d_ = subprocess.Popen(['ffmpeg', '-v', 'error', '-ss', f"{a_:.3f}", '-i', SRC, '-t', f"{m_ / FPS + .2:.3f}", '-r', str(FPS), '-frames:v', str(m_),
+                                   '-vf', f'crop={cw}:{ch}:{cx}:{cy}', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'], stdout=subprocess.PIPE)
+            for _ in range(m_): yield d_.stdout.read(cw * ch * 3)
+            d_.stdout.close(); d_.wait()
     z0, z1, fx, fy = c.get('zoom', (1, 1.05, .5, .5))
     fr = None
-    for i in range(c['n']):
-        buf = dec.stdout.read(cw * ch * 3)
+    for i, buf in enumerate(frames()):
         if len(buf) == cw * ch * 3: fr = np.frombuffer(buf, np.uint8).reshape(ch, cw, 3)
         p = i / max(c['n'] - 1, 1)
         z = z0 + (z1 - z0) * (ease(p * 3) if c.get('punch') else p)
         t = c['t0'] + i / FPS
         last = zoom_crop(fr, z, fx, fy)
         enc.stdin.write(compose(last, t, c['chapter'], ch_start).tobytes())
-    dec.stdout.close(); dec.wait()
     print(f"  {c['t0']:5.1f}s  {c.get('caps', [[0, '']])[0][1]}")
 
 # ---------- 片尾卡 ----------
