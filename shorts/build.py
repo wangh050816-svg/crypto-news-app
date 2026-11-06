@@ -139,9 +139,21 @@ for c in P['CLIPS']:
         pa, pb = (.1, .18) if SMOOTH else (.06, .12)
         v = np.where(rms[int(s * 100):int(e * 100)] > THR)[0]
         if len(v): s, e = s + max(v[0] / 100 - pa, 0), min(s + v[-1] / 100 + pb, e)
-    nv = round((e - s) * FPS)
+    segs = [(s, e)]
+    if c.get('squeeze'):   # 這段的聲音把句中停頓拿掉（>0.15 秒的留頭尾各 60ms），畫面照原片繼續播、不跟著剪
+        segs, cur, i = [], s, int(s * 100)
+        while i < int(e * 100):
+            if rms30[i] < THR:
+                j = i
+                while j + 1 < int(e * 100) and rms30[j + 1] < THR: j += 1
+                if (j - i + 1) >= 15:
+                    segs.append((cur, i / 100 + .06)); cur = (j + 1) / 100 - .06
+                i = j + 1
+            else: i += 1
+        segs.append((cur, e)); segs = [(a_, b_) for a_, b_ in segs if b_ - a_ > .03]
+    nv = round(sum(b_ - a_ for a_, b_ in segs) * FPS)
     n = nv + round(P.get('GAP', 0) * FPS)
-    clips.append(dict(c, s=s, e=e, n=n, nv=nv, t0=t_out))
+    clips.append(dict(c, s=s, e=e, n=n, nv=nv, t0=t_out, segs=segs))
     t_out += n / FPS
 END = P.get('END_CARD', {}).get('dur', 0)
 TOTAL = t_out + END
@@ -178,12 +190,19 @@ def text_img(text, size, color, kwcolor, stroke=10, maxw=1000):
     return out
 
 PLAIN = P.get('CAPTION_STYLE') == 'plain'   # plain：普通白字，不變色、不跳動
+def src2out(c, t):   # 原片時間 → 這段輸出裡的秒數（squeeze 過的段落要扣掉拿掉的停頓）
+    o = 0
+    for a_, b_ in c['segs']:
+        if t < a_: return o
+        if t <= b_: return o + t - a_
+        o += b_ - a_
+    return o
 caps = []  # (開始, 結束, 圖)
 for c in clips:
     cs = c.get('caps', [])
     for i, (t, txt) in enumerate(cs):
-        a = c['t0'] + max(t - c['s'], 0)
-        b = c['t0'] + ((cs[i + 1][0] - c['s']) if i + 1 < len(cs) else c['n'] / FPS)
+        a = c['t0'] + src2out(c, t)
+        b = c['t0'] + (src2out(c, cs[i + 1][0]) if i + 1 < len(cs) else c['n'] / FPS)
         if PLAIN: caps.append((a, b, text_img(txt.replace('[', '').replace(']', ''), 62 if LAND else 80, C['text'], C['text'], stroke=5 if LAND else 6, maxw=W - 160)))
         else: caps.append((a, b, text_img(txt, 100, C['text'], C['accent'])))
 
@@ -231,7 +250,7 @@ def title_imgs(ch_):
     return title_cache[ch_]
 
 # ---------- 畫每一格 ----------
-booms = [c['t0'] + (b - c['s']) for c in clips for b in c.get('boom', [])]
+booms = [c['t0'] + src2out(c, b) for c in clips for b in c.get('boom', [])]
 flashes = [c['t0'] for i, c in enumerate(clips) if i == 0 or c['chapter'] != clips[i - 1]['chapter']]
 rnd = random.Random(3)
 SHAKE, FLASH = P.get('SHAKE', 6), P.get('FLASH', 70)   # 晃動幅度（像素）、白閃強度（0–255）
@@ -380,7 +399,13 @@ enc.stdin.close(); enc.wait()
 N = int(TOTAL * SR)
 voice = np.zeros(N, np.float32)
 for c in clips:
-    seg = VOICE[int(c['s'] * SR): int(c['s'] * SR) + int(c['nv'] / FPS * SR)].copy()
+    parts = []
+    for a_, b_ in c['segs']:
+        pp = VOICE[int(a_ * SR):int(b_ * SR)].copy()
+        if len(c['segs']) > 1:   # squeeze 的接縫：各 10ms 淡入淡出
+            k_ = min(len(pp) // 2, int(.01 * SR)); pp[:k_] *= np.linspace(0, 1, k_); pp[-k_:] *= np.linspace(1, 0, k_)
+        parts.append(pp)
+    seg = np.concatenate(parts)[:int(c['nv'] / FPS * SR)]
     f = min(len(seg) // 2, int((.035 if SMOOTH else .012) * SR)); seg[:f] *= np.linspace(0, 1, f); seg[-f:] *= np.linspace(1, 0, f)
     a = int(c['t0'] * SR); voice[a:a + len(seg)] = seg
 voice *= .2 / (np.sqrt(np.mean(voice[np.abs(voice) > .01] ** 2)) + 1e-9)
