@@ -269,6 +269,57 @@ if BD:
     BADGE_S.putalpha(BADGE_S.split()[3].point(lambda v: int(v * BD.get('opacity', .92))))
     BADGE_T0 = next((c['t0'] for c in clips if c['chapter'] not in BD.get('skip', [])), 0)
 
+# ---------- 圖上標註（MARKS）、重點卡（KEYS）：時間用原片秒數，座標用 CROP 裡的像素 ----------
+CUR = {}
+GOLD = (232, 186, 110)
+def src2screen(x, y):
+    z, fx, fy = CUR['z'], CUR['fx'], CUR['fy']
+    zw, zh = cw / z, ch / z
+    x0 = min(max(fx * cw - zw / 2, 0), cw - zw); y0 = min(max(fy * ch - zh / 2, 0), ch - zh)
+    return (x - x0) * (W + 32) / zw - 16, (y - y0) * (H + 18) / zh - 9
+MARKS = P.get('MARKS', [])
+for m in MARKS: m['img'] = text_img(m['label'], 40, GOLD, GOLD, stroke=6) if m.get('label') else None
+def draw_marks(im):
+    if 'src' not in CUR: return
+    st = CUR['src']; lay = Image.new('RGBA', (W, H)); d = ImageDraw.Draw(lay)
+    for m in MARKS:
+        if not (m['t0'] <= st <= m['t1'] + .25): continue
+        a = min((st - m['t0']) / .35, 1) * min((m['t1'] + .25 - st) / .25, 1)
+        al = int(255 * max(a, 0))
+        if m['kind'] == 'hline':   # 金色虛線，從左往右畫出來
+            x1, y = src2screen(m['x0'], m['y']); x2, _ = src2screen(m['x1'], m['y'])
+            xe = x1 + (x2 - x1) * min((st - m['t0']) / .5, 1); xx = x1
+            while xx < xe:
+                d.line((xx, y, min(xx + 18, xe), y), fill=GOLD + (al,), width=4); xx += 30
+            lx, ly = min(x2, W - 30) - m['img'].width, y - m['img'].height + 4   # 標籤放在線右端上方，不超出畫面
+        else:                      # 金色圈圈標在轉折點
+            x, y = src2screen(*m['at']); r = 26 + 10 * (1 - min((st - m['t0']) / .3, 1))
+            d.ellipse((x - r, y - r, x + r, y + r), outline=GOLD + (al,), width=5)
+            dx_, dy_ = m.get('off', (34, -70))
+            lx, ly = x + dx_, y + dy_
+        if m['img']:
+            li = m['img'].copy(); li.putalpha(li.split()[3].point(lambda v: int(v * max(a, 0))))
+            lay.alpha_composite(li, (int(lx), int(ly)))
+    im.alpha_composite(lay)
+KEYS = P.get('KEYS', [])
+for k in KEYS: k['imgs'] = [(t_, text_img(tx, 44, (245, 245, 245), GOLD, stroke=0)) for t_, tx in k['lines']]
+def draw_keys(im):
+    if 'src' not in CUR: return
+    st = CUR['src']
+    for k in KEYS:
+        if not (k['t0'] <= st <= k['t1'] + .3): continue
+        a = min((st - k['t0']) / .35, 1) * min((k['t1'] + .3 - st) / .3, 1)
+        shown = [img for t_, img in k['imgs'] if st >= t_]
+        if not shown: continue
+        wd = max(i.width for i in shown) + 60; ht = sum(i.height for i in shown) + 50
+        card = Image.new('RGBA', (wd, ht)); dc = ImageDraw.Draw(card)
+        dc.rounded_rectangle((0, 0, wd - 1, ht - 1), 18, fill=(12, 14, 20, 200))
+        dc.rectangle((0, 18, 6, ht - 18), fill=GOLD + (255,))
+        yy = 25
+        for img in shown: card.alpha_composite(img, (34, yy)); yy += img.height
+        card.putalpha(card.split()[3].point(lambda v: int(v * max(a, 0))))
+        im.alpha_composite(card, (W - wd - 40 + int((1 - max(a, 0)) * 30), 250))
+
 def compose_land(chart, t, ch_, ch_start):
     dx = dy = 0
     for b in booms:
@@ -277,14 +328,23 @@ def compose_land(chart, t, ch_, ch_start):
     im = Image.new('RGBA', (W, H))
     im.paste(chart.resize((W + 32, H + 18), Image.BILINEAR), (int(-16 + dx), int(-9 + dy)))
     im.alpha_composite(SHADE)
+    draw_marks(im); draw_keys(im)
     # 左上角：章節標籤＋標題（開頭鉤子放大在畫面上方中間）
     pill, ttl = title_imgs(ch_)
-    a = ease((t - ch_start) / .3)
+    INTRO = P.get('CHAPTER_INTRO') and ch_ not in ('hook',) and t >= 0
+    if INTRO and t - ch_start < 1.1:   # 章節開場：標題先在中間浮現，再交給左上角
+        k_ = t - ch_start; a = min(k_ / .25, 1) * min((1.1 - k_) / .3, 1)
+        big = title_cache.setdefault(('big', ch_), (text_img(P['CHAPTERS'][ch_][0], 46, GOLD, GOLD, stroke=6), text_img(P['CHAPTERS'][ch_][1], 96, C['text'], C['hot'], stroke=8)))
+        y_ = 300
+        for img in big:
+            lay = img.copy(); lay.putalpha(lay.split()[3].point(lambda v: int(v * max(a, 0))))
+            im.alpha_composite(lay, ((W - img.width) // 2, int(y_ + (1 - min(k_ / .25, 1)) * 20))); y_ += img.height + 10
+    a = ease((t - ch_start - (.9 if INTRO else 0)) / .3)
     if ch_ == 'hook': spots = ((pill, (W - pill.width) // 2, 70), (ttl, (W - ttl.width) // 2, 140))
     else: spots = ((pill, 50, 44), (ttl, 50 + pill.width + 8, 44 + (pill.height - ttl.height) // 2))
     for img, x, y in spots:
-        lay = img.copy(); lay.putalpha(lay.split()[3].point(lambda v: int(v * a)))
-        im.alpha_composite(lay, (int(x - (1 - a) * 30), y))
+        lay = img.copy(); lay.putalpha(lay.split()[3].point(lambda v: int(v * max(a, 0))))
+        im.alpha_composite(lay, (int(x - (1 - max(a, 0)) * 30), y))
     for s, e, img in caps:
         if s <= t < e: im.alpha_composite(img, ((W - img.width) // 2, H - 95 - img.height // 2))
     if FOOT: im.alpha_composite(FOOT, (W - FOOT.width - 30, H - FOOT.height - 12))
@@ -350,16 +410,17 @@ for c in clips:
         for a_, m_ in plan:
             d_ = subprocess.Popen(['ffmpeg', '-v', 'error', '-ss', f"{a_:.3f}", '-i', SRC, '-t', f"{m_ / FPS + .2:.3f}", '-r', str(FPS), '-frames:v', str(m_),
                                    '-vf', f'crop={cw}:{ch}:{cx}:{cy}', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'], stdout=subprocess.PIPE)
-            for _ in range(m_): yield d_.stdout.read(cw * ch * 3)
+            for k_ in range(m_): yield d_.stdout.read(cw * ch * 3), a_ + k_ / FPS
             d_.stdout.close(); d_.wait()
     z0, z1, fx, fy = c.get('zoom', (1, 1.05, .5, .5))
     fr = None
-    for i, buf in enumerate(frames()):
+    for i, (buf, src_t) in enumerate(frames()):
         if len(buf) == cw * ch * 3: fr = np.frombuffer(buf, np.uint8).reshape(ch, cw, 3)
         p = i / max(c['n'] - 1, 1)
         z = z0 + (z1 - z0) * (ease(p * 3) if c.get('punch') else p)
         t = c['t0'] + i / FPS
         last = zoom_crop(fr, z, fx, fy)
+        CUR.update(src=src_t, z=z, fx=fx, fy=fy)
         enc.stdin.write(compose(last, t, c['chapter'], ch_start).tobytes())
     print(f"  {c['t0']:5.1f}s  {c.get('caps', [[0, '']])[0][1]}")
 
