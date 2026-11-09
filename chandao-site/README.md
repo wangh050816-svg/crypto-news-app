@@ -10,7 +10,7 @@ Artifact：https://claude.ai/artifact/VCicWmhZryPqVLA136S8aN
 | 集合 | 用途 |
 |---|---|
 | posts | 文章。status：待審／已審核／已發布／需要更新；verify.status：可發布／待確認／不可發布；published 保存發布當下的原文；perf、perfHistory 為手動輸入的 Threads 成效 |
-| briefs | 每日新聞雷達（items：level、verifyLevel、publishedAt、updatedAt、sources、storyId、score、isNew…） |
+| briefs | 每日新聞雷達，晨報 <日期>-am、晚報 <日期>-pm 分開存（items：level、verifyLevel、publishedAt、updatedAt、sources、storyId、score、isNew…） |
 | stories | 重大事件追蹤紀錄 |
 | events | 經濟與事件日曆（台灣時間 ISO、status、prior、consensus、actual、source、preheatReady） |
 | favorites | 題材收藏庫 |

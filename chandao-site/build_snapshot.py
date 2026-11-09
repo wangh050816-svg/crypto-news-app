@@ -13,7 +13,9 @@ for col in sorted(os.listdir(dump)):
     if not os.path.isdir(os.path.join(dump,col)): continue
     rows=load(col)
     if col=='briefs':
-        rows.sort(key=lambda b:b.get('date',''), reverse=True); snap['brief']=rows[0] if rows else None
+        order={'晚報':1,'晨報':0}
+        rows.sort(key=lambda b:(b.get('date',''), order.get(b.get('edition','晨報'),0)), reverse=True)
+        snap['brief']=rows[0] if rows else None; snap['briefs']=rows[:6]
     else:
         snap[col]=rows
 js=json.dumps(snap,ensure_ascii=False).replace('</','<\\/')
