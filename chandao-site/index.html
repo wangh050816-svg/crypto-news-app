@@ -3,7 +3,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;900&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: a trading-desk bulletin. Left column = today's three ready-to-post picks; right rail = countdown + 14-day calendar; archive below. */
+/* Layout: a trading-desk bulletin, read top to bottom: summary, news radar, three picks, events and calendar, performance, archive and favourites. */
 :root{
   --bg:#eef0f3; --surface:#ffffff; --ink:#18202c; --muted:#5b6575; --line:#d5dae2;
   --accent:#23406e; --accent-soft:#e3e9f4; --seal:#b3261e;
@@ -109,6 +109,65 @@ button:disabled{opacity:.5;cursor:default}
 .preheat{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:4px;font-size:13px}
 @media (prefers-reduced-motion:no-preference){.panel{transition:border-color .2s}}
+
+/* V2.1 additions: summary tiles, radar filters, story tracker, performance, tabs */
+.section-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 12px;margin:0 0 10px}
+.section-head .label{margin:0}
+.stale{color:var(--seal);font-weight:700}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.tile{padding:14px 16px;display:grid;gap:2px}
+.tile b{font-family:var(--mono);font-size:26px;font-weight:500;font-variant-numeric:tabular-nums;line-height:1.2}
+.tile span{font-size:12px;color:var(--muted)}
+.sched{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0;margin-top:12px}
+.sched div{padding:10px 16px;border-right:1px solid var(--line);font-size:13px;display:grid;gap:2px}
+.sched div:last-child{border-right:0}
+@media (max-width:700px){.sched div{border-right:0;border-bottom:1px solid var(--line)}}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.seg button{border:0;border-radius:0;padding:5px 10px;font-weight:500}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--surface)}
+select,input[type=text],input[type=search],input[type=url],input[type=number],input[type=datetime-local],textarea{font:inherit;font-size:13px;padding:6px 8px;border:1px solid var(--line);border-radius:4px;background:var(--surface);color:var(--ink);min-width:0}
+.radar{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.bi .times{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.bi .srcs{display:flex;flex-wrap:wrap;gap:4px 10px}
+.bi.read{opacity:.6}
+.newdot{width:7px;height:7px;border-radius:50%;background:var(--seal);display:inline-block}
+.chip.lv-重大{background:var(--seal);color:var(--surface)}
+.chip.lv-追蹤更新{background:var(--warn-soft);color:var(--warn)}
+.chip.vf-官方確認{background:var(--ok-soft);color:var(--ok)}
+.chip.vf-可靠媒體報導{background:var(--accent-soft);color:var(--accent)}
+.chip.vf-待查證,.chip.vf-傳聞{background:var(--warn-soft);color:var(--seal)}
+.mini{font-size:12px;padding:3px 9px}
+.stories{border-top:1px solid var(--line)}
+.stories summary{padding:12px 16px;cursor:pointer;font-weight:700}
+.story{padding:12px 16px;border-top:1px solid var(--line);display:grid;gap:4px;font-size:13px}
+.story h4{margin:0;font-size:15px}
+.story ul{margin:0;padding-left:18px}
+.story a{color:var(--accent);word-break:break-all}
+.picks3{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px;align-items:start}
+@media (max-width:420px){.picks3{grid-template-columns:minmax(0,1fr)}}
+.picks3 .body{max-width:none}
+.chip.st-需要更新{background:var(--warn-soft);color:var(--seal)}
+.perfform{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:8px}
+.perfform label{display:grid;gap:2px;font-size:12px;color:var(--muted)}
+.perfform .wide{grid-column:1/-1}
+.perf{padding:16px 18px;display:grid;gap:18px}
+.perf h3{font-size:13px;margin:0 0 6px;color:var(--muted)}
+.perf table{border-collapse:collapse;width:100%;font-size:13px}
+.perf th,.perf td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+.perf td.n,.perf th.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.tablewrap{overflow-x:auto}
+.perfgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--line)}
+.tabs button{border:0;border-radius:0;border-bottom:3px solid transparent;padding:10px 16px;background:none}
+.tabs button[aria-selected="true"]{border-bottom-color:var(--accent);color:var(--accent)}
+.fav{padding:12px 18px;border-bottom:1px solid var(--line);display:grid;gap:6px;font-size:13px}
+.fav h4{margin:0;font-size:15px}
+.fav a{color:var(--accent);word-break:break-all}
+.evx{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:12px;color:var(--muted);margin-top:2px}
+.evx a{color:var(--accent)}
+.evgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:24px;align-items:start}
+@media (max-width:860px){.evgrid{grid-template-columns:minmax(0,1fr)}}
 </style>
 
 <div class="wrap">
@@ -117,93 +176,256 @@ button:disabled{opacity:.5;cursor:default}
       <div class="seal" aria-hidden="true">纏</div>
       <div>
         <h1>纏道漫長 情報台</h1>
-        <p class="sub">每日晨報 08:47 · 晚間預熱 17:47 · 數據公布後更新｜所有文章待審後才發布</p>
+        <p class="sub">排程更新，非即時監控｜晨間 08:30・晚間 17:30・週日 19:30｜文章一律人工審核後才發布</p>
       </div>
     </div>
-    <div class="clock">台北時間<br><b id="now">--</b></div>
+    <div class="clock">台灣時間<br><b id="now">--</b></div>
   </header>
 
-  <div class="grid">
-    <section aria-labelledby="l-post">
-      <p class="label" id="l-post">今日推薦發布 <span id="pickDate" class="meta"></span></p>
-      <div class="picks" id="post"><div class="panel empty">正在讀取文章…</div></div>
-    </section>
-
-    <aside style="display:grid;gap:20px;min-width:0" aria-label="事件">
-      <div>
-        <p class="label">下一個重要事件</p>
-        <div class="panel next" id="next"><div class="note">讀取中…</div></div>
-      </div>
-      <div>
-        <p class="label">未來 14 天經濟日曆（台北時間）</p>
-        <div class="panel cal" id="cal"><div class="empty">讀取中…</div></div>
-      </div>
-    </aside>
-  </div>
-
-  <section aria-labelledby="l-pre">
-    <p class="label" id="l-pre">重大事件預熱與公布後更新</p>
-    <div class="preheat" id="preheat"><div class="panel empty">讀取中…</div></div>
+  <section aria-labelledby="l-sum">
+    <div class="section-head"><p class="label" id="l-sum">今日情報摘要</p><span class="meta" id="sumUpd"></span></div>
+    <div class="tiles" id="tiles"></div>
+    <div class="panel sched" id="sched"></div>
   </section>
 
-  <section aria-labelledby="l-brief">
-    <p class="label" id="l-brief">今日全球候選新聞 <span id="briefDate" class="meta"></span></p>
-    <div class="panel brief" id="brief"><div class="empty">讀取中…</div></div>
+  <section aria-labelledby="l-radar">
+    <div class="section-head"><p class="label" id="l-radar">全球重大新聞雷達 <span id="briefDate" class="meta"></span></p><span class="meta" id="radarUpd"></span></div>
+    <div class="panel">
+      <div class="filters">
+        <div class="seg" id="fTime" role="group" aria-label="時間範圍">
+          <button data-v="0" aria-pressed="true">全部</button><button data-v="1">1 小時</button><button data-v="3">3 小時</button><button data-v="6">6 小時</button><button data-v="24">24 小時</button>
+        </div>
+        <select id="fDomain" aria-label="類別"><option value="">全部類別</option></select>
+        <select id="fSort" aria-label="排序"><option value="time">依時效</option><option value="level">依重要性</option><option value="score">依評分</option><option value="domain">依類別</option></select>
+        <label class="note"><input type="checkbox" id="fUnread"> 只看未讀</label>
+      </div>
+      <div class="radar" id="brief"><div class="empty">讀取中…</div></div>
+      <details class="stories" id="storiesBox"><summary>追蹤中的重大事件 <span class="meta" id="storyCount"></span></summary><div id="stories"></div></details>
+    </div>
+  </section>
+
+  <section aria-labelledby="l-post">
+    <div class="section-head"><p class="label" id="l-post">今日推薦發布 <span id="pickDate" class="meta"></span></p><span class="note">查證通過不等於已審核；審核與發布由你標記</span></div>
+    <div class="picks3" id="post"><div class="panel empty">正在讀取文章…</div></div>
+  </section>
+
+  <section aria-labelledby="l-ev">
+    <div class="section-head"><p class="label" id="l-ev">重大事件與經濟日曆（台灣時間）</p><span class="meta" id="calUpd"></span></div>
+    <div class="evgrid">
+      <div style="display:grid;gap:18px;min-width:0">
+        <div class="panel next" id="next"><div class="note">讀取中…</div></div>
+        <div style="display:grid;gap:18px" id="preheat"></div>
+      </div>
+      <div class="panel cal" id="cal"><div class="empty">讀取中…</div></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="l-perf">
+    <div class="section-head"><p class="label" id="l-perf">Threads 成效分析</p><span class="note">數據由你手動輸入，未串接 Threads API</span></div>
+    <div class="panel perf" id="perf"><div class="empty">讀取中…</div></div>
   </section>
 
   <section aria-labelledby="l-arc">
-    <p class="label" id="l-arc">文章存檔</p>
-    <div id="detail" hidden style="margin-bottom:14px"></div>
-    <div class="panel archive" id="archive"><div class="empty">讀取中…</div></div>
+    <p class="label" id="l-arc">文章存檔與題材收藏庫</p>
+    <div class="panel">
+      <div class="tabs" role="tablist">
+        <button role="tab" id="tabArc" aria-selected="true">文章存檔</button>
+        <button role="tab" id="tabFav" aria-selected="false">題材收藏庫 <span id="favCount" class="meta"></span></button>
+      </div>
+      <div id="arcPane">
+        <div class="filters">
+          <input type="search" id="aq" placeholder="搜尋標題或內文" aria-label="搜尋文章">
+          <select id="aDomain" aria-label="領域"><option value="">全部領域</option></select>
+          <select id="aStatus" aria-label="狀態"><option value="">全部狀態</option><option>待審</option><option>已審核</option><option>已發布</option><option>需要更新</option></select>
+        </div>
+        <div id="detail" hidden style="padding:16px"></div>
+        <div class="archive" id="archive"><div class="empty">讀取中…</div></div>
+      </div>
+      <div id="favPane" hidden><div id="favs"><div class="empty">讀取中…</div></div></div>
+    </div>
   </section>
   <p class="note" id="sync"></p>
 </div>
 <div class="toast" id="toast" hidden></div>
 
-<script id="snap" type="application/json">{"updatedAt": "11/09 13:18 台北", "posts": [{"body": "波克夏這季花了 96 億美元買回自家股票，比上一季的 45 億多了一倍。同一季，它對外面的股票還是小幅淨賣出，過去 16 季裡有 15 季都是賣比買多。\n\n這是 Abel 接手後第一次大手筆動用現金，選的標的是波克夏自己，價格大約 1.4 倍淨值。帳上 3,500 億美元以上的現金不拿去買別人，某種程度也算是一種表態：他眼中市場上的股票，沒有比自家便宜。", "checkedAt": "11/9 10:40 台北", "comment": "想知道波克夏這季到底賣了哪些股票，要等 11/16 的 13F 申報才看得到。", "createdAt": "2026-11-09T02:40:00Z", "date": "2026-11-09", "domain": "富豪與商業人物", "pick": "備選B", "publishAt": "11/9 晚上或 11/10 午間", "reason": "跟交易無關但很有話題：巴菲特接班人的第一個大動作，可以聊「什麼時候該買自己」。", "score": {"credibility": 5, "discussion": 4, "importance": 4, "timeliness": 4, "total": 21, "value": 4}, "slot": "主文", "sources": [{"label": "CNBC：Berkshire Q3 買回加倍（11/7）", "url": "https://www.cnbc.com/2026/11/07/berkshire-hathaway-q3-2026-earnings-buybacks.html"}, {"label": "Forbes：Q3 分析與 1.4 倍淨值（11/7）", "url": "https://www.forbes.com/sites/bill_stone/2026/11/07/berkshire-hathaway-q3-earnings-miss-on-insurance-not-on-strategy/"}, {"label": "BigGo：現金 3,774 億與淨賣連續紀錄", "url": "https://finance.biggo.com/news/4385374b-86fb-4e57-b516-4f101d6100c0"}], "status": "待審", "title": "波克夏花 96 億買自己，對外面的股票還在賣", "verify": {"eventDate": "2026/11/7（週六公布 Q3 財報）", "facts": "Q3 買回約 96 億美元（Q2 約 45 億）；對外持股淨賣約 4.26 億美元，16 季中第 15 季淨賣；不含鐵路與公用事業現金約 3,523 億美元；營業利益降 5.8%。", "opinion": "「一種表態：市場上的股票沒有比自家便宜」為作者解讀，波克夏未如此表示。", "status": "可發布", "unconfirmed": ["「約 1.4 倍淨值」來自 Forbes 估算，未對 10-Q 原文", "13F 申報日 11/16 依 Forbes，未對 SEC 行事曆"], "updatedAt": "11/7 CNBC、Forbes"}, "id": "2026-11-09-berkshire-buyback"}, {"body": "BTC 週線剛收完，連續第五週收黑。今天亞洲盤一度跌破 7.5 萬美元，離歷史高點回落了約四成。\n\n連跌這麼久，很多人難免會想：「應該跌夠了吧？」\n\n回頭看歷史，2022 年那波連跌結束後，接下來四週又從 2.9 萬跌到 2.1 萬；今年 3 月結束的那波，四週後幾乎原地踏步，6 月又跌到近一年低點。\n\n連跌幾週，真的不能直接當成見底訊號。與其猜跌夠了沒，不如先觀察週線能不能形成更高的低點。", "checkedAt": "11/9 10:30 台北", "comment": "上週現貨 ETF 淨流出 12.8 億美元。2022 年那次還沒有現貨 ETF，拿來比較時要記得這個差別。", "createdAt": "2026-11-09T02:30:00Z", "date": "2026-11-09", "domain": "加密貨幣", "doubts": ["週線正式收盤價未取得，依 11/9 亞洲盤約 74,500 美元判斷已低於週開盤 78,232，文中未寫收盤價", "「2017 年以來只發生過兩次」查證後原文並無此說法，只提到最近兩次，已不使用"], "pick": "備選A", "publishAt": "11/9", "reason": "加密市場結構：用最近兩次連跌的後續，破解「跌夠久就該反彈」的直覺。", "score": {"credibility": 4, "discussion": 4, "importance": 3, "timeliness": 5, "total": 21, "value": 5}, "slot": "主文", "sources": [{"label": "24/7 Wall St.：過去兩次連跌五週以上的後續（11/8）", "url": "https://247wallst.com/investing/cryptocurrency/2026/11/08/bitcoin-is-heading-for-a-fifth-straight-losing-week-what-followed-the-last-time-it-lost-five-in-a-row/"}, {"label": "Investing.com Live：BTC 亞洲盤跌破 7.5 萬（11/9）", "url": "https://investinglive.com/cryptocurrency/bitcoin-continues-to-trade-heavily-under-74-600-risk-mood-turns-wary/"}, {"label": "Farside BTC ETF 流向", "url": "https://farside.co.uk/btc/"}], "status": "待審", "title": "BTC 連續第五週收黑：連跌週數不太能拿來抓底", "verify": {"eventDate": "週線收盤 2026/11/9 08:00 台北", "facts": "2022/5/29 約 29,446 → 6/26 約 21,029；2026/3/1 約 65,769 → 3/29 約 65,957，6/30 收 58,566 為一年最低；歷史高點 126,080。", "opinion": "「連跌週數不能當見底訊號」「觀察更高的低點」為作者觀點。", "status": "可發布", "unconfirmed": ["週線正式收盤價未取得，依亞洲盤約 74,500 判斷低於週開盤 78,232；文中未寫收盤價"], "updatedAt": "11/9 亞洲盤（Investing.com Live）"}, "id": "2026-11-09-btc-five-week-streak"}, {"body": "Nvidia 董事會週日宣布，由獨立董事帶外部律師調查黃仁勳。起因是報導指他遭外國情報單位鎖定，他也在員工信裡承認了婚外情。董事會說，沒有理由認為國安或公司機密外洩。\n\n時間點很尷尬，財報 11/17 就要公布，上週晶片股才剛重摔。黃仁勳 1993 年創辦公司帶到現在，市場對 Nvidia 的信心，有一部分是對他的信心。這種風險平常很少人算，調查出結果前，只能各自猜要打幾折。", "checkedAt": "11/9 08:55 台北", "comment": "董事會找的是獨立董事加外部律師，這算比較正式的做法，結果出來前，公開的細節大概不會太多。", "createdAt": "2026-11-09T00:55:00Z", "date": "2026-11-09", "domain": "AI 產業", "doubts": ["「被外國情報單位鎖定」是報導與政策制定者的指控，NBC 表示尚未證實；文中寫成「報導指」", "美股 11/9 開盤前無股價反應資料，文中未提股價"], "pick": "首選", "publishAt": "11/9 上午或美股開盤前（21:00 前）", "reason": "財報前九天、全球市值最大公司之一的創辦人風險，時效與討論度最高。", "score": {"credibility": 4, "discussion": 5, "importance": 5, "timeliness": 5, "total": 23, "value": 4}, "slot": "主文", "sources": [{"label": "Nvidia 董事會聲明", "url": "https://nvidianews.nvidia.com/news/statement-from-nvidia-board-of-directors"}, {"label": "CNBC：黃仁勳員工信與董事會聲明（11/8）", "url": "https://www.cnbc.com/2026/11/08/nvidia-jensen-huang-email-board-of-directors-statement.html"}, {"label": "CNN：Nvidia 啟動調查（11/8）", "url": "https://www.cnn.com/2026/11/08/business/nvidia-investigation-ceo-jensen-huang"}, {"label": "NBC News：未證實情報指控（11/8）", "url": "https://www.nbcnews.com/tech/tech-news/nvidia-ceo-jensen-huang-investigation-rcna608148"}, {"label": "Schwab：11/5 晶片股下跌", "url": "https://www.schwab.com/learn/story/market-volatility"}], "status": "已發布", "title": "Nvidia 調查黃仁勳：財報前九天的創辦人風險", "verify": {"eventDate": "2026/11/8（美東週日）", "facts": "董事會成立獨立董事委員會加外部律師調查；黃仁勳員工信承認婚外情；董事會稱無理由認為國安或機密外洩；財報 11/17。", "opinion": "「市場信心有一部分是對他的信心」「打幾折」為作者觀點。", "status": "可發布", "unconfirmed": ["「遭外國情報單位鎖定」是報導與政策制定者的指控，NBC 表示尚未證實（文中已寫成「報導指」）", "股價反應需等美股 11/9 開盤"], "updatedAt": "11/8 16:50 ET（CNBC 全文刊登）"}, "id": "2026-11-09-nvidia-ceo-probe"}, {"body": "週二晚上 9:30 的 CPI 有點怪。去年 10 月政府停擺沒收到物價，這次整體跟核心都不給年增率，只有月增。偏偏這又是 12 月 Fed 開會前最後一份 CPI。\n\n所以重點就看核心月增。0.3% 換算一年大約 3.7%，0.2% 大約 2.4%。利率期貨押的升息機率已經七成以上，數字偏熱市場不太意外，真的冷下來反而比較容易讓行情動起來。", "category": "總經時事", "chart": "月增率換算年化對照卡（0.2%→2.4%、0.3%→3.7%、0.4%→4.9%），旁邊放 9 月 CPI 拆解：整體年增 3.7%、核心 2.6%、汽油 34.2%。來源：BLS CPI 新聞稿；年化以 (1+m)^12−1 計算。", "checkedAt": "11/9 01:20 台北（改寫 11/9）", "comment": "汽油、新車、二手車這幾項還是有年增率，想知道物價壓力從哪來，可以先看這三項。", "createdAt": "2026-11-08T17:30:00Z", "date": "2026-11-09", "domain": "全球經濟與央行", "doubts": ["12 月升息隱含機率各家不一（65%／77%／80%），讀取時間與來源不同，文章寫「七成以上」", "核心 CPI 共識 0.2% 與 0.3% 並存，文章寫成區間"], "headlines": [{"asof": "11/8 20:20 台北，週收 11/9 08:00", "text": "BTC 測試 50 週均線（約 $75,562），週線若收在 $78,239 下方即連續第五週收黑"}, {"asof": "11/2–11/6，Farside", "text": "現貨 BTC ETF 上週淨流出約 12.8 億美元，IBIT 約 12.1 億美元"}, {"asof": "BLS FAQ，頁面更新 2026/9/16", "text": "10 月 CPI 11/10 21:30 公布，整體與核心不公布年增率"}], "publishAt": "11/9 20:00–21:30", "slot": "預熱", "sources": [{"label": "BLS：2025 停擺對 CPI 影響 FAQ", "url": "https://www.bls.gov/cpi/additional-resources/2025-federal-government-shutdown-impact-cpi-faq.htm"}, {"label": "StockTitan：10 月 CPI 預覽（11/6）", "url": "https://www.stocktitan.net/articles/october-2026-cpi-preview-no-yearly-rate"}, {"label": "BigGo：CPI 共識（11/7）", "url": "https://finance.biggo.com/news/9e1d0a9b-b32c-4bf1-b265-11480691d264"}, {"label": "24/7 Wall St.：FedWatch 76.8%", "url": "https://247wallst.com/investing/2026/11/07/odds-of-a-december-rate-hike-jump-to-77-after-a-blowout-jobs-report/"}, {"label": "Farside BTC ETF 流向", "url": "https://farside.co.uk/btc/"}, {"label": "Stocktwits：BTC 週線與 50 週均線", "url": "https://stocktwits.com/news-articles/markets/cryptocurrency/bitcoin-slips-toward-week-moving-average-weekly-close-hangs-balance/cNGVKPER9Ig"}], "status": "待審", "title": "這次 CPI 沒有年增率，只看核心月增", "id": "2026-11-09-preheat-cpi"}], "events": [{"at": "2026-11-10T21:30:00+08:00", "detail": "前值：整體月增 0.6%、核心 0.3%｜共識：整體約 0.3%、核心 0.2–0.3%｜整體與核心不公布年增率", "impact": "high", "name": "美國 10 月 CPI", "preheat": "11/9（一）20:00–21:30 發布；11/10 17:47 複查共識", "status": "confirmed", "id": "2026-11-10-cpi"}, {"at": "2026-11-11T22:30:00+08:00", "detail": "依往年慣例債市全天休市（SIFMA 建議），股市正常交易；今年安排尚未查證", "impact": "low", "name": "美國退伍軍人節：美股 22:30 照常開盤、債市休市", "status": "tbc", "id": "2026-11-11-veterans"}, {"at": "2026-11-12T21:30:00+08:00", "detail": "前值約 18.9 萬，預估 19.4–19.5 萬；有來源列 11/11", "impact": "mid", "name": "初領失業金", "status": "tbc", "id": "2026-11-12-claims"}, {"at": "2026-11-13T21:30:00+08:00", "detail": "共識月增約 0.4%；前值說法不一，暫不引用", "impact": "high", "name": "美國 10 月 PPI", "preheat": "11/12（四）20:00 前後", "status": "tbc", "id": "2026-11-13-ppi"}, {"at": "2026-11-16T21:30:00+08:00", "impact": "low", "name": "紐約州製造業指數", "status": "tbc", "id": "2026-11-16-empire"}, {"at": "2026-11-17T21:30:00+08:00", "detail": "依 Census 9/12 排程，可能變動", "impact": "mid", "name": "美國 10 月零售銷售", "status": "tbc", "id": "2026-11-17-retail"}, {"at": "2026-11-18T06:00:00+08:00", "detail": "美東 11/17 盤後；公司 10/28 公告，未讀到 IR 原文", "impact": "high", "name": "Nvidia Q3 FY27 財報電話會議", "preheat": "11/17（二）18:00 前後", "status": "tbc", "id": "2026-11-18-nvda"}, {"at": "2026-11-19T21:30:00+08:00", "impact": "mid", "name": "初領失業金", "status": "tbc", "id": "2026-11-19-claims"}, {"at": "2026-11-19T03:00:00+08:00", "detail": "Fed 官方行事曆：11/18 2:00 p.m. ET", "impact": "high", "name": "FOMC 10 月會議紀要", "preheat": "11/18（三）18:00 前後", "status": "confirmed", "id": "2026-11-19-minutes"}, {"at": "2026-12-04T21:30:00+08:00", "detail": "僅一個來源列出日期，待 BLS 確認", "impact": "high", "name": "美國 11 月非農", "status": "tbc", "id": "2026-12-04-nfp"}, {"at": "2026-12-10T21:30:00+08:00", "detail": "晚於 FOMC 決議一天", "impact": "high", "name": "美國 11 月 CPI", "status": "tbc", "id": "2026-12-10-cpi"}, {"at": "2026-12-10T03:00:00+08:00", "detail": "12/8–9 會議，現行 3.75%–4.00%", "impact": "high", "name": "FOMC 利率決議", "status": "confirmed", "id": "2026-12-10-fomc"}], "brief": {"date": "2026-11-09", "items": [{"at": "11/8（美東週日）", "domain": "AI 產業", "picked": true, "source": {"label": "Nvidia 董事會聲明", "url": "https://nvidianews.nvidia.com/news/statement-from-nvidia-board-of-directors"}, "summary": "報導指黃仁勳遭外國情報單位鎖定，他承認婚外情；董事會稱無理由認為機密外洩。", "title": "Nvidia 董事會啟動對黃仁勳的獨立調查", "why": "財報 11/17 前九天、AI 晶片股剛大跌，創辦人風險浮上檯面。"}, {"at": "11/7（週六公布）", "backup": true, "domain": "富豪與商業人物", "source": {"label": "CNBC", "url": "https://www.cnbc.com/2026/11/07/berkshire-hathaway-q3-2026-earnings-buybacks.html"}, "summary": "營業利益降 5.8%，對外持股仍小幅淨賣出（16 季中第 15 季），現金含美債約 3,774 億美元。", "title": "波克夏 Q3 買回自家股票 96 億美元，創單季紀錄", "why": "Abel 接班後把錢拿去買自己，對外頭的股票仍不動手。"}, {"at": "豁免約 11/9–10 到期", "backup": true, "domain": "國際貿易", "source": {"label": "Venn Trade Weekly（二手，待對 USTR 公告）", "url": "https://vennstrategies.substack.com/p/venn-trade-weekly-november-3-2026"}, "summary": "301 條款豁免若未展延，機械、醫療器材、太陽能設備關稅恢復；中方鎵鍗出口暫停到 11/27。", "title": "美中：178 項中國商品關稅豁免到期，川習 11/18 深圳 APEC 會面", "why": "幾個期限疊在川習會前，可以看出雙方籌碼。"}, {"at": "11/9 起", "domain": "美國政治", "source": {"label": "STAT News", "url": "https://www.statnews.com/2026/11/04/lame-duck-session-congress-health-policy-aca-subsidies-medicaid-funding/"}, "summary": "要決定通過綜合撥款或再延一次，還有醫療補助與債務上限議題。", "title": "國會跳鴨期開議，12/11 政府撥款到期", "why": "民主黨明年接掌國會，談判籌碼變了，停擺風險重新浮現。"}, {"at": "11/8", "domain": "AI 產業", "source": {"label": "BusinessDay（轉載 Reuters）", "url": "https://www.businessday.co.za/world/international-companies/2026-11-08-openai-forges-ahead-with-data-centres-amid-political-scrutiny/"}, "summary": "Sarah Friar 接受 Reuters/CNBC 訪問，稱將繼續推進資料中心計畫。", "title": "OpenAI 財務長：美國資料中心擴張不因期中選舉放慢", "why": "民主黨勝選後市場擔心 AI 監管收緊，這是業者第一個表態。"}, {"at": "11/7–8", "domain": "國際政治與地緣", "source": {"label": "CNN World", "url": "https://www.cnn.com/world"}, "summary": "基輔地區基礎設施也遭攻擊。", "title": "俄羅斯空襲烏克蘭援助中心，澤倫斯基：開戰以來最致命之一", "why": "冬季能源設施受損會影響歐洲天然氣與和談進度。"}, {"at": "11/2–11/6 週", "domain": "能源與原物料", "source": {"label": "The Gold Weekly（二手，數字待核）", "url": "https://thegoldinvestor.substack.com/p/the-gold-weekly-2-november-7th-2026"}, "summary": "中東降溫談判壓低油價；金價週收約 4,069 美元。", "title": "油價上週跌約 8%，黃金守在 4,000 美元上方", "why": "油價回落對通膨預期有幫助，剛好撞上 CPI 週。"}, {"at": "週收 11/9 08:00 台北", "domain": "加密貨幣", "source": {"label": "24/7 Wall St.", "url": "https://247wallst.com/investing/cryptocurrency/2026/11/08/bitcoin-is-heading-for-a-fifth-straight-losing-week-what-followed-the-last-time-it-lost-five-in-a-row/"}, "summary": "週開盤約 78,232 美元，週日在 75,800 附近；ETF 上週淨流出 12.8 億美元。", "title": "BTC 可能連續第五週收黑，2017 年以來只發生過兩次", "why": "連續收黑的週數記錄本身就是市場氣氛的度量。"}], "id": "2026-11-09"}}</script><!--/snap-->
+<script id="snap" type="application/json">{"updatedAt": "11/09 13:39 台灣時間", "brief": {"date": "2026-11-09", "items": [{"at": "11/8（美東週日）", "domain": "AI 產業", "level": "重大", "picked": true, "publishedAt": "2026-11-08T21:50:00Z", "score": {"credibility": 4, "discussion": 5, "importance": 5, "timeliness": 5, "total": 23, "value": 4}, "source": {"label": "Nvidia 董事會聲明", "url": "https://nvidianews.nvidia.com/news/statement-from-nvidia-board-of-directors"}, "sources": [{"label": "Nvidia 董事會聲明", "url": "https://nvidianews.nvidia.com/news/statement-from-nvidia-board-of-directors"}, {"label": "CNBC（員工信全文，11/8 4:50pm ET）", "url": "https://www.cnbc.com/2026/11/08/nvidia-jensen-huang-email-board-of-directors-statement.html"}, {"label": "NBC News（情報指控未證實）", "url": "https://www.nbcnews.com/tech/tech-news/nvidia-ceo-jensen-huang-investigation-rcna608148"}], "storyId": "nvidia-ceo-probe", "summary": "報導指黃仁勳遭外國情報單位鎖定，他承認婚外情；董事會稱無理由認為機密外洩。", "title": "Nvidia 董事會啟動對黃仁勳的獨立調查", "verifyLevel": "官方確認", "why": "財報 11/17 前九天、AI 晶片股剛大跌，創辦人風險浮上檯面。"}, {"at": "11/7（週六公布）", "domain": "富豪與商業人物", "level": "一般", "picked": true, "score": {"credibility": 5, "discussion": 4, "importance": 4, "timeliness": 4, "total": 21, "value": 4}, "source": {"label": "CNBC", "url": "https://www.cnbc.com/2026/11/07/berkshire-hathaway-q3-2026-earnings-buybacks.html"}, "sources": [{"label": "CNBC", "url": "https://www.cnbc.com/2026/11/07/berkshire-hathaway-q3-2026-earnings-buybacks.html"}, {"label": "Forbes", "url": "https://www.forbes.com/sites/bill_stone/2026/11/07/berkshire-hathaway-q3-earnings-miss-on-insurance-not-on-strategy/"}], "storyId": "berkshire-q3-2026", "summary": "營業利益降 5.8%，對外持股仍小幅淨賣出（16 季中第 15 季），現金含美債約 3,774 億美元。", "title": "波克夏 Q3 買回自家股票 96 億美元，創單季紀錄", "verifyLevel": "可靠媒體報導", "why": "Abel 接班後把錢拿去買自己，對外頭的股票仍不動手。"}, {"at": "豁免約 11/9–10 到期", "backup": true, "domain": "國際貿易", "level": "追蹤更新", "score": {"credibility": 3, "discussion": 3, "importance": 4, "timeliness": 4, "total": 18, "value": 4}, "source": {"label": "Venn Trade Weekly（二手，待對 USTR 公告）", "url": "https://vennstrategies.substack.com/p/venn-trade-weekly-november-3-2026"}, "storyId": "us-china-trade-nov-2026", "summary": "301 條款豁免若未展延，機械、醫療器材、太陽能設備關稅恢復；中方鎵鍗出口暫停到 11/27。", "title": "美中：178 項中國商品關稅豁免到期，川習 11/18 深圳 APEC 會面", "verifyLevel": "待查證", "why": "幾個期限疊在川習會前，可以看出雙方籌碼。"}, {"at": "11/9 起", "domain": "美國政治", "level": "一般", "score": {"credibility": 4, "discussion": 3, "importance": 4, "timeliness": 4, "total": 18, "value": 3}, "source": {"label": "STAT News", "url": "https://www.statnews.com/2026/11/04/lame-duck-session-congress-health-policy-aca-subsidies-medicaid-funding/"}, "storyId": "us-funding-dec11", "summary": "要決定通過綜合撥款或再延一次，還有醫療補助與債務上限議題。", "title": "國會跳鴨期開議，12/11 政府撥款到期", "verifyLevel": "可靠媒體報導", "why": "民主黨明年接掌國會，談判籌碼變了，停擺風險重新浮現。"}, {"at": "11/8", "domain": "AI 產業", "level": "一般", "score": {"credibility": 3, "discussion": 3, "importance": 3, "timeliness": 4, "total": 16, "value": 3}, "source": {"label": "BusinessDay（轉載 Reuters）", "url": "https://www.businessday.co.za/world/international-companies/2026-11-08-openai-forges-ahead-with-data-centres-amid-political-scrutiny/"}, "summary": "Sarah Friar 接受 Reuters/CNBC 訪問，稱將繼續推進資料中心計畫。", "title": "OpenAI 財務長：美國資料中心擴張不因期中選舉放慢", "verifyLevel": "可靠媒體報導", "why": "民主黨勝選後市場擔心 AI 監管收緊，這是業者第一個表態。"}, {"at": "11/7–8", "domain": "國際政治與地緣", "level": "一般", "score": {"credibility": 3, "discussion": 2, "importance": 4, "timeliness": 4, "total": 16, "value": 3}, "source": {"label": "CNN World", "url": "https://www.cnn.com/world"}, "summary": "基輔地區基礎設施也遭攻擊。", "title": "俄羅斯空襲烏克蘭援助中心，澤倫斯基：開戰以來最致命之一", "verifyLevel": "可靠媒體報導", "why": "冬季能源設施受損會影響歐洲天然氣與和談進度。"}, {"at": "11/2–11/6 週", "domain": "能源與原物料", "level": "一般", "score": {"credibility": 2, "discussion": 2, "importance": 3, "timeliness": 3, "total": 13, "value": 3}, "source": {"label": "The Gold Weekly（二手，數字待核）", "url": "https://thegoldinvestor.substack.com/p/the-gold-weekly-2-november-7th-2026"}, "summary": "中東降溫談判壓低油價；金價週收約 4,069 美元。", "title": "油價上週跌約 8%，黃金守在 4,000 美元上方", "verifyLevel": "待查證", "why": "油價回落對通膨預期有幫助，剛好撞上 CPI 週。"}, {"at": "週收 11/9 08:00 台北", "domain": "加密貨幣", "level": "一般", "picked": true, "score": {"credibility": 4, "discussion": 4, "importance": 3, "timeliness": 5, "total": 21, "value": 5}, "source": {"label": "24/7 Wall St.", "url": "https://247wallst.com/investing/cryptocurrency/2026/11/08/bitcoin-is-heading-for-a-fifth-straight-losing-week-what-followed-the-last-time-it-lost-five-in-a-row/"}, "storyId": "btc-losing-streak", "summary": "週開盤約 78,232 美元，週日在 75,800 附近；ETF 上週淨流出 12.8 億美元。", "title": "BTC 可能連續第五週收黑，2017 年以來只發生過兩次", "verifyLevel": "可靠媒體報導", "why": "連續收黑的週數記錄本身就是市場氣氛的度量。"}], "updatedAt": "2026-11-09T05:37:27Z", "id": "2026-11-09"}, "events": [{"at": "2026-11-10T21:30:00+08:00", "consensus": "整體約 0.3%、核心 0.2–0.3%", "detail": "前值：整體月增 0.6%、核心 0.3%｜共識：整體約 0.3%、核心 0.2–0.3%｜整體與核心不公布年增率", "impact": "high", "name": "美國 10 月 CPI", "preheat": "11/9（一）20:00–21:30 發布；11/10 17:47 複查共識", "preheatReady": true, "prior": "9 月整體月增 0.6%、核心 0.3%", "source": {"label": "BLS 發布行事曆", "url": "https://www.bls.gov/schedule/news_release/cpi.htm"}, "status": "confirmed", "updatedAt": "2026-11-09T05:37:27Z", "id": "2026-11-10-cpi"}, {"at": "2026-11-11T22:30:00+08:00", "detail": "依往年慣例債市全天休市（SIFMA 建議），股市正常交易；今年安排尚未查證", "impact": "low", "name": "美國退伍軍人節：美股 22:30 照常開盤、債市休市", "status": "tbc", "id": "2026-11-11-veterans"}, {"at": "2026-11-12T21:30:00+08:00", "detail": "前值約 18.9 萬，預估 19.4–19.5 萬；有來源列 11/11", "impact": "mid", "name": "初領失業金", "status": "tbc", "id": "2026-11-12-claims"}, {"at": "2026-11-13T21:30:00+08:00", "consensus": "月增約 0.4%（待確認）", "detail": "共識月增約 0.4%；前值說法不一，暫不引用", "impact": "high", "name": "美國 10 月 PPI", "preheat": "11/12（四）20:00 前後", "preheatReady": false, "source": {"label": "BLS 發布行事曆", "url": "https://www.bls.gov/schedule/news_release/ppi.htm"}, "status": "tbc", "updatedAt": "2026-11-09T05:37:27Z", "id": "2026-11-13-ppi"}, {"at": "2026-11-16T21:30:00+08:00", "impact": "low", "name": "紐約州製造業指數", "status": "tbc", "id": "2026-11-16-empire"}, {"at": "2026-11-17T21:30:00+08:00", "detail": "依 Census 9/12 排程，可能變動", "impact": "mid", "name": "美國 10 月零售銷售", "status": "tbc", "id": "2026-11-17-retail"}, {"at": "2026-11-18T06:00:00+08:00", "detail": "美東 11/17 盤後；公司 10/28 公告，未讀到 IR 原文", "impact": "high", "name": "Nvidia Q3 FY27 財報電話會議", "preheat": "11/17（二）18:00 前後", "preheatReady": false, "status": "tbc", "updatedAt": "2026-11-09T05:37:27Z", "id": "2026-11-18-nvda"}, {"at": "2026-11-19T21:30:00+08:00", "impact": "mid", "name": "初領失業金", "status": "tbc", "id": "2026-11-19-claims"}, {"at": "2026-11-19T03:00:00+08:00", "detail": "Fed 官方行事曆：11/18 2:00 p.m. ET", "impact": "high", "name": "FOMC 10 月會議紀要", "preheat": "11/18（三）18:00 前後", "preheatReady": false, "source": {"label": "Fed 11 月行事曆", "url": "https://www.federalreserve.gov/newsevents/2026-november.htm"}, "status": "confirmed", "updatedAt": "2026-11-09T05:37:27Z", "id": "2026-11-19-minutes"}, {"at": "2026-12-04T21:30:00+08:00", "detail": "僅一個來源列出日期，待 BLS 確認", "impact": "high", "name": "美國 11 月非農", "status": "tbc", "id": "2026-12-04-nfp"}, {"at": "2026-12-10T21:30:00+08:00", "detail": "晚於 FOMC 決議一天", "impact": "high", "name": "美國 11 月 CPI", "status": "tbc", "id": "2026-12-10-cpi"}, {"at": "2026-12-10T03:00:00+08:00", "detail": "12/8–9 會議，現行 3.75%–4.00%", "impact": "high", "name": "FOMC 利率決議", "preheatReady": false, "prior": "3.75%–4.00%", "source": {"label": "Fed FOMC 行事曆", "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"}, "status": "confirmed", "updatedAt": "2026-11-09T05:37:27Z", "id": "2026-12-10-fomc"}], "posts": [{"body": "波克夏這季花了 96 億美元買回自家股票，比上一季的 45 億多了一倍。同一季，它對外面的股票還是小幅淨賣出，過去 16 季裡有 15 季都是賣比買多。\n\n這是 Abel 接手後第一次大手筆動用現金，選的標的是波克夏自己，價格大約 1.4 倍淨值。帳上 3,500 億美元以上的現金不拿去買別人，某種程度也算是一種表態：他眼中市場上的股票，沒有比自家便宜。", "checkedAt": "11/9 10:40 台北", "comment": "想知道波克夏這季到底賣了哪些股票，要等 11/16 的 13F 申報才看得到。", "createdAt": "2026-11-09T02:40:00Z", "date": "2026-11-09", "domain": "富豪與商業人物", "pick": "備選B", "publishAt": "11/9 晚上或 11/10 午間", "reason": "跟交易無關但很有話題：巴菲特接班人的第一個大動作，可以聊「什麼時候該買自己」。", "score": {"credibility": 5, "discussion": 4, "importance": 4, "timeliness": 4, "total": 21, "value": 4}, "slot": "主文", "sources": [{"label": "CNBC：Berkshire Q3 買回加倍（11/7）", "url": "https://www.cnbc.com/2026/11/07/berkshire-hathaway-q3-2026-earnings-buybacks.html"}, {"label": "Forbes：Q3 分析與 1.4 倍淨值（11/7）", "url": "https://www.forbes.com/sites/bill_stone/2026/11/07/berkshire-hathaway-q3-earnings-miss-on-insurance-not-on-strategy/"}, {"label": "BigGo：現金 3,774 億與淨賣連續紀錄", "url": "https://finance.biggo.com/news/4385374b-86fb-4e57-b516-4f101d6100c0"}], "status": "待審", "storyId": "berkshire-q3-2026", "title": "波克夏花 96 億買自己，對外面的股票還在賣", "verify": {"eventDate": "2026/11/7（週六公布 Q3 財報）", "facts": "Q3 買回約 96 億美元（Q2 約 45 億）；對外持股淨賣約 4.26 億美元，16 季中第 15 季淨賣；不含鐵路與公用事業現金約 3,523 億美元；營業利益降 5.8%。", "opinion": "「一種表態：市場上的股票沒有比自家便宜」為作者解讀，波克夏未如此表示。", "status": "可發布", "unconfirmed": ["「約 1.4 倍淨值」來自 Forbes 估算，未對 10-Q 原文", "13F 申報日 11/16 依 Forbes，未對 SEC 行事曆"], "updatedAt": "11/7 CNBC、Forbes"}, "id": "2026-11-09-berkshire-buyback"}, {"body": "BTC 週線剛收完，連續第五週收黑。今天亞洲盤一度跌破 7.5 萬美元，離歷史高點回落了約四成。\n\n連跌這麼久，很多人難免會想：「應該跌夠了吧？」\n\n回頭看歷史，2022 年那波連跌結束後，接下來四週又從 2.9 萬跌到 2.1 萬；今年 3 月結束的那波，四週後幾乎原地踏步，6 月又跌到近一年低點。\n\n連跌幾週，真的不能直接當成見底訊號。與其猜跌夠了沒，不如先觀察週線能不能形成更高的低點。", "checkedAt": "11/9 10:30 台北", "comment": "上週現貨 ETF 淨流出 12.8 億美元。2022 年那次還沒有現貨 ETF，拿來比較時要記得這個差別。", "createdAt": "2026-11-09T02:30:00Z", "date": "2026-11-09", "domain": "加密貨幣", "doubts": ["週線正式收盤價未取得，依 11/9 亞洲盤約 74,500 美元判斷已低於週開盤 78,232，文中未寫收盤價", "「2017 年以來只發生過兩次」查證後原文並無此說法，只提到最近兩次，已不使用"], "pick": "備選A", "publishAt": "11/9", "published": {"at": "2026-11-09T05:22:34Z", "body": "BTC 週線剛收完，連續第五週收黑。今天亞洲盤一度跌破 7.5 萬美元，離歷史高點回落了約四成。\n\n連跌這麼久，很多人難免會想：「應該跌夠了吧？」\n\n回頭看歷史，2022 年那波連跌結束後，接下來四週又從 2.9 萬跌到 2.1 萬；今年 3 月結束的那波，四週後幾乎原地踏步，6 月又跌到近一年低點。\n\n連跌幾週，真的不能直接當成見底訊號。與其猜跌夠了沒，不如先觀察週線能不能形成更高的低點。", "comment": "上週現貨 ETF 淨流出 12.8 億美元。2022 年那次還沒有現貨 ETF，拿來比較時要記得這個差別。"}, "reason": "加密市場結構：用最近兩次連跌的後續，破解「跌夠久就該反彈」的直覺。", "score": {"credibility": 4, "discussion": 4, "importance": 3, "timeliness": 5, "total": 21, "value": 5}, "slot": "主文", "sources": [{"label": "24/7 Wall St.：過去兩次連跌五週以上的後續（11/8）", "url": "https://247wallst.com/investing/cryptocurrency/2026/11/08/bitcoin-is-heading-for-a-fifth-straight-losing-week-what-followed-the-last-time-it-lost-five-in-a-row/"}, {"label": "Investing.com Live：BTC 亞洲盤跌破 7.5 萬（11/9）", "url": "https://investinglive.com/cryptocurrency/bitcoin-continues-to-trade-heavily-under-74-600-risk-mood-turns-wary/"}, {"label": "Farside BTC ETF 流向", "url": "https://farside.co.uk/btc/"}], "status": "已發布", "storyId": "btc-losing-streak", "title": "BTC 連續第五週收黑：連跌週數不太能拿來抓底", "verify": {"eventDate": "週線收盤 2026/11/9 08:00 台北", "facts": "2022/5/29 約 29,446 → 6/26 約 21,029；2026/3/1 約 65,769 → 3/29 約 65,957，6/30 收 58,566 為一年最低；歷史高點 126,080。", "opinion": "「連跌週數不能當見底訊號」「觀察更高的低點」為作者觀點。", "status": "可發布", "unconfirmed": ["週線正式收盤價未取得，依亞洲盤約 74,500 判斷低於週開盤 78,232；文中未寫收盤價"], "updatedAt": "11/9 亞洲盤（Investing.com Live）"}, "id": "2026-11-09-btc-five-week-streak"}, {"body": "Nvidia 董事會週日宣布，由獨立董事帶外部律師調查黃仁勳。起因是報導指他遭外國情報單位鎖定，他也在員工信裡承認了婚外情。董事會說，沒有理由認為國安或公司機密外洩。\n\n時間點很尷尬，財報 11/17 就要公布，上週晶片股才剛重摔。黃仁勳 1993 年創辦公司帶到現在，市場對 Nvidia 的信心，有一部分是對他的信心。這種風險平常很少人算，調查出結果前，只能各自猜要打幾折。", "checkedAt": "11/9 08:55 台北", "comment": "董事會找的是獨立董事加外部律師，這算比較正式的做法，結果出來前，公開的細節大概不會太多。", "createdAt": "2026-11-09T00:55:00Z", "date": "2026-11-09", "domain": "AI 產業", "doubts": ["「被外國情報單位鎖定」是報導與政策制定者的指控，NBC 表示尚未證實；文中寫成「報導指」", "美股 11/9 開盤前無股價反應資料，文中未提股價"], "pick": "首選", "publishAt": "11/9 上午或美股開盤前（21:00 前）", "published": {"at": null, "body": "Nvidia 董事會週日宣布，由獨立董事帶外部律師調查黃仁勳。起因是報導指他遭外國情報單位鎖定，他也在員工信裡承認了婚外情。董事會說，沒有理由認為國安或公司機密外洩。\n\n時間點很尷尬，財報 11/17 就要公布，上週晶片股才剛重摔。黃仁勳 1993 年創辦公司帶到現在，市場對 Nvidia 的信心，有一部分是對他的信心。這種風險平常很少人算，調查出結果前，只能各自猜要打幾折。", "comment": "董事會找的是獨立董事加外部律師，這算比較正式的做法，結果出來前，公開的細節大概不會太多。", "note": "升級前已標記發布，標記時間未記錄"}, "reason": "財報前九天、全球市值最大公司之一的創辦人風險，時效與討論度最高。", "score": {"credibility": 4, "discussion": 5, "importance": 5, "timeliness": 5, "total": 23, "value": 4}, "slot": "主文", "sources": [{"label": "Nvidia 董事會聲明", "url": "https://nvidianews.nvidia.com/news/statement-from-nvidia-board-of-directors"}, {"label": "CNBC：黃仁勳員工信與董事會聲明（11/8）", "url": "https://www.cnbc.com/2026/11/08/nvidia-jensen-huang-email-board-of-directors-statement.html"}, {"label": "CNN：Nvidia 啟動調查（11/8）", "url": "https://www.cnn.com/2026/11/08/business/nvidia-investigation-ceo-jensen-huang"}, {"label": "NBC News：未證實情報指控（11/8）", "url": "https://www.nbcnews.com/tech/tech-news/nvidia-ceo-jensen-huang-investigation-rcna608148"}, {"label": "Schwab：11/5 晶片股下跌", "url": "https://www.schwab.com/learn/story/market-volatility"}], "status": "已發布", "storyId": "nvidia-ceo-probe", "title": "Nvidia 調查黃仁勳：財報前九天的創辦人風險", "verify": {"eventDate": "2026/11/8（美東週日）", "facts": "董事會成立獨立董事委員會加外部律師調查；黃仁勳員工信承認婚外情；董事會稱無理由認為國安或機密外洩；財報 11/17。", "opinion": "「市場信心有一部分是對他的信心」「打幾折」為作者觀點。", "status": "可發布", "unconfirmed": ["「遭外國情報單位鎖定」是報導與政策制定者的指控，NBC 表示尚未證實（文中已寫成「報導指」）", "股價反應需等美股 11/9 開盤"], "updatedAt": "11/8 16:50 ET（CNBC 全文刊登）"}, "id": "2026-11-09-nvidia-ceo-probe"}, {"body": "週二晚上 9:30 的 CPI 有點怪。去年 10 月政府停擺沒收到物價，這次整體跟核心都不給年增率，只有月增。偏偏這又是 12 月 Fed 開會前最後一份 CPI。\n\n所以重點就看核心月增。0.3% 換算一年大約 3.7%，0.2% 大約 2.4%。利率期貨押的升息機率已經七成以上，數字偏熱市場不太意外，真的冷下來反而比較容易讓行情動起來。", "category": "總經時事", "chart": "月增率換算年化對照卡（0.2%→2.4%、0.3%→3.7%、0.4%→4.9%），旁邊放 9 月 CPI 拆解：整體年增 3.7%、核心 2.6%、汽油 34.2%。來源：BLS CPI 新聞稿；年化以 (1+m)^12−1 計算。", "checkedAt": "11/9 01:20 台北（改寫 11/9）", "comment": "汽油、新車、二手車這幾項還是有年增率，想知道物價壓力從哪來，可以先看這三項。", "createdAt": "2026-11-08T17:30:00Z", "date": "2026-11-09", "domain": "全球經濟與央行", "doubts": ["12 月升息隱含機率各家不一（65%／77%／80%），讀取時間與來源不同，文章寫「七成以上」", "核心 CPI 共識 0.2% 與 0.3% 並存，文章寫成區間"], "headlines": [{"asof": "11/8 20:20 台北，週收 11/9 08:00", "text": "BTC 測試 50 週均線（約 $75,562），週線若收在 $78,239 下方即連續第五週收黑"}, {"asof": "11/2–11/6，Farside", "text": "現貨 BTC ETF 上週淨流出約 12.8 億美元，IBIT 約 12.1 億美元"}, {"asof": "BLS FAQ，頁面更新 2026/9/16", "text": "10 月 CPI 11/10 21:30 公布，整體與核心不公布年增率"}], "publishAt": "11/9 20:00–21:30", "slot": "預熱", "sources": [{"label": "BLS：2025 停擺對 CPI 影響 FAQ", "url": "https://www.bls.gov/cpi/additional-resources/2025-federal-government-shutdown-impact-cpi-faq.htm"}, {"label": "StockTitan：10 月 CPI 預覽（11/6）", "url": "https://www.stocktitan.net/articles/october-2026-cpi-preview-no-yearly-rate"}, {"label": "BigGo：CPI 共識（11/7）", "url": "https://finance.biggo.com/news/9e1d0a9b-b32c-4bf1-b265-11480691d264"}, {"label": "24/7 Wall St.：FedWatch 76.8%", "url": "https://247wallst.com/investing/2026/11/07/odds-of-a-december-rate-hike-jump-to-77-after-a-blowout-jobs-report/"}, {"label": "Farside BTC ETF 流向", "url": "https://farside.co.uk/btc/"}, {"label": "Stocktwits：BTC 週線與 50 週均線", "url": "https://stocktwits.com/news-articles/markets/cryptocurrency/bitcoin-slips-toward-week-moving-average-weekly-close-hangs-balance/cNGVKPER9Ig"}], "status": "待審", "title": "這次 CPI 沒有年增率，只看核心月增", "id": "2026-11-09-preheat-cpi"}], "stories": [{"facts": ["董事會聲明：獨立董事委員會在外部獨立律師協助下監督調查", "董事會稱沒有理由認為國家安全或 Nvidia 機密遭到外洩", "黃仁勳員工信承認對妻子不忠並道歉"], "firstAt": "2026-11-08T21:50:00Z", "latest": "董事會由獨立董事委員會加外部律師調查；黃仁勳表示全力配合，公司稱他將繼續擔任執行長。財報 11/17 公布。", "name": "Nvidia 董事會調查執行長黃仁勳", "repost": {"reason": "已發布過一篇；等調查結果、國會行動或 11/17 財報說法出來再評估", "worth": false}, "sources": [{"label": "Nvidia 董事會聲明", "url": "https://nvidianews.nvidia.com/news/statement-from-nvidia-board-of-directors"}, {"label": "CNBC 員工信全文", "url": "https://www.cnbc.com/2026/11/08/nvidia-jensen-huang-email-board-of-directors-statement.html"}, {"label": "NBC News", "url": "https://www.nbcnews.com/tech/tech-news/nvidia-ceo-jensen-huang-investigation-rcna608148"}], "status": "進行中", "unverified": ["黃仁勳遭外國情報單位鎖定：報導與政策制定者的指控，NBC 表示尚未證實", "調查時程與結果尚未公布"], "updatedAt": "2026-11-09T05:37:27Z", "id": "nvidia-ceo-probe"}]}</script><!--/snap-->
 <script>
 const TZ = "Asia/Taipei";
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const fmt = (iso, opt) => new Intl.DateTimeFormat("zh-TW", {timeZone: TZ, ...opt}).format(new Date(iso));
 const WD = ["日","一","二","三","四","五","六"];
-let posts = [], events = [], selected = null, db = null;
+const twParts = t => { const d = new Date(new Date(t).toLocaleString("en-US",{timeZone:TZ})); return {y:d.getFullYear(), m:d.getMonth()+1, d:d.getDate(), w:d.getDay(), h:d.getHours(), mi:d.getMinutes()}; };
+const pad = n => String(n).padStart(2,"0");
+const twLabel = t => { const p = twParts(t); return `${p.m}/${p.d}（週${WD[p.w]}）${pad(p.h)}:${pad(p.mi)}`; };
+const ago = t => { const m = Math.round((Date.now()-new Date(t).getTime())/60000); if(!isFinite(m)) return ""; if(m<1) return "剛剛"; if(m<60) return m+" 分鐘前"; if(m<1440) return Math.floor(m/60)+" 小時前"; return Math.floor(m/1440)+" 天前"; };
+const isISO = s => typeof s==="string" && /^\d{4}-\d\d-\d\dT/.test(s) && !isNaN(new Date(s));
 
-function toast(msg){ const t=$("toast"); t.textContent=msg; t.hidden=false; clearTimeout(toast.h); toast.h=setTimeout(()=>t.hidden=true,2200); }
+let posts = [], events = [], brief = null, stories = [], favs = [], runs = [], selected = null, db = null, snapAt = null;
+const radarF = {hours:0, domain:"", sort:"time", unread:false};
+let readSet = new Set();
+try{ readSet = new Set(JSON.parse(localStorage.getItem("chandao-read")||"[]")); }catch{}
+const saveRead = () => { try{ localStorage.setItem("chandao-read", JSON.stringify([...readSet].slice(-500))); }catch{} };
+
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.hidden=false; clearTimeout(toast.h); toast.h=setTimeout(()=>t.hidden=true,2400); }
 function charCount(s){ return [...String(s||"").replace(/\s/g,"")].length; }
-function statusChip(s){ if(s==="已核可") s="已審核"; const c = s==="已發布"?"ok":(s==="已審核"?"":"wait"); return `<span class="chip ${c}">${esc(s||"待審")}</span>`; }
+const normStatus = s => s==="已核可" ? "已審核" : (s || "待審");
+function statusChip(s){ s = normStatus(s); const c = s==="已發布"?"ok":(s==="已審核"?"":(s==="需要更新"?"st-需要更新":"wait")); return `<span class="chip ${c}">${esc(s)}</span>`; }
 
-function tick(){
-  $("now").textContent = fmt(Date.now(), {month:"2-digit",day:"2-digit",weekday:"short",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
-  renderNext();
+/* ---------- schedules: next run computed in code ---------- */
+const SCHED = [
+  {key:"morning", name:"晨間情報", h:8, m:30, target:"09:00"},
+  {key:"evening", name:"晚間情報", h:17, m:30, target:"18:00"},
+  {key:"weekly", name:"週日下週規劃", h:19, m:30, dow:0, target:"20:00"},
+];
+function nextRun(s){
+  const p = twParts(Date.now());
+  for(let add=0; add<8; add++){
+    const base = Date.UTC(p.y, p.m-1, p.d+add, s.h-8, s.m);   // Taipei = UTC+8
+    const w = new Date(base + 8*3600e3).getUTCDay();
+    if(s.dow!==undefined && w!==s.dow) continue;
+    if(base > Date.now()) return base;
+  }
+}
+function renderSummary(){
+  const items = brief?.items || [];
+  const main = picksToday();
+  const pending = posts.filter(p => ["待審","需要更新"].includes(normStatus(p.status)) && p.date >= (main[0]?.date||"")).length;
+  const now = Date.now();
+  const majorNews = items.filter(i => i.level==="重大").length;
+  const majorEv = events.filter(e => e.impact==="high" && new Date(e.at).getTime()>now && new Date(e.at).getTime()-now < 48*3600e3).length;
+  const last = [brief?.updatedAt, ...runs.map(r=>r.finishedAt)].filter(isISO).sort().pop() || snapAt;
+  $("tiles").innerHTML = [
+    [items.length, "候選新聞"], [main.length, "推薦文章"], [pending, "待審核"],
+    [majorNews + majorEv, `重大事件（新聞 ${majorNews}・48h 內 ${majorEv}）`],
+    [last ? (isISO(last)? `${pad(twParts(last).h)}:${pad(twParts(last).mi)}` : last) : "—", last && isISO(last) ? `最後更新 ${twParts(last).m}/${twParts(last).d}` : "最後更新"],
+  ].map(([b,s]) => `<div class="panel tile"><b>${esc(b)}</b><span>${esc(s)}</span></div>`).join("");
+  $("sched").innerHTML = SCHED.map(s => {
+    const r = runs.filter(x => x.task===s.key).sort((a,b)=>String(a.startedAt).localeCompare(String(b.startedAt))).pop();
+    let last = "尚無執行紀錄";
+    if(r){
+      const late = r.late ? `<span class="stale">（晚於 ${s.target}）</span>` : "";
+      last = `上次 ${isISO(r.finishedAt)?twLabel(r.finishedAt):"—"} ${esc(r.status||"")}${late}${r.note?`・${esc(r.note)}`:""}`;
+    }
+    return `<div><b>${s.name} ${pad(s.h)}:${pad(s.m)}</b><span class="meta">下次 ${twLabel(nextRun(s))}，目標 ${s.target} 前完成</span><span class="note">${last}</span></div>`;
+  }).join("");
 }
 
+/* ---------- radar ---------- */
+const itemKey = it => it.storyId || it.id || it.title;
+const LV = {"重大":0,"追蹤更新":1,"一般":2};
+function renderRadar(){
+  const el = $("brief");
+  if(!brief){ el.innerHTML = `<div class="empty">每天 08:30 的排程會放上當天的候選新聞。</div>`; return; }
+  $("briefDate").textContent = brief.date || "";
+  const upd = brief.updatedAt;
+  $("radarUpd").innerHTML = upd && isISO(upd) ? `更新於 ${twLabel(upd)}${Date.now()-new Date(upd).getTime()>14*3600e3?` <span class="stale">已超過 14 小時未更新</span>`:""}` : "";
+  const items = (brief.items||[]).slice();
+  const doms = [...new Set(items.map(i=>i.domain).filter(Boolean))];
+  const sel = $("fDomain"), keep = sel.value;
+  sel.innerHTML = `<option value="">全部類別</option>` + doms.map(d=>`<option>${esc(d)}</option>`).join(""); sel.value = keep;
+  let list = items.filter(it => {
+    if(radarF.domain && it.domain !== radarF.domain) return false;
+    if(radarF.unread && readSet.has(itemKey(it))) return false;
+    if(radarF.hours){ const t = it.updatedAt || it.publishedAt; if(!isISO(t) || Date.now()-new Date(t).getTime() > radarF.hours*3600e3) return false; }
+    return true;
+  });
+  const tm = it => isISO(it.updatedAt) ? new Date(it.updatedAt).getTime() : (isISO(it.publishedAt) ? new Date(it.publishedAt).getTime() : 0);
+  const sorters = {
+    time: (a,b) => tm(b)-tm(a),
+    level: (a,b) => (LV[a.level]??3)-(LV[b.level]??3) || (b.score?.total||0)-(a.score?.total||0),
+    score: (a,b) => (b.score?.total||0)-(a.score?.total||0),
+    domain: (a,b) => String(a.domain).localeCompare(String(b.domain)),
+  };
+  list.sort(sorters[radarF.sort]);
+  if(!list.length){ el.innerHTML = `<div class="empty">${radarF.hours?`最近 ${radarF.hours} 小時內沒有符合條件的新聞（只計有標示發布時間的新聞）。`:"沒有符合條件的新聞。"}</div>`; return; }
+  el.innerHTML = list.map(it => {
+    const k = itemKey(it), read = readSet.has(k);
+    const srcs = (it.sources || (it.source ? [it.source] : [])).filter(s=>s?.url);
+    const times = [
+      isISO(it.publishedAt) ? `首次 ${twLabel(it.publishedAt)}` : (it.at ? `事件 ${esc(it.at)}` : ""),
+      isISO(it.updatedAt) ? `更新 ${twLabel(it.updatedAt)}（${ago(it.updatedAt)}）` : "",
+    ].filter(Boolean).join("・");
+    const fav = favs.some(f => f.id === favId(it));
+    return `<div class="bi ${it.picked?"pick":""} ${read?"read":""}" data-k="${esc(k)}">
+      <div class="row">${it.isNew && !read ? `<span class="newdot" title="本次新增"></span>`:""}${it.level?`<span class="chip mini lv-${esc(it.level)}">${esc(it.level)}</span>`:""}${it.domain?`<span class="chip mini">${esc(it.domain)}</span>`:""}${it.verifyLevel?`<span class="chip mini vf-${esc(it.verifyLevel)}">${esc(it.verifyLevel)}</span>`:""}${it.picked?`<span class="chip mini ok">已選為推薦</span>`:""}${it.backup?`<span class="chip mini wait">備用</span>`:""}${it.score?`<span class="score">${esc(it.score.total)}/25</span>`:""}</div>
+      <div class="times">${times}</div>
+      <h4>${esc(it.title)}</h4><p>${esc(it.summary||"")}</p>${it.why?`<p class="why">${esc(it.why)}</p>`:""}
+      ${it.latest?`<p class="why">最新進展：${esc(it.latest)}</p>`:""}
+      ${srcs.length?`<div class="srcs">${srcs.map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label||s.url)}</a>`).join("")}</div>`:""}
+      <div class="row"><button class="mini" data-act="read">${read?"標為未讀":"標為已讀"}</button>${db?`<button class="mini" data-act="fav">${fav?"已收藏":"收藏題材"}</button>`:""}</div>
+    </div>`;
+  }).join("");
+}
+$("brief").addEventListener("click", async e => {
+  const b = e.target.closest("button[data-act]"); if(!b) return;
+  const k = b.closest("[data-k]").dataset.k;
+  const it = (brief?.items||[]).find(i => itemKey(i) === k); if(!it) return;
+  if(b.dataset.act==="read"){ readSet.has(k) ? readSet.delete(k) : readSet.add(k); saveRead(); renderRadar(); return; }
+  if(b.dataset.act==="fav") toggleFav(it, b);
+});
+$("fTime").addEventListener("click", e => { const b=e.target.closest("button"); if(!b) return; radarF.hours=+b.dataset.v; [...$("fTime").children].forEach(x=>x.setAttribute("aria-pressed", x===b)); renderRadar(); });
+$("fDomain").onchange = e => { radarF.domain = e.target.value; renderRadar(); };
+$("fSort").onchange = e => { radarF.sort = e.target.value; renderRadar(); };
+$("fUnread").onchange = e => { radarF.unread = e.target.checked; renderRadar(); };
+
+function renderStories(){
+  $("storyCount").textContent = stories.length ? `${stories.length} 件` : "";
+  $("stories").innerHTML = stories.length ? stories.slice().sort((a,b)=>String(b.updatedAt).localeCompare(String(a.updatedAt))).map(s => {
+    const rel = posts.filter(p => p.storyId === s.id);
+    return `<div class="story">
+      <div class="row"><span class="chip mini ${s.status==="進行中"?"":"wait"}">${esc(s.status||"進行中")}</span><span class="meta">${esc(s.id)}</span>${s.repost?.worth?`<span class="chip mini ok">值得再發</span>`:""}</div>
+      <h4>${esc(s.name)}</h4>
+      <span class="times meta">首次 ${isISO(s.firstAt)?twLabel(s.firstAt):esc(s.firstAt||"—")}・最近更新 ${isISO(s.updatedAt)?twLabel(s.updatedAt):esc(s.updatedAt||"—")}</span>
+      ${s.latest?`<div><b>最新進展</b>：${esc(s.latest)}</div>`:""}
+      ${(s.facts||[]).length?`<div><b>已確認</b><ul>${s.facts.map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div>`:""}
+      ${(s.unverified||[]).length?`<div><b>尚待查證</b><ul>${s.unverified.map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div>`:""}
+      ${s.repost?.reason?`<div><b>是否再發</b>：${esc(s.repost.reason)}</div>`:""}
+      ${rel.length?`<div><b>相關文章</b>：${rel.map(p=>esc(p.title)+`（${esc(normStatus(p.status))}）`).join("、")}</div>`:""}
+      ${(s.sources||[]).length?`<div class="srcs">${s.sources.map(x=>`<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.label||x.url)}</a>`).join(" ")}</div>`:""}
+    </div>`;
+  }).join("") : `<div class="story note">目前沒有追蹤中的事件。</div>`;
+}
+
+/* ---------- article cards ---------- */
 const PICK_ORDER = {"首選":0,"備選A":1,"備選B":2};
 const PICK_LABEL = {"首選":"① 今日首選","備選A":"② 今日備選 A","備選B":"③ 今日備選 B"};
+const OPENINGS = ["事件直述","反常識切入","數字切入","企業決策","交易情境","觀點直述","其他"];
+function picksToday(){
+  const picked = posts.filter(p => p.pick && PICK_ORDER[p.pick] !== undefined);
+  const day = picked.map(p=>p.date||"").sort().pop();
+  return picked.filter(p => p.date === day).sort((a,b)=>PICK_ORDER[a.pick]-PICK_ORDER[b.pick]);
+}
 function card(p, label){
   const n = charCount(p.body), bad = n < 100 || n > 180;
   const v = p.verify || {}, vs = v.status || "待確認";
   const vc = vs==="可發布" ? "ok" : (vs==="不可發布" ? "bad" : "wait");
-  const sc = p.score;
+  const st = normStatus(p.status), sc = p.score;
   const unc = (v.unconfirmed || p.doubts || []).map(d=>`<li>${esc(d)}</li>`).join("");
   const srcs = (p.sources||[]).map(s=>`<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label||s.url)}</a></li>`).join("");
   const scoreTxt = sc ? `時效 ${sc.timeliness}・重要 ${sc.importance}・討論 ${sc.discussion}・內容 ${sc.value}・可信 ${sc.credibility}` : "";
+  const changed = p.published?.body && p.published.body !== p.body;
+  const perf = p.perf || {};
+  const pubAt = perf.publishedAt || p.published?.at || "";
+  const dtLocal = isISO(pubAt) ? (()=>{const q=twParts(pubAt);return `${q.y}-${pad(q.m)}-${pad(q.d)}T${pad(q.h)}:${pad(q.mi)}`;})() : "";
   return `<article class="panel post" data-id="${esc(p.id)}">
     <div class="post-head">
-      ${label?`<span class="chip lead">${esc(label)}</span>`:`<span class="chip">${esc(p.slot||"文章")}</span>`}${(p.domain||p.category)?`<span class="chip">${esc(p.domain||p.category)}</span>`:""}<span class="chip ${vc}">${esc(vs)}</span>${statusChip(p.status)}
+      ${label?`<span class="chip lead">${esc(label)}</span>`:`<span class="chip">${esc(p.slot||"文章")}</span>`}${(p.domain||p.category)?`<span class="chip">${esc(p.domain||p.category)}</span>`:""}<span class="chip ${vc}" title="資料查證">查證：${esc(vs)}</span>${statusChip(st)}
       ${sc?`<span class="score">${sc.total}/25</span>`:""}
       <span class="meta">${esc(p.date||"")}${p.publishAt?` · 建議發布 ${esc(p.publishAt)}`:""}</span>
       <h2>${esc(p.title||"")}</h2>
     </div>
-    ${vs!=="可發布"?`<p class="note" style="color:var(--seal)">關鍵資訊尚未完全確認，發布前請先看下方「尚未確認」。</p>`:""}
+    ${vs!=="可發布"?`<p class="note" style="color:var(--seal)">核心資訊尚未完全確認，請先看下方「尚未確認」，確認前不要發布。</p>`:""}
+    ${st==="需要更新"?`<p class="note" style="color:var(--seal)">事件有新進展：${esc(p.updateNote||"請重新查證後再決定是否修改或重發")}</p>`:""}
+    ${changed?`<p class="note">目前文案與已發布的原始版本不同，原始版本保存在下方。</p>`:""}
     <div class="body">${esc(p.body)}</div>
     <div class="row">
       <button class="primary" data-act="copy">複製文章</button>
       <button data-act="copyc"${p.comment?"":" disabled"}>複製留言</button>
       <span class="count ${bad?"bad":""}">${n} 字${bad?(n>180?"・超過 180":"・少於 100"):""}</span>
       <span style="flex:1"></span>
-      <button data-act="status" data-s="已審核">標記已審核</button>
-      <button data-act="status" data-s="已發布">標記已發布</button>
+      <button data-act="status" data-s="已審核"${st==="已發布"?" disabled":""}>標記已審核</button>
+      <button data-act="status" data-s="已發布"${st==="已發布"?" disabled":""}>標記已發布</button>
     </div>
     <details class="vbox"><summary>留言、查證與來源</summary>
       <dl class="vgrid">
@@ -211,137 +433,239 @@ function card(p, label){
         ${p.reason?`<dt>選題理由</dt><dd>${esc(p.reason)}</dd>`:""}
         ${v.eventDate?`<dt>事件日期</dt><dd>${esc(v.eventDate)}</dd>`:""}
         ${v.updatedAt?`<dt>最新資訊</dt><dd>${esc(v.updatedAt)}</dd>`:""}
-        ${p.checkedAt?`<dt>查證時間</dt><dd>${esc(p.checkedAt)}</dd>`:""}
+        ${p.checkedAt?`<dt>最後查證</dt><dd>${esc(p.checkedAt)}</dd>`:""}
         ${scoreTxt?`<dt>評分</dt><dd class="score">${scoreTxt}</dd>`:""}
         ${v.facts?`<dt>已確認</dt><dd>${esc(v.facts)}</dd>`:""}
         ${v.opinion?`<dt>評論推測</dt><dd>${esc(v.opinion)}</dd>`:""}
       </dl>
       ${unc?`<div><b>尚未確認</b><ul>${unc}</ul></div>`:""}
       ${srcs?`<div><b>原始來源</b><ul>${srcs}</ul></div>`:""}
+      ${changed?`<div><b>已發布的原始版本</b>（${esc(isISO(p.published.at)?twLabel(p.published.at):"")}）<div class="body">${esc(p.published.body)}</div></div>`:""}
     </details>
+    ${st==="已發布"?`<details class="vbox"><summary>Threads 成效${perf.views!=null?`：${perf.views} 瀏覽・${perf.likes??0} 讚・${perf.replies??0} 留言`:"（尚未輸入）"}</summary>
+      ${db?`<div class="perfform">
+        <label class="wide">Threads 文章網址<input type="url" name="url" value="${esc(perf.url||"")}" placeholder="https://www.threads.net/..."></label>
+        <label>實際發布時間<input type="datetime-local" name="publishedAt" value="${esc(dtLocal)}"></label>
+        <label>瀏覽數<input type="number" min="0" name="views" value="${esc(perf.views??"")}"></label>
+        <label>按讚<input type="number" min="0" name="likes" value="${esc(perf.likes??"")}"></label>
+        <label>留言<input type="number" min="0" name="replies" value="${esc(perf.replies??"")}"></label>
+        <label>轉發<input type="number" min="0" name="reposts" value="${esc(perf.reposts??"")}"></label>
+        <label>收藏<input type="number" min="0" name="saves" value="${esc(perf.saves??"")}"></label>
+        <label>開頭類型<select name="opening">${OPENINGS.map(o=>`<option${o===perf.opening?" selected":""}>${o}</option>`).join("")}</select></label>
+        <div class="wide row"><button class="primary" data-act="perf">儲存成效</button>${perf.recordedAt?`<span class="note">上次記錄 ${twLabel(perf.recordedAt)}${isISO(perf.publishedAt)?`，發布後 ${Math.round((new Date(perf.recordedAt)-new Date(perf.publishedAt))/3600e3)} 小時`:""}</span>`:""}</div>
+      </div>`:`<p class="note">登入後才能輸入成效數據。</p>`}
+    </details>`:""}
   </article>`;
 }
 
 function renderPost(){
-  const el = $("post");
-  const picked = posts.filter(p => p.pick && PICK_ORDER[p.pick] !== undefined);
-  let day = picked.map(p=>p.date||"").sort().pop();
-  let list = picked.filter(p => p.date === day).sort((a,b)=>PICK_ORDER[a.pick]-PICK_ORDER[b.pick]);
-  if(!list.length){
-    const mains = posts.filter(p => p.slot==="主文");
-    day = mains[0]?.date; list = mains.filter(p => p.date === day).slice(0,3);
-  }
-  $("pickDate").textContent = day || "";
-  el.innerHTML = list.length ? list.map(p => card(p, PICK_LABEL[p.pick])).join("")
-    : `<div class="panel empty">還沒有文章。每天 08:47 的排程會放上三篇推薦。</div>`;
-  const pre = posts.filter(p => p.slot==="預熱" || p.slot==="公布後").slice(0,3);
-  $("preheat").innerHTML = pre.length ? pre.map(p => card(p)).join("")
-    : `<div class="panel empty">近期沒有事件預熱文章。</div>`;
+  const list = picksToday();
+  $("pickDate").textContent = list[0]?.date || "";
+  $("post").innerHTML = list.length ? list.map(p => card(p, PICK_LABEL[p.pick])).join("")
+    : `<div class="panel empty">還沒有推薦文章。每天 08:30 的排程會放上最多三篇。</div>`;
+  const now = Date.now();
+  const pre = posts.filter(p => (p.slot==="預熱" || p.slot==="公布後") && now - new Date(p.createdAt||0).getTime() < 4*86400e3).slice(0,3);
+  $("preheat").innerHTML = pre.length ? `<p class="label" style="margin:0">事件預熱與公布後更新</p>` + pre.map(p => card(p)).join("") : "";
   const d = $("detail"), sp = posts.find(x => x.id === selected);
   d.hidden = !sp; d.innerHTML = sp ? card(sp) : "";
 }
 
 document.addEventListener("click", e => {
-  const b = e.target.closest("button[data-act]"); if(!b) return;
-  const p = posts.find(x => x.id === b.closest("[data-id]")?.dataset.id); if(!p) return;
+  const b = e.target.closest("article button[data-act]"); if(!b) return;
+  const art = b.closest("[data-id]"); const p = posts.find(x => x.id === art?.dataset.id); if(!p) return;
   if(b.dataset.act==="copy") copy(p.body, b);
   else if(b.dataset.act==="copyc") copy(p.comment||"", b);
-  else setStatus(p, b.dataset.s, b);
+  else if(b.dataset.act==="status") setStatus(p, b.dataset.s, b);
+  else if(b.dataset.act==="perf") savePerf(p, art, b);
 });
 
 async function copy(text, btn){
   try{ await navigator.clipboard.writeText(text); toast("已複製"); }
   catch{ const t = btn?.closest("article")?.querySelector(".body"); if(t){ const r=document.createRange(); r.selectNodeContents(t); const s=getSelection(); s.removeAllRanges(); s.addRange(r); } toast("已選取文字，請按複製"); }
 }
-
+const writeErr = e => toast(e?.code==="invalid_argument" ? "你沒有修改權限" : "儲存失敗，請稍後再試");
 async function setStatus(p, s, btn){
-  if(!db){ toast("只有站長可以修改狀態"); return; }
+  if(!db){ toast("只有站長登入後可以修改狀態"); return; }
   btn.disabled = true;
-  try{ await db.doc("posts/"+p.id).update({status:s}); toast("已標記為「"+s+"」"); }
-  catch(e){ toast(e?.code==="invalid_argument" ? "你沒有修改權限" : "更新失敗，請稍後再試"); }
+  const data = {status:s};
+  if(s==="已發布" && !p.published) data.published = {body:p.body, comment:p.comment||"", at:new Date().toISOString()};
+  try{ await db.doc("posts/"+p.id).update(data); toast("已標記為「"+s+"」"); }
+  catch(e){ writeErr(e); }
+  finally{ btn.disabled = false; }
+}
+async function savePerf(p, art, btn){
+  if(!db) return;
+  const f = n => art.querySelector(`[name=${n}]`)?.value ?? "";
+  const num = n => f(n)==="" ? null : Math.max(0, Math.round(+f(n)));
+  const local = f("publishedAt");
+  const pubISO = local ? new Date(local + ":00+08:00").toISOString() : (p.published?.at || null);
+  const rec = {url:f("url").trim(), publishedAt:pubISO, views:num("views"), likes:num("likes"), replies:num("replies"), reposts:num("reposts"), saves:num("saves"), opening:f("opening"), recordedAt:new Date().toISOString()};
+  if(rec.url && !/^https:\/\/(www\.)?threads\.(net|com)\//.test(rec.url)){ toast("請輸入 threads.net 的文章網址"); return; }
+  btn.disabled = true;
+  const hist = (p.perfHistory||[]).concat([{recordedAt:rec.recordedAt, views:rec.views, likes:rec.likes, replies:rec.replies, reposts:rec.reposts, saves:rec.saves}]).slice(-30);
+  try{ await db.doc("posts/"+p.id).update({perf:rec, perfHistory:hist}); toast("成效已儲存"); }
+  catch(e){ writeErr(e); }
   finally{ btn.disabled = false; }
 }
 
+/* ---------- favourites ---------- */
+const favId = it => String(it.storyId || it.title || "").replace(/[^A-Za-z0-9_\-.~:@+一-鿿]/g,"").slice(0,120) || "x";
+async function toggleFav(it, btn){
+  if(!db){ toast("登入後才能收藏"); return; }
+  const id = favId(it), ex = favs.find(f => f.id === id);
+  btn.disabled = true;
+  try{
+    if(ex){ await db.doc("favorites/"+id).delete(); toast("已取消收藏"); }
+    else{ await db.doc("favorites/"+id).set({title:it.title, storyId:it.storyId||"", source:(it.sources||[it.source]).filter(Boolean)[0]||null, savedAt:new Date().toISOString(), latest:it.latest||it.summary||"", angle:it.why||"", keepTracking:true}); toast("已加入題材收藏庫"); }
+  }catch(e){ writeErr(e); }
+  finally{ btn.disabled = false; }
+}
+function renderFavs(){
+  $("favCount").textContent = favs.length ? `(${favs.length})` : "";
+  $("favs").innerHTML = favs.length ? favs.slice().sort((a,b)=>String(b.savedAt).localeCompare(String(a.savedAt))).map(f => {
+    const rel = posts.filter(p => (f.storyId && p.storyId===f.storyId) || p.title===f.title);
+    const hasPost = rel.length>0, pub = rel.some(p => normStatus(p.status)==="已發布");
+    const st = stories.find(s => s.id && s.id===f.storyId);
+    return `<div class="fav" data-f="${esc(f.id)}">
+      <div class="row"><span class="chip mini ${hasPost?"ok":"wait"}">${hasPost?"已生成文章":"尚未生成文章"}</span><span class="chip mini ${pub?"ok":""}">${pub?"已發布":"未發布"}</span><span class="chip mini ${f.keepTracking?"":"wait"}">${f.keepTracking?"持續追蹤":"停止追蹤"}</span>${f.storyId?`<span class="meta">${esc(f.storyId)}</span>`:""}<span class="meta">收藏於 ${isISO(f.savedAt)?twLabel(f.savedAt):""}</span></div>
+      <h4>${esc(f.title)}</h4>
+      <div><b>最新進展</b>：${esc(st?.latest || f.latest || "—")}${st?.updatedAt&&isISO(st.updatedAt)?`（${twLabel(st.updatedAt)}）`:""}</div>
+      ${f.angle?`<div><b>建議切入角度</b>：${esc(f.angle)}</div>`:""}
+      ${f.source?.url?`<a href="${esc(f.source.url)}" target="_blank" rel="noopener">${esc(f.source.label||f.source.url)}</a>`:""}
+      ${db?`<div class="row"><button class="mini" data-fact="track">${f.keepTracking?"停止追蹤":"恢復追蹤"}</button><button class="mini" data-fact="del">移除收藏</button></div>`:""}
+    </div>`;
+  }).join("") : `<div class="empty">還沒有收藏的題材。在新聞雷達按「收藏題材」就會出現在這裡。</div>`;
+}
+$("favs").addEventListener("click", async e => {
+  const b = e.target.closest("button[data-fact]"); if(!b || !db) return;
+  const id = b.closest("[data-f]").dataset.f, f = favs.find(x=>x.id===id); if(!f) return;
+  b.disabled = true;
+  try{
+    if(b.dataset.fact==="del") await db.doc("favorites/"+id).delete();
+    else await db.doc("favorites/"+id).update({keepTracking:!f.keepTracking});
+  }catch(err){ writeErr(err); } finally{ b.disabled = false; }
+});
+$("tabArc").onclick = () => setTab(false); $("tabFav").onclick = () => setTab(true);
+function setTab(fav){ $("tabArc").setAttribute("aria-selected", !fav); $("tabFav").setAttribute("aria-selected", fav); $("arcPane").hidden = fav; $("favPane").hidden = !fav; }
+
+/* ---------- archive ---------- */
 function renderArchive(){
   const el = $("archive");
-  if(!posts.length){ el.innerHTML = `<div class="empty">存檔是空的。</div>`; return; }
-  const recent = posts.slice(0,20), cnt = {};
-  recent.forEach(p => { const k = p.domain || p.category; if(k) cnt[k] = (cnt[k]||0) + 1; });
-  const ks = Object.entries(cnt).sort((a,b) => b[1]-a[1]);
-  const mix = ks.length ? `<div class="mix" title="最近 20 篇文章的領域分布">${ks.map(([k,n])=>{const pct=Math.round(n/recent.length*100);
-    return `<div><span>${esc(k)}</span><span class="bar"><i style="width:${pct}%"></i></span><span class="v">${n} 篇・${pct}%</span></div>`}).join("")}</div>` : "";
-  el.innerHTML = mix + posts.map(p=>`<button class="arow ${p.id===selected?"on":""}" data-id="${esc(p.id)}">
-      <span class="meta">${esc(p.date||"")}</span><span class="sl chip">${esc(p.slot||"")}</span>
-      <span class="ti">${esc(p.title||"")}</span>${statusChip(p.status)}</button>`).join("");
-  el.querySelectorAll(".arow").forEach(b => b.onclick = () => { selected = selected===b.dataset.id ? null : b.dataset.id; renderPost(); renderArchive(); if(selected) $("detail").scrollIntoView({behavior:"smooth",block:"start"}); });
+  const doms = [...new Set(posts.map(p=>p.domain||p.category).filter(Boolean))];
+  const sel = $("aDomain"), keep = sel.value;
+  sel.innerHTML = `<option value="">全部領域</option>` + doms.map(d=>`<option>${esc(d)}</option>`).join(""); sel.value = keep;
+  const q = $("aq").value.trim().toLowerCase(), ds = sel.value, ss = $("aStatus").value;
+  const list = posts.filter(p => (!q || (p.title+p.body).toLowerCase().includes(q)) && (!ds || (p.domain||p.category)===ds) && (!ss || normStatus(p.status)===ss));
+  el.innerHTML = list.length ? list.map(p=>`<button class="arow ${p.id===selected?"on":""}" data-id="${esc(p.id)}">
+      <span class="meta">${esc(p.date||"")}</span><span class="sl chip">${esc(p.pick||p.slot||"")}</span>
+      <span class="ti">${esc(p.title||"")}</span>${statusChip(p.status)}</button>`).join("") : `<div class="empty">沒有符合條件的文章。</div>`;
+}
+$("archive").addEventListener("click", e => { const b = e.target.closest(".arow"); if(!b) return; selected = selected===b.dataset.id ? null : b.dataset.id; renderPost(); renderArchive(); if(selected) $("detail").scrollIntoView({behavior:"smooth",block:"start"}); });
+["aq","aDomain","aStatus"].forEach(id => $(id).addEventListener("input", renderArchive));
+
+/* ---------- performance ---------- */
+const avg = a => a.length ? a.reduce((x,y)=>x+y,0)/a.length : 0;
+const fmtN = n => Math.round(n).toLocaleString("zh-TW");
+function slotOf(t){ const h = twParts(t).h; return h<6?"深夜 0–6":h<12?"早上 6–12":h<18?"下午 12–18":"晚上 18–24"; }
+function groupTable(rows, keyFn, title){
+  const g = {};
+  rows.forEach(r => { const k = keyFn(r); (g[k] = g[k] || []).push(r); });
+  const ks = Object.keys(g).sort((a,b)=>avg(g[b].map(r=>r.perf.views||0))-avg(g[a].map(r=>r.perf.views||0)));
+  return `<div><h3>${title}</h3><div class="tablewrap"><table><thead><tr><th>分組</th><th class="n">篇數</th><th class="n">平均瀏覽</th><th class="n">平均留言</th><th class="n">平均轉發</th></tr></thead><tbody>${ks.map(k=>{const a=g[k];return `<tr><td>${esc(k)}${a.length<3?' <span class="note">樣本不足</span>':""}</td><td class="n">${a.length}</td><td class="n">${fmtN(avg(a.map(r=>r.perf.views||0)))}</td><td class="n">${fmtN(avg(a.map(r=>r.perf.replies||0)))}</td><td class="n">${fmtN(avg(a.map(r=>r.perf.reposts||0)))}</td></tr>`}).join("")}</tbody></table></div></div>`;
+}
+function renderPerf(){
+  const el = $("perf");
+  const pub = posts.filter(p => normStatus(p.status)==="已發布");
+  const rows = pub.filter(p => p.perf && p.perf.views!=null && isISO(p.perf.publishedAt));
+  const now = Date.now();
+  const in7 = rows.filter(r => now - new Date(r.perf.publishedAt) < 7*86400e3), in30 = rows.filter(r => now - new Date(r.perf.publishedAt) < 30*86400e3);
+  const head = `<div class="tiles">
+    <div class="panel tile"><b>${pub.length}</b><span>已發布文章</span></div>
+    <div class="panel tile"><b>${rows.length}</b><span>已輸入成效</span></div>
+    <div class="panel tile"><b>${in7.length?fmtN(avg(in7.map(r=>r.perf.views))):"—"}</b><span>近 7 天平均瀏覽（${in7.length} 篇）</span></div>
+    <div class="panel tile"><b>${in30.length?fmtN(avg(in30.map(r=>r.perf.views))):"—"}</b><span>近 30 天平均瀏覽（${in30.length} 篇）</span></div>
+  </div>`;
+  if(rows.length < 1){ el.innerHTML = head + `<p class="note">還沒有成效數據。文章標記「已發布」後，在卡片的「Threads 成效」輸入瀏覽、按讚、留言、轉發。</p>`; return; }
+  const hrs = r => Math.max(1, (new Date(r.perf.recordedAt||now) - new Date(r.perf.publishedAt))/3600e3);
+  const base = avg(in30.map(r=>r.perf.views));
+  const top = rows.slice().sort((a,b)=>b.perf.views-a.perf.views).slice(0,5);
+  const above = in30.filter(r => r.perf.views > base);
+  const dom = r => r.domain || r.category || "未分類";
+  const domAvg = {}; rows.forEach(r => (domAvg[dom(r)] = domAvg[dom(r)]||[]).push(r.perf.views));
+  const overall = avg(rows.map(r=>r.perf.views));
+  const hot = Object.entries(domAvg).filter(([k,v]) => v.length>=2 && avg(v) > overall).map(([k,v])=>`${k}（${v.length} 篇，平均 ${fmtN(avg(v))}）`);
+  el.innerHTML = head +
+    (rows.length < 5 ? `<p class="note stale">目前只有 ${rows.length} 篇有數據，樣本不足，以下比較僅供參考，不宜下結論。</p>` : "") +
+    `<p class="note">比較時請看「發布後經過時間」：數據記錄得越晚，瀏覽通常越高。表內「每小時瀏覽」= 瀏覽 ÷ 記錄時距發布的小時數。</p>
+    <div><h3>表現最好的前五篇</h3><div class="tablewrap"><table><thead><tr><th>文章</th><th>領域</th><th class="n">瀏覽</th><th class="n">讚</th><th class="n">留言</th><th class="n">轉發</th><th class="n">收藏</th><th class="n">發布後</th><th class="n">每小時瀏覽</th></tr></thead><tbody>${top.map(r=>`<tr><td>${r.perf.url?`<a href="${esc(r.perf.url)}" target="_blank" rel="noopener">${esc(r.title)}</a>`:esc(r.title)}${above.includes(r)?' <span class="chip mini ok">高於近期平均</span>':""}</td><td>${esc(dom(r))}</td><td class="n">${fmtN(r.perf.views)}</td><td class="n">${r.perf.likes??"—"}</td><td class="n">${r.perf.replies??"—"}</td><td class="n">${r.perf.reposts??"—"}</td><td class="n">${r.perf.saves??"—"}</td><td class="n">${Math.round(hrs(r))} 小時</td><td class="n">${fmtN(r.perf.views/hrs(r))}</td></tr>`).join("")}</tbody></table></div></div>
+    <div class="perfgrid">${groupTable(rows, dom, "各領域表現")}${groupTable(rows, r=>slotOf(r.perf.publishedAt), "各發布時段表現")}${groupTable(rows, r=>r.perf.opening||"未標記", "各開頭類型表現")}</div>
+    <div><h3>值得持續追蹤的題材</h3><p>${hot.length ? esc(hot.join("、")) : "還沒有累積到足夠數據（同領域至少 2 篇且高於整體平均）。"}</p><p class="note">成效只作選題參考，不會只追著過去熱門的類別寫。</p></div>`;
 }
 
+/* ---------- calendar ---------- */
 function renderCal(){
   const el = $("cal");
-  if(!events.length){ el.innerHTML = `<div class="empty">日曆是空的。每週日 19:37 的排程會建立未來 14 天事件。</div>`; return; }
+  if(!events.length){ el.innerHTML = `<div class="empty">日曆是空的。每週日 19:30 的排程會建立未來 14 天事件。</div>`; return; }
   const now = Date.now();
+  const upd = events.map(e=>e.updatedAt).filter(isISO).sort().pop();
+  $("calUpd").innerHTML = upd ? `更新於 ${twLabel(upd)}${now-new Date(upd).getTime()>8*86400e3?' <span class="stale">已超過 8 天未更新</span>':""}` : "";
   el.innerHTML = events.map(e=>{
-    const t = new Date(e.at).getTime();
-    const day = fmt(e.at,{month:"2-digit",day:"2-digit"});
-    const w = new Date(new Date(e.at).toLocaleString("en-US",{timeZone:TZ})).getDay();
-    const hm = e.timeTbc ? "時間待定" : fmt(e.at,{hour:"2-digit",minute:"2-digit",hour12:false});
+    const t = new Date(e.at).getTime(), p = twParts(e.at);
+    const dateTbc = e.dateStatus === "tbc";
+    const x = [
+      e.prior!=null && e.prior!=="" ? `前值 ${esc(e.prior)}` : "",
+      e.consensus!=null && e.consensus!=="" ? `預期 ${esc(e.consensus)}` : "",
+      e.actual!=null && e.actual!=="" ? `<b>實際 ${esc(e.actual)}</b>` : "",
+      e.source?.url ? `<a href="${esc(e.source.url)}" target="_blank" rel="noopener">${esc(e.source.label||"官方來源")}</a>` : "",
+      e.preheatReady ? `<span class="chip mini ok">預熱文已備</span>` : (e.impact==="high" && t>now ? `<span class="chip mini wait">預熱文未備</span>` : ""),
+    ].filter(Boolean).join("");
     return `<div class="ev ${t < now-3600e3 ? "past":""}">
-      <div class="d"><b>${day}</b>週${WD[w]} ${hm}</div>
-      <div><div class="t"><span class="dot ${e.impact==="high"?"high":""}"></span>${esc(e.name)}${e.status==="tbc"?` <span class="tbc">待確認</span>`:""}</div>
-      ${e.detail?`<div class="x">${esc(e.detail)}</div>`:""}</div></div>`;
+      <div class="d"><b>${p.m}/${p.d}</b>週${WD[p.w]} ${dateTbc?"日期待確認":`${pad(p.h)}:${pad(p.mi)}`}</div>
+      <div><div class="t"><span class="dot ${e.impact==="high"?"high":""}"></span>${esc(e.name)}${e.status==="tbc"?` <span class="tbc">時間待確認</span>`:""}${e.status==="confirmed"?` <span class="chip mini ok">官方確認</span>`:""}</div>
+      ${e.detail?`<div class="x">${esc(e.detail)}</div>`:""}${x?`<div class="evx">${x}</div>`:""}</div></div>`;
   }).join("");
 }
-
 function renderNext(){
   const el = $("next"); if(!events.length) return;
   const now = Date.now();
-  const e = events.find(x => x.impact==="high" && new Date(x.at).getTime() > now);
-  if(!e){ el.innerHTML = `<div class="note">14 天內沒有已排定的高影響事件。</div>`; return; }
+  const e = events.find(x => x.impact==="high" && x.status==="confirmed" && x.dateStatus!=="tbc" && new Date(x.at).getTime() > now);
+  if(!e){ el.innerHTML = `<div class="note">14 天內沒有官方確認時間的高影響事件（未確認日期的事件不倒數）。</div>`; return; }
   let d = Math.max(0, new Date(e.at).getTime() - now)/1000;
   const dd = Math.floor(d/86400); d%=86400; const hh=Math.floor(d/3600); d%=3600; const mm=Math.floor(d/60), ss=Math.floor(d%60);
-  const pad = n => String(n).padStart(2,"0");
-  const tw = fmt(e.at,{month:"numeric",day:"numeric"}) + "（週" + WD[new Date(new Date(e.at).toLocaleString("en-US",{timeZone:TZ})).getDay()] + "）" + fmt(e.at,{hour:"2-digit",minute:"2-digit",hour12:false});
-  el.innerHTML = `<div class="name">${esc(e.name)}</div>
+  el.innerHTML = `<p class="label" style="margin:0">下一個重要事件</p><div class="name">${esc(e.name)}</div>
     <div class="meta">台灣時間</div>
-    <div class="cd">${tw}</div>
+    <div class="cd">${twLabel(e.at)}</div>
     <div class="meta">距離公布還有 ${dd?dd+" 天 ":""}${hh} 小時 ${pad(mm)} 分 ${pad(ss)} 秒</div>
     ${e.preheat?`<div class="note">預熱文建議：${esc(e.preheat)}</div>`:""}`;
 }
 
-function renderBrief(b){
-  const el = $("brief");
-  if(!b){ el.innerHTML = `<div class="empty">每天早上會把當天的 8 則候選新聞放在這裡。</div>`; return; }
-  $("briefDate").textContent = b.date || "";
-  el.innerHTML = (b.items||[]).map(it=>`<div class="bi ${it.picked?"pick":""}">
-    <div class="row">${it.domain?`<span class="chip">${esc(it.domain)}</span>`:""}${it.picked?`<span class="chip ok">已選為主文</span>`:""}${it.backup?`<span class="chip wait">備用</span>`:""}${it.score?`<span class="score">${esc(it.score.total)}/25</span>`:""}<span class="meta">${esc(it.at||"")}</span></div>
-    <h4>${esc(it.title)}</h4><p>${esc(it.summary||"")}</p>${it.why?`<p class="why">${esc(it.why)}</p>`:""}
-    ${it.source?.url?`<a href="${esc(it.source.url)}" target="_blank" rel="noopener">${esc(it.source.label||it.source.url)}</a>`:""}</div>`).join("");
+function tick(){
+  $("now").textContent = fmt(Date.now(), {month:"2-digit",day:"2-digit",weekday:"short",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
+  renderNext();
 }
+function renderAll(){ renderSummary(); renderRadar(); renderStories(); renderPost(); renderCal(); renderNext(); renderPerf(); renderArchive(); renderFavs(); }
 
 async function start(){
   tick(); setInterval(tick, 1000);
   let S = {};
   try{ S = JSON.parse($("snap").textContent || "{}"); }catch{}
+  snapAt = S.updatedAt || null;
   posts = (S.posts||[]).slice().sort((a,b)=>String(b.createdAt||"").localeCompare(String(a.createdAt||"")));
   events = (S.events||[]).slice().sort((a,b)=>String(a.at).localeCompare(String(b.at)));
-  renderPost(); renderArchive(); renderCal(); renderNext(); renderBrief(S.brief);
-  if(S.updatedAt) $("sync").textContent = "資料更新於 " + S.updatedAt;
+  brief = S.brief || null; stories = S.stories || []; favs = S.favorites || []; runs = S.runs || [];
+  renderAll();
+  $("sumUpd").textContent = snapAt ? `公開快照 ${snapAt}` : "";
   db = await (window.claude?.use ? window.claude.use("db") : null);
   if(!db) return;
-  db.collection("posts").orderBy("createdAt","desc").limit(60).onSnapshot(s=>{
-    if(!s.metadata.fromCache) $("sync").textContent = "即時資料";
-    if(s.empty) return;
-    posts = s.docs.map(d=>({id:d.id, ...d.data()}));
-    renderPost(); renderArchive();
-  }, ()=>{});
-  db.collection("briefs").orderBy("date","desc").limit(1).onSnapshot(s=>{
-    if(!s.empty) renderBrief(s.docs[0].data());
-  }, ()=>{});
-  db.collection("events").orderBy("at","asc").limit(100).onSnapshot(s=>{
-    if(s.empty) return;
-    events = s.docs.map(d=>({id:d.id, ...d.data()}));
-    renderCal(); renderNext();
-  }, ()=>{});
+  $("sumUpd").textContent = "即時資料";
+  renderRadar(); renderFavs(); renderPost();
+  const sub = (col, fn, q) => (q || db.collection(col)).onSnapshot(s => { fn(s.docs.map(d=>({id:d.id, ...d.data()}))); }, () => { $("sync").textContent = `「${col}」讀取失敗，畫面顯示的是公開快照。`; });
+  sub("posts", d => { if(!d.length) return; posts = d; renderAll(); }, db.collection("posts").orderBy("createdAt","desc").limit(200));
+  sub("briefs", d => { if(d.length){ brief = d[0]; renderSummary(); renderRadar(); } }, db.collection("briefs").orderBy("date","desc").limit(1));
+  sub("events", d => { if(!d.length) return; events = d; renderSummary(); renderCal(); renderNext(); }, db.collection("events").orderBy("at","asc").limit(200));
+  sub("stories", d => { stories = d; renderStories(); renderFavs(); });
+  sub("favorites", d => { favs = d; renderFavs(); renderRadar(); });
+  sub("runs", d => { runs = d; renderSummary(); }, db.collection("runs").orderBy("startedAt","desc").limit(30));
 }
 start();
 </script>
