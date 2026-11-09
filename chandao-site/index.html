@@ -300,9 +300,11 @@ function renderNext(){
   let d = Math.max(0, new Date(e.at).getTime() - now)/1000;
   const dd = Math.floor(d/86400); d%=86400; const hh=Math.floor(d/3600); d%=3600; const mm=Math.floor(d/60), ss=Math.floor(d%60);
   const pad = n => String(n).padStart(2,"0");
+  const tw = fmt(e.at,{month:"numeric",day:"numeric"}) + "（週" + WD[new Date(new Date(e.at).toLocaleString("en-US",{timeZone:TZ})).getDay()] + "）" + fmt(e.at,{hour:"2-digit",minute:"2-digit",hour12:false});
   el.innerHTML = `<div class="name">${esc(e.name)}</div>
-    <div class="meta">${fmt(e.at,{month:"2-digit",day:"2-digit",weekday:"short",hour:"2-digit",minute:"2-digit",hour12:false})} 台北</div>
-    <div class="cd">T−${dd}天 ${pad(hh)}:${pad(mm)}:${pad(ss)}</div>
+    <div class="meta">台灣時間</div>
+    <div class="cd">${tw}</div>
+    <div class="meta">距離公布還有 ${dd?dd+" 天 ":""}${hh} 小時 ${pad(mm)} 分 ${pad(ss)} 秒</div>
     ${e.preheat?`<div class="note">預熱文建議：${esc(e.preheat)}</div>`:""}`;
 }
 
