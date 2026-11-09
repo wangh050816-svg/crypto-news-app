@@ -3,7 +3,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;900&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: a trading-desk bulletin. Left column = today's ready-to-post article; right rail = countdown + 14-day calendar; archive below. */
+/* Layout: a trading-desk bulletin. Left column = today's three ready-to-post picks; right rail = countdown + 14-day calendar; archive below. */
 :root{
   --bg:#eef0f3; --surface:#ffffff; --ink:#18202c; --muted:#5b6575; --line:#d5dae2;
   --accent:#23406e; --accent-soft:#e3e9f4; --seal:#b3261e;
@@ -96,6 +96,17 @@ button:disabled{opacity:.5;cursor:default}
 .bi a{color:var(--accent);font-size:12px;word-break:break-all}
 .bi.pick{background:var(--accent-soft)}
 .note{font-size:12px;color:var(--muted)}
+.picks{display:grid;gap:18px}
+.chip.lead{background:var(--ink);color:var(--surface)}
+.chip.bad{background:var(--warn-soft);color:var(--seal)}
+.vbox{display:grid;gap:6px;font-size:13px}
+.vbox summary{cursor:pointer;font-weight:700;color:var(--muted)}
+.vgrid{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;margin-top:8px}
+.vgrid dt{color:var(--muted)}.vgrid dd{margin:0}
+.vbox ul{margin:4px 0 0;padding-left:18px}
+.vbox a{color:var(--accent);word-break:break-all}
+.score{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.preheat{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:4px;font-size:13px}
 @media (prefers-reduced-motion:no-preference){.panel{transition:border-color .2s}}
 </style>
@@ -114,10 +125,8 @@ button:disabled{opacity:.5;cursor:default}
 
   <div class="grid">
     <section aria-labelledby="l-post">
-      <p class="label" id="l-post">今日推薦發布</p>
-      <article class="panel post" id="post">
-        <div class="empty">正在讀取文章…</div>
-      </article>
+      <p class="label" id="l-post">今日推薦發布 <span id="pickDate" class="meta"></span></p>
+      <div class="picks" id="post"><div class="panel empty">正在讀取文章…</div></div>
     </section>
 
     <aside style="display:grid;gap:20px;min-width:0" aria-label="事件">
@@ -132,6 +141,11 @@ button:disabled{opacity:.5;cursor:default}
     </aside>
   </div>
 
+  <section aria-labelledby="l-pre">
+    <p class="label" id="l-pre">重大事件預熱與公布後更新</p>
+    <div class="preheat" id="preheat"><div class="panel empty">讀取中…</div></div>
+  </section>
+
   <section aria-labelledby="l-brief">
     <p class="label" id="l-brief">今日全球候選新聞 <span id="briefDate" class="meta"></span></p>
     <div class="panel brief" id="brief"><div class="empty">讀取中…</div></div>
@@ -139,13 +153,14 @@ button:disabled{opacity:.5;cursor:default}
 
   <section aria-labelledby="l-arc">
     <p class="label" id="l-arc">文章存檔</p>
+    <div id="detail" hidden style="margin-bottom:14px"></div>
     <div class="panel archive" id="archive"><div class="empty">讀取中…</div></div>
   </section>
   <p class="note" id="sync"></p>
 </div>
 <div class="toast" id="toast" hidden></div>
 
-<script id="snap" type="application/json">{"updatedAt": "11/09 10:41 台北", "posts": [{"body": "BTC 週線剛收完，連續第五週收黑。今天亞洲盤一度跌破 7.5 萬美元，離歷史高點回落了約四成。\n\n連跌這麼久，很多人難免會想：「應該跌夠了吧？」\n\n回頭看歷史，2022 年那波連跌結束後，接下來四週又從 2.9 萬跌到 2.1 萬；今年 3 月結束的那波，四週後幾乎原地踏步，6 月又跌到近一年低點。\n\n連跌幾週，真的不能直接當成見底訊號。與其猜跌夠了沒，不如先觀察週線能不能形成更高的低點。", "checkedAt": "11/9 10:30 台北", "comment": "上週現貨 ETF 淨流出 12.8 億美元。2022 年那次還沒有現貨 ETF，拿來比較時要記得這個差別。", "createdAt": "2026-11-09T02:30:00Z", "date": "2026-11-09", "domain": "加密貨幣", "doubts": ["週線正式收盤價未取得，依 11/9 亞洲盤約 74,500 美元判斷已低於週開盤 78,232，文中未寫收盤價", "「2017 年以來只發生過兩次」查證後原文並無此說法，只提到最近兩次，已不使用"], "publishAt": "11/9", "slot": "主文", "sources": [{"label": "24/7 Wall St.：過去兩次連跌五週以上的後續（11/8）", "url": "https://247wallst.com/investing/cryptocurrency/2026/11/08/bitcoin-is-heading-for-a-fifth-straight-losing-week-what-followed-the-last-time-it-lost-five-in-a-row/"}, {"label": "Investing.com Live：BTC 亞洲盤跌破 7.5 萬（11/9）", "url": "https://investinglive.com/cryptocurrency/bitcoin-continues-to-trade-heavily-under-74-600-risk-mood-turns-wary/"}, {"label": "Farside BTC ETF 流向", "url": "https://farside.co.uk/btc/"}], "status": "待審", "title": "BTC 連續第五週收黑：連跌週數不太能拿來抓底", "id": "2026-11-09-btc-five-week-streak"}, {"body": "Nvidia 董事會週日宣布，由獨立董事帶外部律師調查黃仁勳。起因是報導指他遭外國情報單位鎖定，他也在員工信裡承認了婚外情。董事會說，沒有理由認為國安或公司機密外洩。\n\n時間點很尷尬，財報 11/17 就要公布，上週晶片股才剛重摔。黃仁勳 1993 年創辦公司帶到現在，市場對 Nvidia 的信心，有一部分是對他的信心。這種風險平常很少人算，調查出結果前，只能各自猜要打幾折。", "checkedAt": "11/9 08:55 台北", "comment": "董事會找的是獨立董事加外部律師，這算比較正式的做法，結果出來前，公開的細節大概不會太多。", "createdAt": "2026-11-09T00:55:00Z", "date": "2026-11-09", "domain": "AI 產業", "doubts": ["「被外國情報單位鎖定」是報導與政策制定者的指控，NBC 表示尚未證實；文中寫成「報導指」", "美股 11/9 開盤前無股價反應資料，文中未提股價"], "publishAt": "11/9 上午或美股開盤前（21:00 前）", "slot": "主文", "sources": [{"label": "Nvidia 董事會聲明", "url": "https://nvidianews.nvidia.com/news/statement-from-nvidia-board-of-directors"}, {"label": "CNBC：黃仁勳員工信與董事會聲明（11/8）", "url": "https://www.cnbc.com/2026/11/08/nvidia-jensen-huang-email-board-of-directors-statement.html"}, {"label": "CNN：Nvidia 啟動調查（11/8）", "url": "https://www.cnn.com/2026/11/08/business/nvidia-investigation-ceo-jensen-huang"}, {"label": "NBC News：未證實情報指控（11/8）", "url": "https://www.nbcnews.com/tech/tech-news/nvidia-ceo-jensen-huang-investigation-rcna608148"}, {"label": "Schwab：11/5 晶片股下跌", "url": "https://www.schwab.com/learn/story/market-volatility"}], "status": "待審", "title": "Nvidia 調查黃仁勳：財報前九天的創辦人風險", "id": "2026-11-09-nvidia-ceo-probe"}, {"body": "週二晚上 9:30 的 CPI 有點怪。去年 10 月政府停擺沒收到物價，這次整體跟核心都不給年增率，只有月增。偏偏這又是 12 月 Fed 開會前最後一份 CPI。\n\n所以重點就看核心月增。0.3% 換算一年大約 3.7%，0.2% 大約 2.4%。利率期貨押的升息機率已經七成以上，數字偏熱市場不太意外，真的冷下來反而比較容易讓行情動起來。", "category": "總經時事", "chart": "月增率換算年化對照卡（0.2%→2.4%、0.3%→3.7%、0.4%→4.9%），旁邊放 9 月 CPI 拆解：整體年增 3.7%、核心 2.6%、汽油 34.2%。來源：BLS CPI 新聞稿；年化以 (1+m)^12−1 計算。", "checkedAt": "11/9 01:20 台北（改寫 11/9）", "comment": "汽油、新車、二手車這幾項還是有年增率，想知道物價壓力從哪來，可以先看這三項。", "createdAt": "2026-11-08T17:30:00Z", "date": "2026-11-09", "domain": "全球經濟與央行", "doubts": ["12 月升息隱含機率各家不一（65%／77%／80%），讀取時間與來源不同，文章寫「七成以上」", "核心 CPI 共識 0.2% 與 0.3% 並存，文章寫成區間"], "headlines": [{"asof": "11/8 20:20 台北，週收 11/9 08:00", "text": "BTC 測試 50 週均線（約 $75,562），週線若收在 $78,239 下方即連續第五週收黑"}, {"asof": "11/2–11/6，Farside", "text": "現貨 BTC ETF 上週淨流出約 12.8 億美元，IBIT 約 12.1 億美元"}, {"asof": "BLS FAQ，頁面更新 2026/9/16", "text": "10 月 CPI 11/10 21:30 公布，整體與核心不公布年增率"}], "publishAt": "11/9 20:00–21:30", "slot": "預熱", "sources": [{"label": "BLS：2025 停擺對 CPI 影響 FAQ", "url": "https://www.bls.gov/cpi/additional-resources/2025-federal-government-shutdown-impact-cpi-faq.htm"}, {"label": "StockTitan：10 月 CPI 預覽（11/6）", "url": "https://www.stocktitan.net/articles/october-2026-cpi-preview-no-yearly-rate"}, {"label": "BigGo：CPI 共識（11/7）", "url": "https://finance.biggo.com/news/9e1d0a9b-b32c-4bf1-b265-11480691d264"}, {"label": "24/7 Wall St.：FedWatch 76.8%", "url": "https://247wallst.com/investing/2026/11/07/odds-of-a-december-rate-hike-jump-to-77-after-a-blowout-jobs-report/"}, {"label": "Farside BTC ETF 流向", "url": "https://farside.co.uk/btc/"}, {"label": "Stocktwits：BTC 週線與 50 週均線", "url": "https://stocktwits.com/news-articles/markets/cryptocurrency/bitcoin-slips-toward-week-moving-average-weekly-close-hangs-balance/cNGVKPER9Ig"}], "status": "待審", "title": "這次 CPI 沒有年增率，只看核心月增", "id": "2026-11-09-preheat-cpi"}], "events": [{"at": "2026-11-10T21:30:00+08:00", "detail": "前值：整體月增 0.6%、核心 0.3%｜共識：整體約 0.3%、核心 0.2–0.3%｜整體與核心不公布年增率", "impact": "high", "name": "美國 10 月 CPI", "preheat": "11/9（一）20:00–21:30 發布；11/10 17:47 複查共識", "status": "confirmed", "id": "2026-11-10-cpi"}, {"at": "2026-11-11T12:00:00+08:00", "detail": "債市通常休市、股市照常（依慣例，未查證）", "impact": "low", "name": "美國退伍軍人節", "status": "tbc", "timeTbc": true, "id": "2026-11-11-veterans"}, {"at": "2026-11-12T21:30:00+08:00", "detail": "前值約 18.9 萬，預估 19.4–19.5 萬；有來源列 11/11", "impact": "mid", "name": "初領失業金", "status": "tbc", "id": "2026-11-12-claims"}, {"at": "2026-11-13T21:30:00+08:00", "detail": "共識月增約 0.4%；前值說法不一，暫不引用", "impact": "high", "name": "美國 10 月 PPI", "preheat": "11/12（四）20:00 前後", "status": "tbc", "id": "2026-11-13-ppi"}, {"at": "2026-11-16T21:30:00+08:00", "impact": "low", "name": "紐約州製造業指數", "status": "tbc", "id": "2026-11-16-empire"}, {"at": "2026-11-17T21:30:00+08:00", "detail": "依 Census 9/12 排程，可能變動", "impact": "mid", "name": "美國 10 月零售銷售", "status": "tbc", "id": "2026-11-17-retail"}, {"at": "2026-11-18T06:00:00+08:00", "detail": "美東 11/17 盤後；公司 10/28 公告，未讀到 IR 原文", "impact": "high", "name": "Nvidia Q3 FY27 財報電話會議", "preheat": "11/17（二）18:00 前後", "status": "tbc", "id": "2026-11-18-nvda"}, {"at": "2026-11-19T21:30:00+08:00", "impact": "mid", "name": "初領失業金", "status": "tbc", "id": "2026-11-19-claims"}, {"at": "2026-11-19T03:00:00+08:00", "detail": "Fed 官方行事曆：11/18 2:00 p.m. ET", "impact": "high", "name": "FOMC 10 月會議紀要", "preheat": "11/18（三）18:00 前後", "status": "confirmed", "id": "2026-11-19-minutes"}, {"at": "2026-12-04T21:30:00+08:00", "detail": "僅一個來源列出日期，待 BLS 確認", "impact": "high", "name": "美國 11 月非農", "status": "tbc", "id": "2026-12-04-nfp"}, {"at": "2026-12-10T21:30:00+08:00", "detail": "晚於 FOMC 決議一天", "impact": "high", "name": "美國 11 月 CPI", "status": "tbc", "id": "2026-12-10-cpi"}, {"at": "2026-12-10T03:00:00+08:00", "detail": "12/8–9 會議，現行 3.75%–4.00%", "impact": "high", "name": "FOMC 利率決議", "status": "confirmed", "id": "2026-12-10-fomc"}], "brief": {"date": "2026-11-09", "items": [{"at": "11/8（美東週日）", "domain": "AI 產業", "picked": true, "source": {"label": "Nvidia 董事會聲明", "url": "https://nvidianews.nvidia.com/news/statement-from-nvidia-board-of-directors"}, "summary": "報導指黃仁勳遭外國情報單位鎖定，他承認婚外情；董事會稱無理由認為機密外洩。", "title": "Nvidia 董事會啟動對黃仁勳的獨立調查", "why": "財報 11/17 前九天、AI 晶片股剛大跌，創辦人風險浮上檯面。"}, {"at": "11/7（週六公布）", "backup": true, "domain": "富豪與商業人物", "source": {"label": "CNBC", "url": "https://www.cnbc.com/2026/11/07/berkshire-hathaway-q3-2026-earnings-buybacks.html"}, "summary": "營業利益降 5.8%，對外持股仍小幅淨賣出（16 季中第 15 季），現金含美債約 3,774 億美元。", "title": "波克夏 Q3 買回自家股票 96 億美元，創單季紀錄", "why": "Abel 接班後把錢拿去買自己，對外頭的股票仍不動手。"}, {"at": "豁免約 11/9–10 到期", "backup": true, "domain": "國際貿易", "source": {"label": "Venn Trade Weekly（二手，待對 USTR 公告）", "url": "https://vennstrategies.substack.com/p/venn-trade-weekly-november-3-2026"}, "summary": "301 條款豁免若未展延，機械、醫療器材、太陽能設備關稅恢復；中方鎵鍗出口暫停到 11/27。", "title": "美中：178 項中國商品關稅豁免到期，川習 11/18 深圳 APEC 會面", "why": "幾個期限疊在川習會前，可以看出雙方籌碼。"}, {"at": "11/9 起", "domain": "美國政治", "source": {"label": "STAT News", "url": "https://www.statnews.com/2026/11/04/lame-duck-session-congress-health-policy-aca-subsidies-medicaid-funding/"}, "summary": "要決定通過綜合撥款或再延一次，還有醫療補助與債務上限議題。", "title": "國會跳鴨期開議，12/11 政府撥款到期", "why": "民主黨明年接掌國會，談判籌碼變了，停擺風險重新浮現。"}, {"at": "11/8", "domain": "AI 產業", "source": {"label": "BusinessDay（轉載 Reuters）", "url": "https://www.businessday.co.za/world/international-companies/2026-11-08-openai-forges-ahead-with-data-centres-amid-political-scrutiny/"}, "summary": "Sarah Friar 接受 Reuters/CNBC 訪問，稱將繼續推進資料中心計畫。", "title": "OpenAI 財務長：美國資料中心擴張不因期中選舉放慢", "why": "民主黨勝選後市場擔心 AI 監管收緊，這是業者第一個表態。"}, {"at": "11/7–8", "domain": "國際政治與地緣", "source": {"label": "CNN World", "url": "https://www.cnn.com/world"}, "summary": "基輔地區基礎設施也遭攻擊。", "title": "俄羅斯空襲烏克蘭援助中心，澤倫斯基：開戰以來最致命之一", "why": "冬季能源設施受損會影響歐洲天然氣與和談進度。"}, {"at": "11/2–11/6 週", "domain": "能源與原物料", "source": {"label": "The Gold Weekly（二手，數字待核）", "url": "https://thegoldinvestor.substack.com/p/the-gold-weekly-2-november-7th-2026"}, "summary": "中東降溫談判壓低油價；金價週收約 4,069 美元。", "title": "油價上週跌約 8%，黃金守在 4,000 美元上方", "why": "油價回落對通膨預期有幫助，剛好撞上 CPI 週。"}, {"at": "週收 11/9 08:00 台北", "domain": "加密貨幣", "source": {"label": "24/7 Wall St.", "url": "https://247wallst.com/investing/cryptocurrency/2026/11/08/bitcoin-is-heading-for-a-fifth-straight-losing-week-what-followed-the-last-time-it-lost-five-in-a-row/"}, "summary": "週開盤約 78,232 美元，週日在 75,800 附近；ETF 上週淨流出 12.8 億美元。", "title": "BTC 可能連續第五週收黑，2017 年以來只發生過兩次", "why": "連續收黑的週數記錄本身就是市場氣氛的度量。"}], "id": "2026-11-09"}}</script><!--/snap-->
+<script id="snap" type="application/json">{"updatedAt": "11/09 13:18 台北", "posts": [{"body": "波克夏這季花了 96 億美元買回自家股票，比上一季的 45 億多了一倍。同一季，它對外面的股票還是小幅淨賣出，過去 16 季裡有 15 季都是賣比買多。\n\n這是 Abel 接手後第一次大手筆動用現金，選的標的是波克夏自己，價格大約 1.4 倍淨值。帳上 3,500 億美元以上的現金不拿去買別人，某種程度也算是一種表態：他眼中市場上的股票，沒有比自家便宜。", "checkedAt": "11/9 10:40 台北", "comment": "想知道波克夏這季到底賣了哪些股票，要等 11/16 的 13F 申報才看得到。", "createdAt": "2026-11-09T02:40:00Z", "date": "2026-11-09", "domain": "富豪與商業人物", "pick": "備選B", "publishAt": "11/9 晚上或 11/10 午間", "reason": "跟交易無關但很有話題：巴菲特接班人的第一個大動作，可以聊「什麼時候該買自己」。", "score": {"credibility": 5, "discussion": 4, "importance": 4, "timeliness": 4, "total": 21, "value": 4}, "slot": "主文", "sources": [{"label": "CNBC：Berkshire Q3 買回加倍（11/7）", "url": "https://www.cnbc.com/2026/11/07/berkshire-hathaway-q3-2026-earnings-buybacks.html"}, {"label": "Forbes：Q3 分析與 1.4 倍淨值（11/7）", "url": "https://www.forbes.com/sites/bill_stone/2026/11/07/berkshire-hathaway-q3-earnings-miss-on-insurance-not-on-strategy/"}, {"label": "BigGo：現金 3,774 億與淨賣連續紀錄", "url": "https://finance.biggo.com/news/4385374b-86fb-4e57-b516-4f101d6100c0"}], "status": "待審", "title": "波克夏花 96 億買自己，對外面的股票還在賣", "verify": {"eventDate": "2026/11/7（週六公布 Q3 財報）", "facts": "Q3 買回約 96 億美元（Q2 約 45 億）；對外持股淨賣約 4.26 億美元，16 季中第 15 季淨賣；不含鐵路與公用事業現金約 3,523 億美元；營業利益降 5.8%。", "opinion": "「一種表態：市場上的股票沒有比自家便宜」為作者解讀，波克夏未如此表示。", "status": "可發布", "unconfirmed": ["「約 1.4 倍淨值」來自 Forbes 估算，未對 10-Q 原文", "13F 申報日 11/16 依 Forbes，未對 SEC 行事曆"], "updatedAt": "11/7 CNBC、Forbes"}, "id": "2026-11-09-berkshire-buyback"}, {"body": "BTC 週線剛收完，連續第五週收黑。今天亞洲盤一度跌破 7.5 萬美元，離歷史高點回落了約四成。\n\n連跌這麼久，很多人難免會想：「應該跌夠了吧？」\n\n回頭看歷史，2022 年那波連跌結束後，接下來四週又從 2.9 萬跌到 2.1 萬；今年 3 月結束的那波，四週後幾乎原地踏步，6 月又跌到近一年低點。\n\n連跌幾週，真的不能直接當成見底訊號。與其猜跌夠了沒，不如先觀察週線能不能形成更高的低點。", "checkedAt": "11/9 10:30 台北", "comment": "上週現貨 ETF 淨流出 12.8 億美元。2022 年那次還沒有現貨 ETF，拿來比較時要記得這個差別。", "createdAt": "2026-11-09T02:30:00Z", "date": "2026-11-09", "domain": "加密貨幣", "doubts": ["週線正式收盤價未取得，依 11/9 亞洲盤約 74,500 美元判斷已低於週開盤 78,232，文中未寫收盤價", "「2017 年以來只發生過兩次」查證後原文並無此說法，只提到最近兩次，已不使用"], "pick": "備選A", "publishAt": "11/9", "reason": "加密市場結構：用最近兩次連跌的後續，破解「跌夠久就該反彈」的直覺。", "score": {"credibility": 4, "discussion": 4, "importance": 3, "timeliness": 5, "total": 21, "value": 5}, "slot": "主文", "sources": [{"label": "24/7 Wall St.：過去兩次連跌五週以上的後續（11/8）", "url": "https://247wallst.com/investing/cryptocurrency/2026/11/08/bitcoin-is-heading-for-a-fifth-straight-losing-week-what-followed-the-last-time-it-lost-five-in-a-row/"}, {"label": "Investing.com Live：BTC 亞洲盤跌破 7.5 萬（11/9）", "url": "https://investinglive.com/cryptocurrency/bitcoin-continues-to-trade-heavily-under-74-600-risk-mood-turns-wary/"}, {"label": "Farside BTC ETF 流向", "url": "https://farside.co.uk/btc/"}], "status": "待審", "title": "BTC 連續第五週收黑：連跌週數不太能拿來抓底", "verify": {"eventDate": "週線收盤 2026/11/9 08:00 台北", "facts": "2022/5/29 約 29,446 → 6/26 約 21,029；2026/3/1 約 65,769 → 3/29 約 65,957，6/30 收 58,566 為一年最低；歷史高點 126,080。", "opinion": "「連跌週數不能當見底訊號」「觀察更高的低點」為作者觀點。", "status": "可發布", "unconfirmed": ["週線正式收盤價未取得，依亞洲盤約 74,500 判斷低於週開盤 78,232；文中未寫收盤價"], "updatedAt": "11/9 亞洲盤（Investing.com Live）"}, "id": "2026-11-09-btc-five-week-streak"}, {"body": "Nvidia 董事會週日宣布，由獨立董事帶外部律師調查黃仁勳。起因是報導指他遭外國情報單位鎖定，他也在員工信裡承認了婚外情。董事會說，沒有理由認為國安或公司機密外洩。\n\n時間點很尷尬，財報 11/17 就要公布，上週晶片股才剛重摔。黃仁勳 1993 年創辦公司帶到現在，市場對 Nvidia 的信心，有一部分是對他的信心。這種風險平常很少人算，調查出結果前，只能各自猜要打幾折。", "checkedAt": "11/9 08:55 台北", "comment": "董事會找的是獨立董事加外部律師，這算比較正式的做法，結果出來前，公開的細節大概不會太多。", "createdAt": "2026-11-09T00:55:00Z", "date": "2026-11-09", "domain": "AI 產業", "doubts": ["「被外國情報單位鎖定」是報導與政策制定者的指控，NBC 表示尚未證實；文中寫成「報導指」", "美股 11/9 開盤前無股價反應資料，文中未提股價"], "pick": "首選", "publishAt": "11/9 上午或美股開盤前（21:00 前）", "reason": "財報前九天、全球市值最大公司之一的創辦人風險，時效與討論度最高。", "score": {"credibility": 4, "discussion": 5, "importance": 5, "timeliness": 5, "total": 23, "value": 4}, "slot": "主文", "sources": [{"label": "Nvidia 董事會聲明", "url": "https://nvidianews.nvidia.com/news/statement-from-nvidia-board-of-directors"}, {"label": "CNBC：黃仁勳員工信與董事會聲明（11/8）", "url": "https://www.cnbc.com/2026/11/08/nvidia-jensen-huang-email-board-of-directors-statement.html"}, {"label": "CNN：Nvidia 啟動調查（11/8）", "url": "https://www.cnn.com/2026/11/08/business/nvidia-investigation-ceo-jensen-huang"}, {"label": "NBC News：未證實情報指控（11/8）", "url": "https://www.nbcnews.com/tech/tech-news/nvidia-ceo-jensen-huang-investigation-rcna608148"}, {"label": "Schwab：11/5 晶片股下跌", "url": "https://www.schwab.com/learn/story/market-volatility"}], "status": "已發布", "title": "Nvidia 調查黃仁勳：財報前九天的創辦人風險", "verify": {"eventDate": "2026/11/8（美東週日）", "facts": "董事會成立獨立董事委員會加外部律師調查；黃仁勳員工信承認婚外情；董事會稱無理由認為國安或機密外洩；財報 11/17。", "opinion": "「市場信心有一部分是對他的信心」「打幾折」為作者觀點。", "status": "可發布", "unconfirmed": ["「遭外國情報單位鎖定」是報導與政策制定者的指控，NBC 表示尚未證實（文中已寫成「報導指」）", "股價反應需等美股 11/9 開盤"], "updatedAt": "11/8 16:50 ET（CNBC 全文刊登）"}, "id": "2026-11-09-nvidia-ceo-probe"}, {"body": "週二晚上 9:30 的 CPI 有點怪。去年 10 月政府停擺沒收到物價，這次整體跟核心都不給年增率，只有月增。偏偏這又是 12 月 Fed 開會前最後一份 CPI。\n\n所以重點就看核心月增。0.3% 換算一年大約 3.7%，0.2% 大約 2.4%。利率期貨押的升息機率已經七成以上，數字偏熱市場不太意外，真的冷下來反而比較容易讓行情動起來。", "category": "總經時事", "chart": "月增率換算年化對照卡（0.2%→2.4%、0.3%→3.7%、0.4%→4.9%），旁邊放 9 月 CPI 拆解：整體年增 3.7%、核心 2.6%、汽油 34.2%。來源：BLS CPI 新聞稿；年化以 (1+m)^12−1 計算。", "checkedAt": "11/9 01:20 台北（改寫 11/9）", "comment": "汽油、新車、二手車這幾項還是有年增率，想知道物價壓力從哪來，可以先看這三項。", "createdAt": "2026-11-08T17:30:00Z", "date": "2026-11-09", "domain": "全球經濟與央行", "doubts": ["12 月升息隱含機率各家不一（65%／77%／80%），讀取時間與來源不同，文章寫「七成以上」", "核心 CPI 共識 0.2% 與 0.3% 並存，文章寫成區間"], "headlines": [{"asof": "11/8 20:20 台北，週收 11/9 08:00", "text": "BTC 測試 50 週均線（約 $75,562），週線若收在 $78,239 下方即連續第五週收黑"}, {"asof": "11/2–11/6，Farside", "text": "現貨 BTC ETF 上週淨流出約 12.8 億美元，IBIT 約 12.1 億美元"}, {"asof": "BLS FAQ，頁面更新 2026/9/16", "text": "10 月 CPI 11/10 21:30 公布，整體與核心不公布年增率"}], "publishAt": "11/9 20:00–21:30", "slot": "預熱", "sources": [{"label": "BLS：2025 停擺對 CPI 影響 FAQ", "url": "https://www.bls.gov/cpi/additional-resources/2025-federal-government-shutdown-impact-cpi-faq.htm"}, {"label": "StockTitan：10 月 CPI 預覽（11/6）", "url": "https://www.stocktitan.net/articles/october-2026-cpi-preview-no-yearly-rate"}, {"label": "BigGo：CPI 共識（11/7）", "url": "https://finance.biggo.com/news/9e1d0a9b-b32c-4bf1-b265-11480691d264"}, {"label": "24/7 Wall St.：FedWatch 76.8%", "url": "https://247wallst.com/investing/2026/11/07/odds-of-a-december-rate-hike-jump-to-77-after-a-blowout-jobs-report/"}, {"label": "Farside BTC ETF 流向", "url": "https://farside.co.uk/btc/"}, {"label": "Stocktwits：BTC 週線與 50 週均線", "url": "https://stocktwits.com/news-articles/markets/cryptocurrency/bitcoin-slips-toward-week-moving-average-weekly-close-hangs-balance/cNGVKPER9Ig"}], "status": "待審", "title": "這次 CPI 沒有年增率，只看核心月增", "id": "2026-11-09-preheat-cpi"}], "events": [{"at": "2026-11-10T21:30:00+08:00", "detail": "前值：整體月增 0.6%、核心 0.3%｜共識：整體約 0.3%、核心 0.2–0.3%｜整體與核心不公布年增率", "impact": "high", "name": "美國 10 月 CPI", "preheat": "11/9（一）20:00–21:30 發布；11/10 17:47 複查共識", "status": "confirmed", "id": "2026-11-10-cpi"}, {"at": "2026-11-11T22:30:00+08:00", "detail": "依往年慣例債市全天休市（SIFMA 建議），股市正常交易；今年安排尚未查證", "impact": "low", "name": "美國退伍軍人節：美股 22:30 照常開盤、債市休市", "status": "tbc", "id": "2026-11-11-veterans"}, {"at": "2026-11-12T21:30:00+08:00", "detail": "前值約 18.9 萬，預估 19.4–19.5 萬；有來源列 11/11", "impact": "mid", "name": "初領失業金", "status": "tbc", "id": "2026-11-12-claims"}, {"at": "2026-11-13T21:30:00+08:00", "detail": "共識月增約 0.4%；前值說法不一，暫不引用", "impact": "high", "name": "美國 10 月 PPI", "preheat": "11/12（四）20:00 前後", "status": "tbc", "id": "2026-11-13-ppi"}, {"at": "2026-11-16T21:30:00+08:00", "impact": "low", "name": "紐約州製造業指數", "status": "tbc", "id": "2026-11-16-empire"}, {"at": "2026-11-17T21:30:00+08:00", "detail": "依 Census 9/12 排程，可能變動", "impact": "mid", "name": "美國 10 月零售銷售", "status": "tbc", "id": "2026-11-17-retail"}, {"at": "2026-11-18T06:00:00+08:00", "detail": "美東 11/17 盤後；公司 10/28 公告，未讀到 IR 原文", "impact": "high", "name": "Nvidia Q3 FY27 財報電話會議", "preheat": "11/17（二）18:00 前後", "status": "tbc", "id": "2026-11-18-nvda"}, {"at": "2026-11-19T21:30:00+08:00", "impact": "mid", "name": "初領失業金", "status": "tbc", "id": "2026-11-19-claims"}, {"at": "2026-11-19T03:00:00+08:00", "detail": "Fed 官方行事曆：11/18 2:00 p.m. ET", "impact": "high", "name": "FOMC 10 月會議紀要", "preheat": "11/18（三）18:00 前後", "status": "confirmed", "id": "2026-11-19-minutes"}, {"at": "2026-12-04T21:30:00+08:00", "detail": "僅一個來源列出日期，待 BLS 確認", "impact": "high", "name": "美國 11 月非農", "status": "tbc", "id": "2026-12-04-nfp"}, {"at": "2026-12-10T21:30:00+08:00", "detail": "晚於 FOMC 決議一天", "impact": "high", "name": "美國 11 月 CPI", "status": "tbc", "id": "2026-12-10-cpi"}, {"at": "2026-12-10T03:00:00+08:00", "detail": "12/8–9 會議，現行 3.75%–4.00%", "impact": "high", "name": "FOMC 利率決議", "status": "confirmed", "id": "2026-12-10-fomc"}], "brief": {"date": "2026-11-09", "items": [{"at": "11/8（美東週日）", "domain": "AI 產業", "picked": true, "source": {"label": "Nvidia 董事會聲明", "url": "https://nvidianews.nvidia.com/news/statement-from-nvidia-board-of-directors"}, "summary": "報導指黃仁勳遭外國情報單位鎖定，他承認婚外情；董事會稱無理由認為機密外洩。", "title": "Nvidia 董事會啟動對黃仁勳的獨立調查", "why": "財報 11/17 前九天、AI 晶片股剛大跌，創辦人風險浮上檯面。"}, {"at": "11/7（週六公布）", "backup": true, "domain": "富豪與商業人物", "source": {"label": "CNBC", "url": "https://www.cnbc.com/2026/11/07/berkshire-hathaway-q3-2026-earnings-buybacks.html"}, "summary": "營業利益降 5.8%，對外持股仍小幅淨賣出（16 季中第 15 季），現金含美債約 3,774 億美元。", "title": "波克夏 Q3 買回自家股票 96 億美元，創單季紀錄", "why": "Abel 接班後把錢拿去買自己，對外頭的股票仍不動手。"}, {"at": "豁免約 11/9–10 到期", "backup": true, "domain": "國際貿易", "source": {"label": "Venn Trade Weekly（二手，待對 USTR 公告）", "url": "https://vennstrategies.substack.com/p/venn-trade-weekly-november-3-2026"}, "summary": "301 條款豁免若未展延，機械、醫療器材、太陽能設備關稅恢復；中方鎵鍗出口暫停到 11/27。", "title": "美中：178 項中國商品關稅豁免到期，川習 11/18 深圳 APEC 會面", "why": "幾個期限疊在川習會前，可以看出雙方籌碼。"}, {"at": "11/9 起", "domain": "美國政治", "source": {"label": "STAT News", "url": "https://www.statnews.com/2026/11/04/lame-duck-session-congress-health-policy-aca-subsidies-medicaid-funding/"}, "summary": "要決定通過綜合撥款或再延一次，還有醫療補助與債務上限議題。", "title": "國會跳鴨期開議，12/11 政府撥款到期", "why": "民主黨明年接掌國會，談判籌碼變了，停擺風險重新浮現。"}, {"at": "11/8", "domain": "AI 產業", "source": {"label": "BusinessDay（轉載 Reuters）", "url": "https://www.businessday.co.za/world/international-companies/2026-11-08-openai-forges-ahead-with-data-centres-amid-political-scrutiny/"}, "summary": "Sarah Friar 接受 Reuters/CNBC 訪問，稱將繼續推進資料中心計畫。", "title": "OpenAI 財務長：美國資料中心擴張不因期中選舉放慢", "why": "民主黨勝選後市場擔心 AI 監管收緊，這是業者第一個表態。"}, {"at": "11/7–8", "domain": "國際政治與地緣", "source": {"label": "CNN World", "url": "https://www.cnn.com/world"}, "summary": "基輔地區基礎設施也遭攻擊。", "title": "俄羅斯空襲烏克蘭援助中心，澤倫斯基：開戰以來最致命之一", "why": "冬季能源設施受損會影響歐洲天然氣與和談進度。"}, {"at": "11/2–11/6 週", "domain": "能源與原物料", "source": {"label": "The Gold Weekly（二手，數字待核）", "url": "https://thegoldinvestor.substack.com/p/the-gold-weekly-2-november-7th-2026"}, "summary": "中東降溫談判壓低油價；金價週收約 4,069 美元。", "title": "油價上週跌約 8%，黃金守在 4,000 美元上方", "why": "油價回落對通膨預期有幫助，剛好撞上 CPI 週。"}, {"at": "週收 11/9 08:00 台北", "domain": "加密貨幣", "source": {"label": "24/7 Wall St.", "url": "https://247wallst.com/investing/cryptocurrency/2026/11/08/bitcoin-is-heading-for-a-fifth-straight-losing-week-what-followed-the-last-time-it-lost-five-in-a-row/"}, "summary": "週開盤約 78,232 美元，週日在 75,800 附近；ETF 上週淨流出 12.8 億美元。", "title": "BTC 可能連續第五週收黑，2017 年以來只發生過兩次", "why": "連續收黑的週數記錄本身就是市場氣氛的度量。"}], "id": "2026-11-09"}}</script><!--/snap-->
 <script>
 const TZ = "Asia/Taipei";
 const $ = id => document.getElementById(id);
@@ -156,55 +171,91 @@ let posts = [], events = [], selected = null, db = null;
 
 function toast(msg){ const t=$("toast"); t.textContent=msg; t.hidden=false; clearTimeout(toast.h); toast.h=setTimeout(()=>t.hidden=true,2200); }
 function charCount(s){ return [...String(s||"").replace(/\s/g,"")].length; }
-function statusChip(s){ const c = s==="已發布"?"ok":(s==="已核可"?"":"wait"); return `<span class="chip ${c}">${esc(s||"待審")}</span>`; }
+function statusChip(s){ if(s==="已核可") s="已審核"; const c = s==="已發布"?"ok":(s==="已審核"?"":"wait"); return `<span class="chip ${c}">${esc(s||"待審")}</span>`; }
 
 function tick(){
   $("now").textContent = fmt(Date.now(), {month:"2-digit",day:"2-digit",weekday:"short",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
   renderNext();
 }
 
-function renderPost(){
-  const el = $("post");
-  const p = posts.find(x => x.id === selected) || posts[0];
-  if(!p){ el.innerHTML = `<div class="empty">還沒有文章。排程任務每天 08:47 與 17:47 會把審稿完成的文章寫進這裡。</div>`; return; }
-  const n = charCount(p.body), bad = n < 100 || n > 160;
-  const heads = (p.headlines||[]).map((h,i)=>`<li><span class="n">0${i+1}</span><span>${esc(h.text)}<small>${esc(h.asof||"")}</small></span></li>`).join("");
+const PICK_ORDER = {"首選":0,"備選A":1,"備選B":2};
+const PICK_LABEL = {"首選":"① 今日首選","備選A":"② 今日備選 A","備選B":"③ 今日備選 B"};
+function card(p, label){
+  const n = charCount(p.body), bad = n < 100 || n > 180;
+  const v = p.verify || {}, vs = v.status || "待確認";
+  const vc = vs==="可發布" ? "ok" : (vs==="不可發布" ? "bad" : "wait");
+  const sc = p.score;
+  const unc = (v.unconfirmed || p.doubts || []).map(d=>`<li>${esc(d)}</li>`).join("");
   const srcs = (p.sources||[]).map(s=>`<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label||s.url)}</a></li>`).join("");
-  const doubts = (p.doubts||[]).map(d=>`<li>${esc(d)}</li>`).join("");
-  el.innerHTML = `
+  const scoreTxt = sc ? `時效 ${sc.timeliness}・重要 ${sc.importance}・討論 ${sc.discussion}・內容 ${sc.value}・可信 ${sc.credibility}` : "";
+  return `<article class="panel post" data-id="${esc(p.id)}">
     <div class="post-head">
-      <span class="chip">${esc(p.slot||"文章")}</span>${(p.domain||p.category)?`<span class="chip">${esc(p.domain||p.category)}</span>`:""}${statusChip(p.status)}
+      ${label?`<span class="chip lead">${esc(label)}</span>`:`<span class="chip">${esc(p.slot||"文章")}</span>`}${(p.domain||p.category)?`<span class="chip">${esc(p.domain||p.category)}</span>`:""}<span class="chip ${vc}">${esc(vs)}</span>${statusChip(p.status)}
+      ${sc?`<span class="score">${sc.total}/25</span>`:""}
       <span class="meta">${esc(p.date||"")}${p.publishAt?` · 建議發布 ${esc(p.publishAt)}`:""}</span>
       <h2>${esc(p.title||"")}</h2>
     </div>
-    <div class="body" id="body">${esc(p.body)}</div>
+    ${vs!=="可發布"?`<p class="note" style="color:var(--seal)">關鍵資訊尚未完全確認，發布前請先看下方「尚未確認」。</p>`:""}
+    <div class="body">${esc(p.body)}</div>
     <div class="row">
-      <button class="primary" id="copy">複製文章</button>
-      <button id="copyc">複製留言</button>
-      <span class="count ${bad?"bad":""}">${n} 字（不含空白）${bad?(n>180?"・超過上限 180":"・建議 100–160"):""}</span>
+      <button class="primary" data-act="copy">複製文章</button>
+      <button data-act="copyc"${p.comment?"":" disabled"}>複製留言</button>
+      <span class="count ${bad?"bad":""}">${n} 字${bad?(n>180?"・超過 180":"・少於 100"):""}</span>
       <span style="flex:1"></span>
-      <button data-s="已核可">標記已核可</button>
-      <button data-s="已發布">標記已發布</button>
+      <button data-act="status" data-s="已審核">標記已審核</button>
+      <button data-act="status" data-s="已發布">標記已發布</button>
     </div>
-    <div class="extra">
-      ${heads?`<div><h3>今日重點</h3><ul class="headlines">${heads}</ul></div>`:""}
-      ${p.comment?`<div><h3>留言區補充</h3><p>${esc(p.comment)}</p></div>`:""}
-      ${p.chart?`<div><h3>圖片建議</h3><p>${esc(p.chart)}</p></div>`:""}
-      ${doubts?`<div><h3>仍有疑慮</h3><ul>${doubts}</ul></div>`:""}
-      ${srcs?`<details><summary><b>資料來源（${p.sources.length}）</b>${p.checkedAt?` <span class="meta">查證 ${esc(p.checkedAt)}</span>`:""}</summary><ul>${srcs}</ul></details>`:""}
-    </div>`;
-  $("copy").onclick = () => copy(p.body);
-  $("copyc").onclick = () => copy(p.comment||"");
-  el.querySelectorAll("button[data-s]").forEach(b => b.onclick = () => setStatus(p, b.dataset.s, b));
+    <details class="vbox"><summary>留言、查證與來源</summary>
+      <dl class="vgrid">
+        ${p.comment?`<dt>留言補充</dt><dd>${esc(p.comment)}</dd>`:""}
+        ${p.reason?`<dt>選題理由</dt><dd>${esc(p.reason)}</dd>`:""}
+        ${v.eventDate?`<dt>事件日期</dt><dd>${esc(v.eventDate)}</dd>`:""}
+        ${v.updatedAt?`<dt>最新資訊</dt><dd>${esc(v.updatedAt)}</dd>`:""}
+        ${p.checkedAt?`<dt>查證時間</dt><dd>${esc(p.checkedAt)}</dd>`:""}
+        ${scoreTxt?`<dt>評分</dt><dd class="score">${scoreTxt}</dd>`:""}
+        ${v.facts?`<dt>已確認</dt><dd>${esc(v.facts)}</dd>`:""}
+        ${v.opinion?`<dt>評論推測</dt><dd>${esc(v.opinion)}</dd>`:""}
+      </dl>
+      ${unc?`<div><b>尚未確認</b><ul>${unc}</ul></div>`:""}
+      ${srcs?`<div><b>原始來源</b><ul>${srcs}</ul></div>`:""}
+    </details>
+  </article>`;
 }
 
-async function copy(text){
+function renderPost(){
+  const el = $("post");
+  const picked = posts.filter(p => p.pick && PICK_ORDER[p.pick] !== undefined);
+  let day = picked.map(p=>p.date||"").sort().pop();
+  let list = picked.filter(p => p.date === day).sort((a,b)=>PICK_ORDER[a.pick]-PICK_ORDER[b.pick]);
+  if(!list.length){
+    const mains = posts.filter(p => p.slot==="主文");
+    day = mains[0]?.date; list = mains.filter(p => p.date === day).slice(0,3);
+  }
+  $("pickDate").textContent = day || "";
+  el.innerHTML = list.length ? list.map(p => card(p, PICK_LABEL[p.pick])).join("")
+    : `<div class="panel empty">還沒有文章。每天 08:47 的排程會放上三篇推薦。</div>`;
+  const pre = posts.filter(p => p.slot==="預熱" || p.slot==="公布後").slice(0,3);
+  $("preheat").innerHTML = pre.length ? pre.map(p => card(p)).join("")
+    : `<div class="panel empty">近期沒有事件預熱文章。</div>`;
+  const d = $("detail"), sp = posts.find(x => x.id === selected);
+  d.hidden = !sp; d.innerHTML = sp ? card(sp) : "";
+}
+
+document.addEventListener("click", e => {
+  const b = e.target.closest("button[data-act]"); if(!b) return;
+  const p = posts.find(x => x.id === b.closest("[data-id]")?.dataset.id); if(!p) return;
+  if(b.dataset.act==="copy") copy(p.body, b);
+  else if(b.dataset.act==="copyc") copy(p.comment||"", b);
+  else setStatus(p, b.dataset.s, b);
+});
+
+async function copy(text, btn){
   try{ await navigator.clipboard.writeText(text); toast("已複製"); }
-  catch{ const r=document.createRange(); r.selectNodeContents($("body")); const s=getSelection(); s.removeAllRanges(); s.addRange(r); toast("已選取文字，請按複製"); }
+  catch{ const t = btn?.closest("article")?.querySelector(".body"); if(t){ const r=document.createRange(); r.selectNodeContents(t); const s=getSelection(); s.removeAllRanges(); s.addRange(r); } toast("已選取文字，請按複製"); }
 }
 
 async function setStatus(p, s, btn){
-  if(!db){ toast("目前無法寫入"); return; }
+  if(!db){ toast("只有站長可以修改狀態"); return; }
   btn.disabled = true;
   try{ await db.doc("posts/"+p.id).update({status:s}); toast("已標記為「"+s+"」"); }
   catch(e){ toast(e?.code==="invalid_argument" ? "你沒有修改權限" : "更新失敗，請稍後再試"); }
@@ -219,10 +270,10 @@ function renderArchive(){
   const ks = Object.entries(cnt).sort((a,b) => b[1]-a[1]);
   const mix = ks.length ? `<div class="mix" title="最近 20 篇文章的領域分布">${ks.map(([k,n])=>{const pct=Math.round(n/recent.length*100);
     return `<div><span>${esc(k)}</span><span class="bar"><i style="width:${pct}%"></i></span><span class="v">${n} 篇・${pct}%</span></div>`}).join("")}</div>` : "";
-  el.innerHTML = mix + posts.map(p=>`<button class="arow ${p.id===(selected||posts[0].id)?"on":""}" data-id="${esc(p.id)}">
+  el.innerHTML = mix + posts.map(p=>`<button class="arow ${p.id===selected?"on":""}" data-id="${esc(p.id)}">
       <span class="meta">${esc(p.date||"")}</span><span class="sl chip">${esc(p.slot||"")}</span>
       <span class="ti">${esc(p.title||"")}</span>${statusChip(p.status)}</button>`).join("");
-  el.querySelectorAll(".arow").forEach(b => b.onclick = () => { selected=b.dataset.id; renderPost(); renderArchive(); window.scrollTo({top:0,behavior:"smooth"}); });
+  el.querySelectorAll(".arow").forEach(b => b.onclick = () => { selected = selected===b.dataset.id ? null : b.dataset.id; renderPost(); renderArchive(); if(selected) $("detail").scrollIntoView({behavior:"smooth",block:"start"}); });
 }
 
 function renderCal(){
@@ -260,7 +311,7 @@ function renderBrief(b){
   if(!b){ el.innerHTML = `<div class="empty">每天早上會把當天的 8 則候選新聞放在這裡。</div>`; return; }
   $("briefDate").textContent = b.date || "";
   el.innerHTML = (b.items||[]).map(it=>`<div class="bi ${it.picked?"pick":""}">
-    <div class="row">${it.domain?`<span class="chip">${esc(it.domain)}</span>`:""}${it.picked?`<span class="chip ok">已選為主文</span>`:""}${it.backup?`<span class="chip wait">備用</span>`:""}<span class="meta">${esc(it.at||"")}</span></div>
+    <div class="row">${it.domain?`<span class="chip">${esc(it.domain)}</span>`:""}${it.picked?`<span class="chip ok">已選為主文</span>`:""}${it.backup?`<span class="chip wait">備用</span>`:""}${it.score?`<span class="score">${esc(it.score.total)}/25</span>`:""}<span class="meta">${esc(it.at||"")}</span></div>
     <h4>${esc(it.title)}</h4><p>${esc(it.summary||"")}</p>${it.why?`<p class="why">${esc(it.why)}</p>`:""}
     ${it.source?.url?`<a href="${esc(it.source.url)}" target="_blank" rel="noopener">${esc(it.source.label||it.source.url)}</a>`:""}</div>`).join("");
 }
