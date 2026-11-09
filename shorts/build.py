@@ -280,7 +280,7 @@ def src2screen(x, y):
 MARKS = P.get('MARKS', [])
 for m in MARKS: m['img'] = text_img(m['label'], 40, GOLD, GOLD, stroke=6) if m.get('label') else None
 def draw_marks(im):
-    if 'src' not in CUR: return
+    if 'src' not in CUR or CUR.get('ch') == 'hook': return   # 開頭鉤子不放標註和重點卡
     st = CUR['src']; lay = Image.new('RGBA', (W, H)); d = ImageDraw.Draw(lay)
     for m in MARKS:
         if not (m['t0'] <= st <= m['t1'] + .25): continue
@@ -304,7 +304,7 @@ def draw_marks(im):
 KEYS = P.get('KEYS', [])
 for k in KEYS: k['imgs'] = [(t_, text_img(tx, 44, (245, 245, 245), GOLD, stroke=0)) for t_, tx in k['lines']]
 def draw_keys(im):
-    if 'src' not in CUR: return
+    if 'src' not in CUR or CUR.get('ch') == 'hook': return   # 開頭鉤子不放標註和重點卡
     st = CUR['src']
     for k in KEYS:
         if not (k['t0'] <= st <= k['t1'] + .3): continue
@@ -420,7 +420,7 @@ for c in clips:
         z = z0 + (z1 - z0) * (ease(p * 3) if c.get('punch') else p)
         t = c['t0'] + i / FPS
         last = zoom_crop(fr, z, fx, fy)
-        CUR.update(src=src_t, z=z, fx=fx, fy=fy)
+        CUR.update(src=src_t, z=z, fx=fx, fy=fy, ch=c['chapter'])
         enc.stdin.write(compose(last, t, c['chapter'], ch_start).tobytes())
     print(f"  {c['t0']:5.1f}s  {c.get('caps', [[0, '']])[0][1]}")
 
