@@ -16,7 +16,7 @@ description: 把一支教學錄影（例如 TradingView 畫圖講解）剪成精
 2. 轉逐字稿：`pip install faster-whisper`，用 `medium` 模型、`language="zh"`、`word_timestamps=True`。
    faster-whisper 的 `av` 版本可能不相容，要先用 ffmpeg 轉成 16k 的 wav，再把 numpy 陣列傳進去，不要直接傳檔名。
 3. 抽幾格畫面（ffmpeg `tile`）看圖表區在哪裡，決定 `CROP` / `CROP_LANDSCAPE`，寬高都要是偶數。每支錄影的版面可能不同（例如上方多了瀏覽器網址列），要用全解析度畫格加格線重新量。
-4. 挑段落寫進 `CLIPS`：先放一句鉤子（最痛的那句話），再照章節排。每段寫 `s`、`e`（原片秒數，程式會自動對齊到最安靜的地方）、`chapter`、`caps`（字幕時間＋文字）、`zoom`（起始倍率、結束倍率、中心點 x、y 比例），以及可選的 `boom`（衝擊音效＋白閃）和 `punch`（快速推鏡）。
+4. 挑段落寫進 `CLIPS`：先放一句鉤子，再照章節排。鉤子要短（約 3 秒、一句話），挑最有張力或最有動作的那句（例如「跌破中樞，可以進場做空」「你是抄在半山腰」），不要拿一大段解釋當開頭；用過的那句正文就不要再出現。每段寫 `s`、`e`（原片秒數，程式會自動對齊到最安靜的地方）、`chapter`、`caps`（字幕時間＋文字）、`zoom`（起始倍率、結束倍率、中心點 x、y 比例），以及可選的 `boom`（衝擊音效＋白閃）和 `punch`（快速推鏡）。
 5. 字幕要人工校正 Whisper 的錯字，例如「低類→第一類」「長頓→纏論」「半山藥→半山腰」「超率→抄底」「MSE→MACD」。
 6. 執行 build.py，抽格檢查字幕有沒有缺字、有沒有擋到重點，然後用 SendUserFile 傳 final.mp4。
 7. 新的 project 檔 commit 並 push。
