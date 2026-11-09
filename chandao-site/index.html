@@ -1,0 +1,294 @@
+<title>纏道漫長 情報台</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;900&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a trading-desk bulletin. Left column = today's ready-to-post article; right rail = countdown + 14-day calendar; archive below. */
+:root{
+  --bg:#eef0f3; --surface:#ffffff; --ink:#18202c; --muted:#5b6575; --line:#d5dae2;
+  --accent:#23406e; --accent-soft:#e3e9f4; --seal:#b3261e;
+  --ok:#1f7a4d; --ok-soft:#e1f2e8; --warn:#9a6200; --warn-soft:#fbefd6;
+  --display:"Noto Serif TC","Songti TC",serif;
+  --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#10141b; --surface:#171d27; --ink:#e6e9ef; --muted:#97a1b3; --line:#2a3342;
+  --accent:#8fb0e6; --accent-soft:#1f2b40; --seal:#ef6a5e;
+  --ok:#5cc58f; --ok-soft:#163325; --warn:#e3b257; --warn-soft:#382a10; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10141b; --surface:#171d27; --ink:#e6e9ef; --muted:#97a1b3; --line:#2a3342;
+  --accent:#8fb0e6; --accent-soft:#1f2b40; --seal:#ef6a5e;
+  --ok:#5cc58f; --ok-soft:#163325; --warn:#e3b257; --warn-soft:#382a10; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.7}
+.wrap{max-width:1180px;margin:0 auto;padding-block:28px 64px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:grid;gap:28px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;border-bottom:2px solid var(--ink);padding-bottom:14px}
+.brand{display:flex;align-items:center;gap:14px}
+.seal{width:46px;height:46px;border:2px solid var(--seal);color:var(--seal);display:grid;place-items:center;
+  font-family:var(--display);font-weight:900;font-size:22px;line-height:1;border-radius:4px;transform:rotate(-4deg)}
+h1{font-family:var(--display);font-weight:900;font-size:clamp(26px,4vw,36px);margin:0;letter-spacing:.04em;text-wrap:balance}
+.sub{color:var(--muted);font-size:13px;margin:0}
+.clock{font-family:var(--mono);font-size:13px;color:var(--muted);text-align:right}
+.clock b{color:var(--ink);font-weight:500;font-size:15px}
+.grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}}
+.label{font-size:12px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin:0 0 10px;font-weight:700}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:6px;min-width:0}
+.post{padding:22px 24px;display:grid;gap:16px}
+.post-head{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.post h2{font-family:var(--display);font-weight:900;font-size:22px;margin:0;line-height:1.35;flex-basis:100%;text-wrap:balance}
+.chip{font-size:12px;padding:2px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:700;white-space:nowrap}
+.chip.wait{background:var(--warn-soft);color:var(--warn)}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}
+.meta{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.body{white-space:pre-wrap;font-size:16px;line-height:1.85;padding:16px 18px;border-left:3px solid var(--accent);background:var(--bg);border-radius:0 4px 4px 0;max-width:65ch}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button{font:inherit;font-size:13px;font-weight:700;padding:7px 14px;border-radius:4px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+button:hover{border-color:var(--accent)}
+button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button:disabled{opacity:.5;cursor:default}
+.count{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.count.bad{color:var(--warn)}
+.extra{display:grid;gap:12px}
+.extra h3{font-size:13px;margin:0 0 4px;color:var(--muted);font-weight:700}
+.extra p,.extra ul{margin:0}
+.extra ul{padding-left:18px}
+.extra a{color:var(--accent);word-break:break-all}
+.headlines{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.headlines li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:baseline}
+.headlines .n{font-family:var(--mono);font-size:12px;color:var(--seal)}
+.headlines small{color:var(--muted);font-family:var(--mono);font-size:11px;display:block}
+.next{padding:18px 20px;display:grid;gap:6px;border-top:3px solid var(--seal)}
+.next .name{font-family:var(--display);font-weight:900;font-size:20px}
+.cd{font-family:var(--mono);font-size:30px;font-weight:500;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.cal{padding:6px 0}
+.ev{display:grid;grid-template-columns:62px minmax(0,1fr);gap:10px;padding:10px 18px;border-bottom:1px solid var(--line)}
+.ev:last-child{border-bottom:0}
+.ev .d{font-family:var(--mono);font-size:12px;color:var(--muted);line-height:1.4}
+.ev .d b{display:block;color:var(--ink);font-size:14px;font-weight:500}
+.ev .t{font-weight:700;font-size:14px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.ev .x{font-size:12px;color:var(--muted)}
+.ev.past{opacity:.45}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex:none}
+.dot.high{background:var(--seal)}
+.tbc{font-size:11px;color:var(--warn);font-weight:700}
+.archive{display:grid;gap:0}
+.arow{display:grid;grid-template-columns:110px 78px minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px 18px;border-bottom:1px solid var(--line);cursor:pointer;background:none;border-left:0;border-right:0;border-top:0;border-radius:0;text-align:left;font-weight:400;width:100%}
+.arow:last-child{border-bottom:0}
+.arow.on{background:var(--accent-soft)}
+.arow .ti{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:560px){.arow{grid-template-columns:86px minmax(0,1fr) auto}.arow .sl{display:none}}
+.empty{padding:22px;color:var(--muted)}
+.mix{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 18px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.mix div{display:grid;gap:4px;font-size:13px}
+.mix .bar{height:6px;background:var(--bg);border-radius:3px;position:relative;overflow:hidden}
+.mix .bar i{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:3px}
+.mix .bar b{position:absolute;top:0;bottom:0;width:2px;background:var(--seal)}
+.mix .v{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.brief{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:0}
+.bi{padding:14px 18px;border-bottom:1px solid var(--line);display:grid;gap:4px;min-width:0}
+.bi h4{margin:0;font-size:15px;line-height:1.45}
+.bi p{margin:0;font-size:13px}
+.bi .why{color:var(--muted)}
+.bi a{color:var(--accent);font-size:12px;word-break:break-all}
+.bi.pick{background:var(--accent-soft)}
+.note{font-size:12px;color:var(--muted)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:4px;font-size:13px}
+@media (prefers-reduced-motion:no-preference){.panel{transition:border-color .2s}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="seal" aria-hidden="true">纏</div>
+      <div>
+        <h1>纏道漫長 情報台</h1>
+        <p class="sub">每日晨報 08:47 · 晚間預熱 17:47 · 數據公布後更新｜所有文章待審後才發布</p>
+      </div>
+    </div>
+    <div class="clock">台北時間<br><b id="now">--</b></div>
+  </header>
+
+  <div class="grid">
+    <section aria-labelledby="l-post">
+      <p class="label" id="l-post">今日推薦發布</p>
+      <article class="panel post" id="post">
+        <div class="empty">正在讀取文章…</div>
+      </article>
+    </section>
+
+    <aside style="display:grid;gap:20px;min-width:0" aria-label="事件">
+      <div>
+        <p class="label">下一個重要事件</p>
+        <div class="panel next" id="next"><div class="note">讀取中…</div></div>
+      </div>
+      <div>
+        <p class="label">未來 14 天經濟日曆（台北時間）</p>
+        <div class="panel cal" id="cal"><div class="empty">讀取中…</div></div>
+      </div>
+    </aside>
+  </div>
+
+  <section aria-labelledby="l-brief">
+    <p class="label" id="l-brief">今日全球候選新聞 <span id="briefDate" class="meta"></span></p>
+    <div class="panel brief" id="brief"><div class="empty">讀取中…</div></div>
+  </section>
+
+  <section aria-labelledby="l-arc">
+    <p class="label" id="l-arc">文章存檔</p>
+    <div class="panel archive" id="archive"><div class="empty">讀取中…</div></div>
+  </section>
+  <p class="note" id="sync"></p>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script id="snap" type="application/json">{"updatedAt": "11/09 10:41 台北", "posts": [{"body": "BTC 週線剛收完，連續第五週收黑。今天亞洲盤一度跌破 7.5 萬美元，離歷史高點回落了約四成。\n\n連跌這麼久，很多人難免會想：「應該跌夠了吧？」\n\n回頭看歷史，2022 年那波連跌結束後，接下來四週又從 2.9 萬跌到 2.1 萬；今年 3 月結束的那波，四週後幾乎原地踏步，6 月又跌到近一年低點。\n\n連跌幾週，真的不能直接當成見底訊號。與其猜跌夠了沒，不如先觀察週線能不能形成更高的低點。", "checkedAt": "11/9 10:30 台北", "comment": "上週現貨 ETF 淨流出 12.8 億美元。2022 年那次還沒有現貨 ETF，拿來比較時要記得這個差別。", "createdAt": "2026-11-09T02:30:00Z", "date": "2026-11-09", "domain": "加密貨幣", "doubts": ["週線正式收盤價未取得，依 11/9 亞洲盤約 74,500 美元判斷已低於週開盤 78,232，文中未寫收盤價", "「2017 年以來只發生過兩次」查證後原文並無此說法，只提到最近兩次，已不使用"], "publishAt": "11/9", "slot": "主文", "sources": [{"label": "24/7 Wall St.：過去兩次連跌五週以上的後續（11/8）", "url": "https://247wallst.com/investing/cryptocurrency/2026/11/08/bitcoin-is-heading-for-a-fifth-straight-losing-week-what-followed-the-last-time-it-lost-five-in-a-row/"}, {"label": "Investing.com Live：BTC 亞洲盤跌破 7.5 萬（11/9）", "url": "https://investinglive.com/cryptocurrency/bitcoin-continues-to-trade-heavily-under-74-600-risk-mood-turns-wary/"}, {"label": "Farside BTC ETF 流向", "url": "https://farside.co.uk/btc/"}], "status": "待審", "title": "BTC 連續第五週收黑：連跌週數不太能拿來抓底", "id": "2026-11-09-btc-five-week-streak"}, {"body": "Nvidia 董事會週日宣布，由獨立董事帶外部律師調查黃仁勳。起因是報導指他遭外國情報單位鎖定，他也在員工信裡承認了婚外情。董事會說，沒有理由認為國安或公司機密外洩。\n\n時間點很尷尬，財報 11/17 就要公布，上週晶片股才剛重摔。黃仁勳 1993 年創辦公司帶到現在，市場對 Nvidia 的信心，有一部分是對他的信心。這種風險平常很少人算，調查出結果前，只能各自猜要打幾折。", "checkedAt": "11/9 08:55 台北", "comment": "董事會找的是獨立董事加外部律師，這算比較正式的做法，結果出來前，公開的細節大概不會太多。", "createdAt": "2026-11-09T00:55:00Z", "date": "2026-11-09", "domain": "AI 產業", "doubts": ["「被外國情報單位鎖定」是報導與政策制定者的指控，NBC 表示尚未證實；文中寫成「報導指」", "美股 11/9 開盤前無股價反應資料，文中未提股價"], "publishAt": "11/9 上午或美股開盤前（21:00 前）", "slot": "主文", "sources": [{"label": "Nvidia 董事會聲明", "url": "https://nvidianews.nvidia.com/news/statement-from-nvidia-board-of-directors"}, {"label": "CNBC：黃仁勳員工信與董事會聲明（11/8）", "url": "https://www.cnbc.com/2026/11/08/nvidia-jensen-huang-email-board-of-directors-statement.html"}, {"label": "CNN：Nvidia 啟動調查（11/8）", "url": "https://www.cnn.com/2026/11/08/business/nvidia-investigation-ceo-jensen-huang"}, {"label": "NBC News：未證實情報指控（11/8）", "url": "https://www.nbcnews.com/tech/tech-news/nvidia-ceo-jensen-huang-investigation-rcna608148"}, {"label": "Schwab：11/5 晶片股下跌", "url": "https://www.schwab.com/learn/story/market-volatility"}], "status": "待審", "title": "Nvidia 調查黃仁勳：財報前九天的創辦人風險", "id": "2026-11-09-nvidia-ceo-probe"}, {"body": "週二晚上 9:30 的 CPI 有點怪。去年 10 月政府停擺沒收到物價，這次整體跟核心都不給年增率，只有月增。偏偏這又是 12 月 Fed 開會前最後一份 CPI。\n\n所以重點就看核心月增。0.3% 換算一年大約 3.7%，0.2% 大約 2.4%。利率期貨押的升息機率已經七成以上，數字偏熱市場不太意外，真的冷下來反而比較容易讓行情動起來。", "category": "總經時事", "chart": "月增率換算年化對照卡（0.2%→2.4%、0.3%→3.7%、0.4%→4.9%），旁邊放 9 月 CPI 拆解：整體年增 3.7%、核心 2.6%、汽油 34.2%。來源：BLS CPI 新聞稿；年化以 (1+m)^12−1 計算。", "checkedAt": "11/9 01:20 台北（改寫 11/9）", "comment": "汽油、新車、二手車這幾項還是有年增率，想知道物價壓力從哪來，可以先看這三項。", "createdAt": "2026-11-08T17:30:00Z", "date": "2026-11-09", "domain": "全球經濟與央行", "doubts": ["12 月升息隱含機率各家不一（65%／77%／80%），讀取時間與來源不同，文章寫「七成以上」", "核心 CPI 共識 0.2% 與 0.3% 並存，文章寫成區間"], "headlines": [{"asof": "11/8 20:20 台北，週收 11/9 08:00", "text": "BTC 測試 50 週均線（約 $75,562），週線若收在 $78,239 下方即連續第五週收黑"}, {"asof": "11/2–11/6，Farside", "text": "現貨 BTC ETF 上週淨流出約 12.8 億美元，IBIT 約 12.1 億美元"}, {"asof": "BLS FAQ，頁面更新 2026/9/16", "text": "10 月 CPI 11/10 21:30 公布，整體與核心不公布年增率"}], "publishAt": "11/9 20:00–21:30", "slot": "預熱", "sources": [{"label": "BLS：2025 停擺對 CPI 影響 FAQ", "url": "https://www.bls.gov/cpi/additional-resources/2025-federal-government-shutdown-impact-cpi-faq.htm"}, {"label": "StockTitan：10 月 CPI 預覽（11/6）", "url": "https://www.stocktitan.net/articles/october-2026-cpi-preview-no-yearly-rate"}, {"label": "BigGo：CPI 共識（11/7）", "url": "https://finance.biggo.com/news/9e1d0a9b-b32c-4bf1-b265-11480691d264"}, {"label": "24/7 Wall St.：FedWatch 76.8%", "url": "https://247wallst.com/investing/2026/11/07/odds-of-a-december-rate-hike-jump-to-77-after-a-blowout-jobs-report/"}, {"label": "Farside BTC ETF 流向", "url": "https://farside.co.uk/btc/"}, {"label": "Stocktwits：BTC 週線與 50 週均線", "url": "https://stocktwits.com/news-articles/markets/cryptocurrency/bitcoin-slips-toward-week-moving-average-weekly-close-hangs-balance/cNGVKPER9Ig"}], "status": "待審", "title": "這次 CPI 沒有年增率，只看核心月增", "id": "2026-11-09-preheat-cpi"}], "events": [{"at": "2026-11-10T21:30:00+08:00", "detail": "前值：整體月增 0.6%、核心 0.3%｜共識：整體約 0.3%、核心 0.2–0.3%｜整體與核心不公布年增率", "impact": "high", "name": "美國 10 月 CPI", "preheat": "11/9（一）20:00–21:30 發布；11/10 17:47 複查共識", "status": "confirmed", "id": "2026-11-10-cpi"}, {"at": "2026-11-11T12:00:00+08:00", "detail": "債市通常休市、股市照常（依慣例，未查證）", "impact": "low", "name": "美國退伍軍人節", "status": "tbc", "timeTbc": true, "id": "2026-11-11-veterans"}, {"at": "2026-11-12T21:30:00+08:00", "detail": "前值約 18.9 萬，預估 19.4–19.5 萬；有來源列 11/11", "impact": "mid", "name": "初領失業金", "status": "tbc", "id": "2026-11-12-claims"}, {"at": "2026-11-13T21:30:00+08:00", "detail": "共識月增約 0.4%；前值說法不一，暫不引用", "impact": "high", "name": "美國 10 月 PPI", "preheat": "11/12（四）20:00 前後", "status": "tbc", "id": "2026-11-13-ppi"}, {"at": "2026-11-16T21:30:00+08:00", "impact": "low", "name": "紐約州製造業指數", "status": "tbc", "id": "2026-11-16-empire"}, {"at": "2026-11-17T21:30:00+08:00", "detail": "依 Census 9/12 排程，可能變動", "impact": "mid", "name": "美國 10 月零售銷售", "status": "tbc", "id": "2026-11-17-retail"}, {"at": "2026-11-18T06:00:00+08:00", "detail": "美東 11/17 盤後；公司 10/28 公告，未讀到 IR 原文", "impact": "high", "name": "Nvidia Q3 FY27 財報電話會議", "preheat": "11/17（二）18:00 前後", "status": "tbc", "id": "2026-11-18-nvda"}, {"at": "2026-11-19T21:30:00+08:00", "impact": "mid", "name": "初領失業金", "status": "tbc", "id": "2026-11-19-claims"}, {"at": "2026-11-19T03:00:00+08:00", "detail": "Fed 官方行事曆：11/18 2:00 p.m. ET", "impact": "high", "name": "FOMC 10 月會議紀要", "preheat": "11/18（三）18:00 前後", "status": "confirmed", "id": "2026-11-19-minutes"}, {"at": "2026-12-04T21:30:00+08:00", "detail": "僅一個來源列出日期，待 BLS 確認", "impact": "high", "name": "美國 11 月非農", "status": "tbc", "id": "2026-12-04-nfp"}, {"at": "2026-12-10T21:30:00+08:00", "detail": "晚於 FOMC 決議一天", "impact": "high", "name": "美國 11 月 CPI", "status": "tbc", "id": "2026-12-10-cpi"}, {"at": "2026-12-10T03:00:00+08:00", "detail": "12/8–9 會議，現行 3.75%–4.00%", "impact": "high", "name": "FOMC 利率決議", "status": "confirmed", "id": "2026-12-10-fomc"}], "brief": {"date": "2026-11-09", "items": [{"at": "11/8（美東週日）", "domain": "AI 產業", "picked": true, "source": {"label": "Nvidia 董事會聲明", "url": "https://nvidianews.nvidia.com/news/statement-from-nvidia-board-of-directors"}, "summary": "報導指黃仁勳遭外國情報單位鎖定，他承認婚外情；董事會稱無理由認為機密外洩。", "title": "Nvidia 董事會啟動對黃仁勳的獨立調查", "why": "財報 11/17 前九天、AI 晶片股剛大跌，創辦人風險浮上檯面。"}, {"at": "11/7（週六公布）", "backup": true, "domain": "富豪與商業人物", "source": {"label": "CNBC", "url": "https://www.cnbc.com/2026/11/07/berkshire-hathaway-q3-2026-earnings-buybacks.html"}, "summary": "營業利益降 5.8%，對外持股仍小幅淨賣出（16 季中第 15 季），現金含美債約 3,774 億美元。", "title": "波克夏 Q3 買回自家股票 96 億美元，創單季紀錄", "why": "Abel 接班後把錢拿去買自己，對外頭的股票仍不動手。"}, {"at": "豁免約 11/9–10 到期", "backup": true, "domain": "國際貿易", "source": {"label": "Venn Trade Weekly（二手，待對 USTR 公告）", "url": "https://vennstrategies.substack.com/p/venn-trade-weekly-november-3-2026"}, "summary": "301 條款豁免若未展延，機械、醫療器材、太陽能設備關稅恢復；中方鎵鍗出口暫停到 11/27。", "title": "美中：178 項中國商品關稅豁免到期，川習 11/18 深圳 APEC 會面", "why": "幾個期限疊在川習會前，可以看出雙方籌碼。"}, {"at": "11/9 起", "domain": "美國政治", "source": {"label": "STAT News", "url": "https://www.statnews.com/2026/11/04/lame-duck-session-congress-health-policy-aca-subsidies-medicaid-funding/"}, "summary": "要決定通過綜合撥款或再延一次，還有醫療補助與債務上限議題。", "title": "國會跳鴨期開議，12/11 政府撥款到期", "why": "民主黨明年接掌國會，談判籌碼變了，停擺風險重新浮現。"}, {"at": "11/8", "domain": "AI 產業", "source": {"label": "BusinessDay（轉載 Reuters）", "url": "https://www.businessday.co.za/world/international-companies/2026-11-08-openai-forges-ahead-with-data-centres-amid-political-scrutiny/"}, "summary": "Sarah Friar 接受 Reuters/CNBC 訪問，稱將繼續推進資料中心計畫。", "title": "OpenAI 財務長：美國資料中心擴張不因期中選舉放慢", "why": "民主黨勝選後市場擔心 AI 監管收緊，這是業者第一個表態。"}, {"at": "11/7–8", "domain": "國際政治與地緣", "source": {"label": "CNN World", "url": "https://www.cnn.com/world"}, "summary": "基輔地區基礎設施也遭攻擊。", "title": "俄羅斯空襲烏克蘭援助中心，澤倫斯基：開戰以來最致命之一", "why": "冬季能源設施受損會影響歐洲天然氣與和談進度。"}, {"at": "11/2–11/6 週", "domain": "能源與原物料", "source": {"label": "The Gold Weekly（二手，數字待核）", "url": "https://thegoldinvestor.substack.com/p/the-gold-weekly-2-november-7th-2026"}, "summary": "中東降溫談判壓低油價；金價週收約 4,069 美元。", "title": "油價上週跌約 8%，黃金守在 4,000 美元上方", "why": "油價回落對通膨預期有幫助，剛好撞上 CPI 週。"}, {"at": "週收 11/9 08:00 台北", "domain": "加密貨幣", "source": {"label": "24/7 Wall St.", "url": "https://247wallst.com/investing/cryptocurrency/2026/11/08/bitcoin-is-heading-for-a-fifth-straight-losing-week-what-followed-the-last-time-it-lost-five-in-a-row/"}, "summary": "週開盤約 78,232 美元，週日在 75,800 附近；ETF 上週淨流出 12.8 億美元。", "title": "BTC 可能連續第五週收黑，2017 年以來只發生過兩次", "why": "連續收黑的週數記錄本身就是市場氣氛的度量。"}], "id": "2026-11-09"}}</script><!--/snap-->
+<script>
+const TZ = "Asia/Taipei";
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt = (iso, opt) => new Intl.DateTimeFormat("zh-TW", {timeZone: TZ, ...opt}).format(new Date(iso));
+const WD = ["日","一","二","三","四","五","六"];
+let posts = [], events = [], selected = null, db = null;
+
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.hidden=false; clearTimeout(toast.h); toast.h=setTimeout(()=>t.hidden=true,2200); }
+function charCount(s){ return [...String(s||"").replace(/\s/g,"")].length; }
+function statusChip(s){ const c = s==="已發布"?"ok":(s==="已核可"?"":"wait"); return `<span class="chip ${c}">${esc(s||"待審")}</span>`; }
+
+function tick(){
+  $("now").textContent = fmt(Date.now(), {month:"2-digit",day:"2-digit",weekday:"short",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
+  renderNext();
+}
+
+function renderPost(){
+  const el = $("post");
+  const p = posts.find(x => x.id === selected) || posts[0];
+  if(!p){ el.innerHTML = `<div class="empty">還沒有文章。排程任務每天 08:47 與 17:47 會把審稿完成的文章寫進這裡。</div>`; return; }
+  const n = charCount(p.body), bad = n < 100 || n > 160;
+  const heads = (p.headlines||[]).map((h,i)=>`<li><span class="n">0${i+1}</span><span>${esc(h.text)}<small>${esc(h.asof||"")}</small></span></li>`).join("");
+  const srcs = (p.sources||[]).map(s=>`<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label||s.url)}</a></li>`).join("");
+  const doubts = (p.doubts||[]).map(d=>`<li>${esc(d)}</li>`).join("");
+  el.innerHTML = `
+    <div class="post-head">
+      <span class="chip">${esc(p.slot||"文章")}</span>${(p.domain||p.category)?`<span class="chip">${esc(p.domain||p.category)}</span>`:""}${statusChip(p.status)}
+      <span class="meta">${esc(p.date||"")}${p.publishAt?` · 建議發布 ${esc(p.publishAt)}`:""}</span>
+      <h2>${esc(p.title||"")}</h2>
+    </div>
+    <div class="body" id="body">${esc(p.body)}</div>
+    <div class="row">
+      <button class="primary" id="copy">複製文章</button>
+      <button id="copyc">複製留言</button>
+      <span class="count ${bad?"bad":""}">${n} 字（不含空白）${bad?(n>180?"・超過上限 180":"・建議 100–160"):""}</span>
+      <span style="flex:1"></span>
+      <button data-s="已核可">標記已核可</button>
+      <button data-s="已發布">標記已發布</button>
+    </div>
+    <div class="extra">
+      ${heads?`<div><h3>今日重點</h3><ul class="headlines">${heads}</ul></div>`:""}
+      ${p.comment?`<div><h3>留言區補充</h3><p>${esc(p.comment)}</p></div>`:""}
+      ${p.chart?`<div><h3>圖片建議</h3><p>${esc(p.chart)}</p></div>`:""}
+      ${doubts?`<div><h3>仍有疑慮</h3><ul>${doubts}</ul></div>`:""}
+      ${srcs?`<details><summary><b>資料來源（${p.sources.length}）</b>${p.checkedAt?` <span class="meta">查證 ${esc(p.checkedAt)}</span>`:""}</summary><ul>${srcs}</ul></details>`:""}
+    </div>`;
+  $("copy").onclick = () => copy(p.body);
+  $("copyc").onclick = () => copy(p.comment||"");
+  el.querySelectorAll("button[data-s]").forEach(b => b.onclick = () => setStatus(p, b.dataset.s, b));
+}
+
+async function copy(text){
+  try{ await navigator.clipboard.writeText(text); toast("已複製"); }
+  catch{ const r=document.createRange(); r.selectNodeContents($("body")); const s=getSelection(); s.removeAllRanges(); s.addRange(r); toast("已選取文字，請按複製"); }
+}
+
+async function setStatus(p, s, btn){
+  if(!db){ toast("目前無法寫入"); return; }
+  btn.disabled = true;
+  try{ await db.doc("posts/"+p.id).update({status:s}); toast("已標記為「"+s+"」"); }
+  catch(e){ toast(e?.code==="invalid_argument" ? "你沒有修改權限" : "更新失敗，請稍後再試"); }
+  finally{ btn.disabled = false; }
+}
+
+function renderArchive(){
+  const el = $("archive");
+  if(!posts.length){ el.innerHTML = `<div class="empty">存檔是空的。</div>`; return; }
+  const recent = posts.slice(0,20), cnt = {};
+  recent.forEach(p => { const k = p.domain || p.category; if(k) cnt[k] = (cnt[k]||0) + 1; });
+  const ks = Object.entries(cnt).sort((a,b) => b[1]-a[1]);
+  const mix = ks.length ? `<div class="mix" title="最近 20 篇文章的領域分布">${ks.map(([k,n])=>{const pct=Math.round(n/recent.length*100);
+    return `<div><span>${esc(k)}</span><span class="bar"><i style="width:${pct}%"></i></span><span class="v">${n} 篇・${pct}%</span></div>`}).join("")}</div>` : "";
+  el.innerHTML = mix + posts.map(p=>`<button class="arow ${p.id===(selected||posts[0].id)?"on":""}" data-id="${esc(p.id)}">
+      <span class="meta">${esc(p.date||"")}</span><span class="sl chip">${esc(p.slot||"")}</span>
+      <span class="ti">${esc(p.title||"")}</span>${statusChip(p.status)}</button>`).join("");
+  el.querySelectorAll(".arow").forEach(b => b.onclick = () => { selected=b.dataset.id; renderPost(); renderArchive(); window.scrollTo({top:0,behavior:"smooth"}); });
+}
+
+function renderCal(){
+  const el = $("cal");
+  if(!events.length){ el.innerHTML = `<div class="empty">日曆是空的。每週日 19:37 的排程會建立未來 14 天事件。</div>`; return; }
+  const now = Date.now();
+  el.innerHTML = events.map(e=>{
+    const t = new Date(e.at).getTime();
+    const day = fmt(e.at,{month:"2-digit",day:"2-digit"});
+    const w = new Date(new Date(e.at).toLocaleString("en-US",{timeZone:TZ})).getDay();
+    const hm = e.timeTbc ? "時間待定" : fmt(e.at,{hour:"2-digit",minute:"2-digit",hour12:false});
+    return `<div class="ev ${t < now-3600e3 ? "past":""}">
+      <div class="d"><b>${day}</b>週${WD[w]} ${hm}</div>
+      <div><div class="t"><span class="dot ${e.impact==="high"?"high":""}"></span>${esc(e.name)}${e.status==="tbc"?` <span class="tbc">待確認</span>`:""}</div>
+      ${e.detail?`<div class="x">${esc(e.detail)}</div>`:""}</div></div>`;
+  }).join("");
+}
+
+function renderNext(){
+  const el = $("next"); if(!events.length) return;
+  const now = Date.now();
+  const e = events.find(x => x.impact==="high" && new Date(x.at).getTime() > now);
+  if(!e){ el.innerHTML = `<div class="note">14 天內沒有已排定的高影響事件。</div>`; return; }
+  let d = Math.max(0, new Date(e.at).getTime() - now)/1000;
+  const dd = Math.floor(d/86400); d%=86400; const hh=Math.floor(d/3600); d%=3600; const mm=Math.floor(d/60), ss=Math.floor(d%60);
+  const pad = n => String(n).padStart(2,"0");
+  el.innerHTML = `<div class="name">${esc(e.name)}</div>
+    <div class="meta">${fmt(e.at,{month:"2-digit",day:"2-digit",weekday:"short",hour:"2-digit",minute:"2-digit",hour12:false})} 台北</div>
+    <div class="cd">T−${dd}天 ${pad(hh)}:${pad(mm)}:${pad(ss)}</div>
+    ${e.preheat?`<div class="note">預熱文建議：${esc(e.preheat)}</div>`:""}`;
+}
+
+function renderBrief(b){
+  const el = $("brief");
+  if(!b){ el.innerHTML = `<div class="empty">每天早上會把當天的 8 則候選新聞放在這裡。</div>`; return; }
+  $("briefDate").textContent = b.date || "";
+  el.innerHTML = (b.items||[]).map(it=>`<div class="bi ${it.picked?"pick":""}">
+    <div class="row">${it.domain?`<span class="chip">${esc(it.domain)}</span>`:""}${it.picked?`<span class="chip ok">已選為主文</span>`:""}${it.backup?`<span class="chip wait">備用</span>`:""}<span class="meta">${esc(it.at||"")}</span></div>
+    <h4>${esc(it.title)}</h4><p>${esc(it.summary||"")}</p>${it.why?`<p class="why">${esc(it.why)}</p>`:""}
+    ${it.source?.url?`<a href="${esc(it.source.url)}" target="_blank" rel="noopener">${esc(it.source.label||it.source.url)}</a>`:""}</div>`).join("");
+}
+
+async function start(){
+  tick(); setInterval(tick, 1000);
+  let S = {};
+  try{ S = JSON.parse($("snap").textContent || "{}"); }catch{}
+  posts = (S.posts||[]).slice().sort((a,b)=>String(b.createdAt||"").localeCompare(String(a.createdAt||"")));
+  events = (S.events||[]).slice().sort((a,b)=>String(a.at).localeCompare(String(b.at)));
+  renderPost(); renderArchive(); renderCal(); renderNext(); renderBrief(S.brief);
+  if(S.updatedAt) $("sync").textContent = "資料更新於 " + S.updatedAt;
+  db = await (window.claude?.use ? window.claude.use("db") : null);
+  if(!db) return;
+  db.collection("posts").orderBy("createdAt","desc").limit(60).onSnapshot(s=>{
+    if(!s.metadata.fromCache) $("sync").textContent = "即時資料";
+    if(s.empty) return;
+    posts = s.docs.map(d=>({id:d.id, ...d.data()}));
+    renderPost(); renderArchive();
+  }, ()=>{});
+  db.collection("briefs").orderBy("date","desc").limit(1).onSnapshot(s=>{
+    if(!s.empty) renderBrief(s.docs[0].data());
+  }, ()=>{});
+  db.collection("events").orderBy("at","asc").limit(100).onSnapshot(s=>{
+    if(s.empty) return;
+    events = s.docs.map(d=>({id:d.id, ...d.data()}));
+    renderCal(); renderNext();
+  }, ()=>{});
+}
+start();
+</script>
