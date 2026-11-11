@@ -19,21 +19,21 @@ POST({
       const cx=x(m), tx=an==='start'?cx-18:an==='end'?cx+18:cx;
       g+=`<circle cx="${cx}" cy="${Y}" r="${i===3?14:20}" fill="${c}" stroke="${T.bg}" stroke-width="5"/>`;
       const up=i%2===0;
-      g+=`<text x="${tx}" y="${up?Y-52:Y+78}" text-anchor="${an}" style="font-size:34px;font-weight:700;fill:${c}">${a}</text>`;
-      g+=`<text x="${tx}" y="${up?Y-96:Y+116}" text-anchor="${an}" class="sm">${b}</text>`;
+      g+=`<text x="${tx}" y="${up?Y-56:Y+90}" text-anchor="${an}" style="font-size:44px;font-weight:700;fill:${c}">${a}</text>`;
+      g+=`<text x="${tx}" y="${up?Y-112:Y+134}" text-anchor="${an}" class="sm">${b}</text>`;
     });
-    g+=`<text x="${X0-18}" y="240" class="sm" style="fill:${T.fg}">以下期限均自專法施行日起算</text>`;
-    g+=`<text x="${X0-20}" y="660" class="nt">期限內<tspan fill="${T.fg}" font-weight="700">未取得許可</tspan>，就<tspan fill="${T.fg}" font-weight="700">不得繼續經營</tspan></text>`;
-    g+=`<text x="${X0-20}" y="708" class="sm">適用符合過渡條款的既有業者；實際上路日期以行政院公告為準</text>`;
+    g+=`<text x="${X0-18}" y="230" class="sm" style="fill:${T.fg}">以下期限均自專法施行日起算</text>`;
+    g+=`<text x="${X0-20}" y="650" class="nt">期限內<tspan fill="${T.fg}" font-weight="700">未取得許可</tspan>，就<tspan fill="${T.fg}" font-weight="700">不得繼續經營</tspan></text>`;
+    g+=`<text x="${X0-20}" y="706" class="sm">適用符合過渡條款的既有業者；實際上路日期以行政院公告為準</text>`;
     const stats=[['未經許可經營','最重 7 年','有期徒刑'],['交易平台實收資本','至少 1 億元','依金管會預告草案'],['監管範圍擴大','反洗錢之外','客戶資產、資安、營運制度']];
     stats.forEach(([a,b,c],i)=>{
-      const xx=1060,yy=150+i*200,w=490,h=175;
+      const xx=1040,yy=150+i*205,w=520,h=185;
       g+=`<rect x="${xx}" y="${yy}" width="${w}" height="${h}" rx="22" fill="${T.text}" fill-opacity="0.07" stroke="${T.grid}" stroke-opacity="0.25"/>`;
-      g+=`<text x="${xx+32}" y="${yy+50}" class="sm">${a}</text>`;
-      g+=`<text x="${xx+32}" y="${yy+118}" class="big" fill="${i<2?T.fg:T.text}">${b}</text>`;
-      g+=`<text x="${xx+32}" y="${yy+156}" class="sm">${c}</text>`;
+      g+=`<text x="${xx+32}" y="${yy+48}" class="sm">${a}</text>`;
+      g+=`<text x="${xx+32}" y="${yy+122}" class="big" fill="${i<2?T.fg:T.text}">${b}</text>`;
+      g+=`<text x="${xx+32}" y="${yy+164}" class="sm">${c}</text>`;
     });
-    g+=`<style>.sm{fill:${T.dim};font-size:23px}.big{font-size:50px;font-weight:700}</style>`;
+    g+=`<style>.sm{fill:${T.dim};font-size:29px}.big{font-size:60px;font-weight:700}.nt{font-size:42px!important}</style>`;
     return g;
   },
 });
