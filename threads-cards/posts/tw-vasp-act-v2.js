@@ -1,13 +1,15 @@
 // 台灣《虛擬資產服務法》配圖（依使用者 11/11 定稿文字）
 // 金管會證期局 11/11：預計明年 Q1 上路（實際日期由行政院公告）；第 55 條：既有業者施行後 12 個月內申請、21 個月內取得牌照，必要時延長一次 3 個月；
 // 第 48 條：無照經營最高 7 年；子法草案：交易平台實收資本至少 1 億元（動區 11/11；經濟日報 6 月報導亦同）
+// 背景照片：Night skyline of Taipei 20190421，攝影 HC Lin，CC BY 2.0（Wikimedia Commons），需標示作者與授權
+const bg='data:image/jpeg;base64,'+require('fs').readFileSync(__dirname+'/../assets/taipei-night.jpg').toString('base64');
 POST({
   caption:'台灣的加密專法，終於有比較明確的上路時間了。',
   theme:'ink',width:1600,height:900,
   title:'台灣加密專法：既有交易所的取照倒數',
-  footer:['@zqqnc',''],
+  footer:['@zqqnc','Photo: HC Lin / CC BY 2.0'],
   draw:T=>{
-    let g='';
+    let g=`<image href="${bg}" x="0" y="0" width="1600" height="900" preserveAspectRatio="xMidYMid slice" opacity="0.2"/>`;
     const X0=150,X1=960,Y=420,x=m=>X0+m/24*(X1-X0);
     g+=`<line x1="${x(0)}" x2="${x(21)}" y1="${Y}" y2="${Y}" stroke="${T.fg}" stroke-width="8" stroke-linecap="round"/>`;
     g+=`<line x1="${x(21)}" x2="${x(24)}" y1="${Y}" y2="${Y}" stroke="${T.grid}" stroke-opacity="0.6" stroke-width="8" stroke-linecap="round" stroke-dasharray="4 14"/>`;
