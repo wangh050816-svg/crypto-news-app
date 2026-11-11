@@ -1,5 +1,5 @@
 // CPI 公布後美債殖利率（中文、16:9）
-// CNBC 11/10：2 年期升逾 15bp 至 4.698%，10 年期升逾 7bp 至 4.938%；S&P 500 收跌 0.38%（TheStreet、Yahoo）
+// CNBC 11/10（更新 16:06 ET）：2 年期升逾 18bp 至 4.736%，10 年期升 13bp 至 4.992%，盤中一度站上 5%；S&P 500 收跌 0.38%（TheStreet、Yahoo）
 POST({
   caption:'CPI 公布後，股市反應不大，債市直接動起來。',
   theme:'ink',
@@ -16,7 +16,7 @@ POST({
     }
     g+=`<line x1="${X0}" x2="${X1}" y1="${y(5)}" y2="${y(5)}" stroke="${T.text}" stroke-width="3" stroke-dasharray="12 10"/>`;
     g+=`<text x="${X1}" y="${y(5)-14}" class="sm" text-anchor="end">5% 關卡</text>`;
-    const bars=[['2 年期',4.698,'+15bp 以上'],['10 年期',4.938,'+7bp 以上']];
+    const bars=[['2 年期',4.736,'+18bp 以上'],['10 年期',4.992,'+13bp']];
     const bw=220,gap=(X1-X0-bw*2)/3;
     bars.forEach(([nm,v,ch],i)=>{
       const bx=X0+gap+(bw+gap)*i;
@@ -25,7 +25,7 @@ POST({
       g+=`<text x="${bx+bw/2}" y="${y(v)+100}" class="sm" text-anchor="middle" style="fill:${T.bg};font-weight:700">一天 ${ch}</text>`;
       g+=`<text x="${bx+bw/2}" y="${Y0+44}" class="ax" text-anchor="middle">${nm}美債殖利率</text>`;
     });
-    const stats=[['S&P 500','-0.38%','11/10 收盤'],['2 年期殖利率','4.70%','對升息預期最敏感'],['10 年期殖利率','4.94%','離 5% 只差一步']];
+    const stats=[['S&P 500','-0.38%','11/10 收盤'],['2 年期殖利率','4.74%','對升息預期最敏感'],['10 年期殖利率','4.99%','盤中一度站上 5%']];
     stats.forEach(([a,b,c],i)=>{
       const x=1060,yy=150+i*200,w=490,h=175;
       g+=`<rect x="${x}" y="${yy}" width="${w}" height="${h}" rx="22" fill="${T.text}" fill-opacity="0.07" stroke="${T.grid}" stroke-opacity="0.25"/>`;
