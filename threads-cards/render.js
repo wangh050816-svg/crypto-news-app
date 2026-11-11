@@ -59,9 +59,9 @@ const html=`<!doctype html><html><head><meta charset="utf-8">
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;600;700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
 <style>body{margin:0;background:${T.page}}#card{width:${W}px;height:${H}px;background:${T.bg};border-radius:44px;overflow:hidden}
 svg{font-family:Inter,"Noto Sans TC","DejaVu Sans",sans-serif}.ax{fill:${T.dim};font-size:22px}.sl{font-size:22px;font-weight:600;letter-spacing:.5px}
-.nt{fill:${T.text};font-size:32px}.ti{fill:${T.text};font-size:38px;font-weight:700}.ft{fill:${T.dim};font-size:21px}</style></head><body>
+.nt{fill:${T.text};font-size:32px}.ti{fill:${T.text};font-size:${spec.titleSize||38}px;font-weight:700}.ft{fill:${T.dim};font-size:21px}</style></head><body>
 <div id="card"><svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
-${spec.title?`<text x="${W/2}" y="86" class="ti" text-anchor="middle">${esc(spec.title)}</text>`:''}${svg}
+${spec.title?`<text x="${W/2}" y="${spec.titleY||86}" class="ti" text-anchor="middle">${esc(spec.title)}</text>`:''}${svg}
 <text x="40" y="${H-36}" class="ft">${esc(spec.footer?.[0]||'')}</text><text x="${W-40}" y="${H-36}" class="ft" text-anchor="end">${esc(spec.footer?.[1]||'')}</text>
 </svg></div></body></html>`;
 
