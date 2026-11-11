@@ -7,7 +7,7 @@ POST({
   caption:'台灣的加密專法，終於有比較明確的上路時間了。',
   theme:'ink',width:1600,height:900,
   title:'台灣加密專法：既有交易所的取照倒數',
-  footer:['@zqqnc','Photo: HC Lin / CC BY 2.0'],
+  footer:['',''],
   draw:T=>{
     let g=`<image href="${bg}" x="0" y="0" width="1600" height="900" preserveAspectRatio="xMidYMid slice" opacity="0.2"/>`;
     const X0=150,X1=960,Y=420,x=m=>X0+m/24*(X1-X0);
