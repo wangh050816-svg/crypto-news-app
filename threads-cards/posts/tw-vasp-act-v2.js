@@ -14,7 +14,7 @@ POST({
     const X0=150,X1=960,Y=420,x=m=>X0+m/24*(X1-X0);
     g+=`<line x1="${x(0)}" x2="${x(21)}" y1="${Y}" y2="${Y}" stroke="${T.fg}" stroke-width="8" stroke-linecap="round"/>`;
     g+=`<line x1="${x(21)}" x2="${x(24)}" y1="${Y}" y2="${Y}" stroke="${T.grid}" stroke-opacity="0.6" stroke-width="8" stroke-linecap="round" stroke-dasharray="4 14"/>`;
-    const pts=[[0,'明年 Q1','專法上路（預計）','start',T.text],[12,'12 個月內','提出申請','middle',T.text],[21,'21 個月內','取得牌照','middle',T.fg],[24,'+3 個月','必要時可延長','end',T.dim]];
+    const pts=[[0,'2027 Q1','專法上路（預計）','start',T.text],[12,'12 個月內','提出申請','middle',T.text],[21,'21 個月內','取得牌照','middle',T.fg],[24,'+3 個月','必要時可延長','end',T.dim]];
     pts.forEach(([m,a,b,an,c],i)=>{
       const cx=x(m), tx=an==='start'?cx-18:an==='end'?cx+18:cx;
       g+=`<circle cx="${cx}" cy="${Y}" r="${i===3?14:20}" fill="${c}" stroke="${T.bg}" stroke-width="5"/>`;
@@ -23,7 +23,7 @@ POST({
       g+=`<text x="${tx}" y="${up?Y-96:Y+116}" text-anchor="${an}" class="sm">${b}</text>`;
     });
     g+=`<text x="${X0-18}" y="240" class="sm" style="fill:${T.fg}">以下期限均自專法施行日起算</text>`;
-    g+=`<text x="${X0-20}" y="660" class="nt">期限到了沒拿到牌照，就不能繼續經營</text>`;
+    g+=`<text x="${X0-20}" y="660" class="nt">期限內未取得許可，就不得繼續經營</text>`;
     g+=`<text x="${X0-20}" y="708" class="sm">適用符合過渡條款的既有業者；實際上路日期以行政院公告為準</text>`;
     const stats=[['未經許可經營','最重 7 年','有期徒刑'],['交易平台實收資本','至少 1 億元','依金管會預告草案'],['監管範圍擴大','反洗錢之外','客戶資產、資安、營運制度']];
     stats.forEach(([a,b,c],i)=>{
