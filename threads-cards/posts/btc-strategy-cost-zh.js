@@ -21,5 +21,5 @@ POST({
     {at:[n-3,70300],anchor:'end',lines:['目前 *$'+last.toLocaleString('en-US')+'*']},
     {at:[3,82800],lines:['Strategy 持有 *850,364* 顆 BTC']},
   ],
-  footer:['@zqqnc','資料來源：CoinGecko、Strategy 11/9 SEC 申報'],
+  footer:['@zqqnc',''],
 });

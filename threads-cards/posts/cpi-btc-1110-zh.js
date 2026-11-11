@@ -9,7 +9,7 @@ POST({
   theme:'ink',
   width:1600,height:900,
   title:'CPI 公布後，BTC 一路滑到 7 萬 3',
-  footer:['@zqqnc','資料來源：CoinGecko、Coinglass、BLS'],
+  footer:['@zqqnc',''],
   draw:T=>{
     let g='';
     const X0=150,X1=960,Y0=700,Y1=170,lo=72000,hi=82000;
