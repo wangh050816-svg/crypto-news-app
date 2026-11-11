@@ -25,7 +25,7 @@ POST({
     g+=`<text x="${X0-18}" y="230" class="sm" style="fill:${T.fg}">以下期限均自專法施行日起算</text>`;
     g+=`<text x="${X0-20}" y="650" class="nt">期限內<tspan fill="${T.fg}" font-weight="700">未取得許可</tspan>，就<tspan fill="${T.fg}" font-weight="700">不得繼續經營</tspan></text>`;
     g+=`<text x="${X0-20}" y="706" class="sm">適用符合過渡條款的既有業者；實際上路日期以行政院公告為準</text>`;
-    const stats=[['未經許可經營','最重 7 年','有期徒刑'],['交易平台實收資本','至少 1 億元','依金管會預告草案'],['監管範圍擴大','反洗錢之外','客戶資產、資安、營運制度']];
+    const stats=[['未經許可經營','最重 7 年','有期徒刑'],['交易平台實收資本','至少 1 億元','依金管會預告草案'],['監管範圍擴大','不只反洗錢','還有客戶資產、資安、營運制度']];
     stats.forEach(([a,b,c],i)=>{
       const xx=1040,yy=150+i*205,w=520,h=185;
       g+=`<rect x="${xx}" y="${yy}" width="${w}" height="${h}" rx="22" fill="${T.text}" fill-opacity="0.07" stroke="${T.grid}" stroke-opacity="0.25"/>`;
