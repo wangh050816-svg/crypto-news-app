@@ -20,6 +20,8 @@ CATEGORY_KEYWORDS = {
 }
 
 TELEGRAM_MAX_LEN = 4000  # Telegram 單則訊息上限 4096，留一點緩衝
+SAVE_PER_SOURCE = 20     # 存進 crypto_news.json 的每個來源則數（給情報台用）
+TG_PER_SOURCE = 5        # 推到 Telegram 的每個來源則數（維持原本長度）
 
 
 def _keyword_matches(keyword, text_lower):
@@ -38,9 +40,15 @@ def classify_text(title, summary):
 
 def fetch_articles():
     all_articles = []
+    failed_sources = []
     for source, url in crypto_rss_urls.items():
         feed = feedparser.parse(url)
-        for entry in feed.entries[:5]:
+        if not feed.entries:
+            status = getattr(feed, "status", "無回應")
+            print(f"{source} 抓取失敗（狀態：{status}）")
+            failed_sources.append(source)
+            continue
+        for entry in feed.entries[:SAVE_PER_SOURCE]:
             summary = getattr(entry, "summary", "")
             category = classify_text(entry.title, summary)
             all_articles.append({
@@ -51,7 +59,7 @@ def fetch_articles():
                 "summary": summary[:120] + "...",
                 "category": category
             })
-    return all_articles
+    return all_articles, failed_sources
 
 
 def _chunk_message_lines(lines, max_len=TELEGRAM_MAX_LEN):
@@ -69,7 +77,17 @@ def _chunk_message_lines(lines, max_len=TELEGRAM_MAX_LEN):
     return chunks
 
 
-def send_telegram_message(news_list):
+def pick_for_telegram(news_list, per_source=TG_PER_SOURCE):
+    counts, picked = {}, []
+    for item in news_list:
+        src = item.get("source", "")
+        if counts.get(src, 0) < per_source:
+            picked.append(item)
+            counts[src] = counts.get(src, 0) + 1
+    return picked
+
+
+def send_telegram_message(news_list, failed_sources=None):
     bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
     chat_id = os.getenv("TELEGRAM_CHAT_ID")
 
@@ -82,6 +100,8 @@ def send_telegram_message(news_list):
         return
 
     lines = [f"<b>📢 今日加密貨幣焦點新聞（共 {len(news_list)} 篇）</b>"]
+    if failed_sources:
+        lines.append("⚠️ 今天抓不到：" + "、".join(failed_sources))
     for item in news_list:
         title = item.get("title", "無標題")
         link = item.get("link", "#")
@@ -104,13 +124,13 @@ def send_telegram_message(news_list):
 
 
 def main():
-    all_articles = fetch_articles()
+    all_articles, failed_sources = fetch_articles()
 
     with open("crypto_news.json", "w", encoding="utf-8") as f:
         json.dump(all_articles, f, ensure_ascii=False, indent=2)
     print("新聞資料擷取與分類完成！")
 
-    send_telegram_message(all_articles)
+    send_telegram_message(pick_for_telegram(all_articles), failed_sources)
 
 
 if __name__ == "__main__":
