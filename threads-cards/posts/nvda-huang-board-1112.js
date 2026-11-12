@@ -3,7 +3,7 @@
 // 11/8（週日）董事會宣布啟動獨立調查；黃仁勳向員工承認不忠 — CNBC、Reuters（NST 轉載）、Tribune
 // 11/11 NYT：第二段婚外情，對象為向他匯報的 NVIDIA 主管（Reuters、NBC 轉述；Nvidia 未回應）
 // 11/11 WSJ：董事會準備撤換黃仁勳 — CNBC、TechCrunch、CBS、MarketScreener(Reuters)
-// 盤後跌逾 8% 至 159.51 美元 — CBS、BNO News；11/11 收盤 173.73（Yahoo Finance），159.51 為 -8.2%
+// 盤後一度跌逾 8%、約 159.5 美元（盤後價持續變動，CBS 報 159.51、CNBC 報逾 9%） — CBS、BNO News；11/11 收盤 173.73（Yahoo Finance），159.51 為 -8.2%
 // 1993 年共同創辦並任執行長至今（2026 − 1993 = 33 年）— nvidia.com 董事會介紹
 // 走勢線：NVDA 日收盤 11/2–11/11（Yahoo Finance）＋ 11/11 盤後 159.51
 // 人物照：Jensen Huang Stanford 2026-04-30 010 (cropped)，攝影 Anderseidesvik，CC BY-SA 4.0（Wikimedia Commons），已轉灰階、壓暗
@@ -84,8 +84,8 @@ POST({
     let y=150;
     g+=box(y,200)+`<rect x="${RX}" y="${y}" width="${RW}" height="3" fill="${T.red}"/>`;
     g+=`<text x="${RX+28}" y="${y+48}" class="lb">傳出報導後盤後股價</text>`;
-    g+=`<text x="${RX+24}" y="${y+124}" style="font-size:66px;font-weight:900;fill:${T.fg}">跌逾 8%</text>`;
-    g+=`<text x="${RX+28}" y="${y+174}" class="lb" style="fill:${T.text}"><tspan style="font-family:Inter;font-weight:700">159.51</tspan> 美元</text>`;
+    g+=`<text x="${RX+24}" y="${y+124}" style="font-size:66px;font-weight:900;fill:${T.fg}"><tspan style="font-size:40px;font-weight:700">一度</tspan>跌逾 8%</text>`;
+    g+=`<text x="${RX+28}" y="${y+174}" class="lb" style="fill:${T.text}">約 <tspan style="font-family:Inter;font-weight:700">159.5</tspan> 美元</text>`;
     const sx0=RX+270,sw=105,sy0=y+138,sh=50,lo=155,hi=210;
     const sp=spark.map((v,i)=>[sx0+i/(spark.length-1)*sw, sy0+(hi-v)/(hi-lo)*sh]);
     g+=`<polyline points="${sp.map(p=>p.map(n=>n.toFixed(1)).join(',')).join(' ')}" fill="none" stroke="${T.red}" stroke-width="3" stroke-linejoin="round"/>`;
