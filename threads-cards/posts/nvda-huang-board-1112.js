@@ -1,11 +1,10 @@
 // Nvidia 董事會傳出準備撤換黃仁勳（國際財經媒體風格，依使用者 11/12 文字）
 // 查證：
 // 11/8（週日）董事會宣布啟動獨立調查；黃仁勳向員工承認不忠 — CNBC、Reuters（NST 轉載）、Tribune
-// 11/9 股東提起擬議集體訴訟 — Reuters（Daily Guardian 轉載）、Yahoo Finance live
+// 11/11 NYT：第二段婚外情，對象為向他匯報的 NVIDIA 主管（Reuters、NBC 轉述；Nvidia 未回應）
 // 11/11 WSJ：董事會準備撤換黃仁勳 — CNBC、TechCrunch、CBS、MarketScreener(Reuters)
 // 盤後跌逾 8% 至 159.51 美元 — CBS、BNO News；11/11 收盤 173.73（Yahoo Finance），159.51 為 -8.2%
-// 11/17 美東盤後公布 FY27 Q3 財報 — Nvidia 10/28 公告（CME Group 轉述）
-// 1993 年共同創辦 — nvidia.com 董事會介紹
+// 1993 年共同創辦並任執行長至今（2026 − 1993 = 33 年）— nvidia.com 董事會介紹
 // 走勢線：NVDA 日收盤 11/2–11/11（Yahoo Finance）＋ 11/11 盤後 159.51
 // 人物照：Jensen Huang Stanford 2026-04-30 010 (cropped)，攝影 Anderseidesvik，CC BY-SA 4.0（Wikimedia Commons），已轉灰階、壓暗
 const img=f=>'data:image/jpeg;base64,'+require('fs').readFileSync(__dirname+'/../assets/'+f).toString('base64');
@@ -16,7 +15,7 @@ const spark=[202.06,206.69,200.13,181.60,186.64,178.67,168.89,173.73,159.51]; //
 
 const DOWN=30; // 前景（標題、時間軸、數據模組）往下移的距離
 POST({
-  caption:'Nvidia 董事會傳出準備撤換黃仁勳？目前仍是媒體報導，董事會尚未正式宣布。',
+  caption:'Nvidia 董事會傳出準備撤換黃仁勳？目前仍是媒體報導，董事會尚未正式宣布撤換決定。',
   theme:'bulletin',width:1600,height:900,scale:2.4, // 輸出 3840×2160
   footer:['',''],
   draw:T=>{
@@ -52,9 +51,9 @@ POST({
     // 時間軸
     const ev=[
       ['11/8','婚外情曝光','董事會啟動調查',0],
-      ['11/9','傳出股東','提起集體訴訟',0],
-      ['11/11','WSJ 報導：董事會','可能要求他下台',1],
-      ['11/17','預定公布財報','（美東盤後）',2],
+      ['11/11','紐時報導第二段婚外情','涉及 NVIDIA 內部主管',0],
+      ['11/11','WSJ：董事會傳出','準備撤換黃仁勳',1],
+      ['最新狀態','董事會尚未正式','宣布撤換決定',2],
     ];
     const NX=L+18, Y0=370, DY=118;
     g+=`<line x1="${NX}" x2="${NX}" y1="${Y0}" y2="${Y0+DY*2}" stroke="url(#tl)" stroke-width="4"/>`;
@@ -71,7 +70,8 @@ POST({
         g+=`<circle cx="${NX}" cy="${y}" r="11" fill="${T.text}" stroke="${T.bg}" stroke-width="4"/>`;
       }
       const big=k===1;
-      g+=`<text x="${NX+44}" y="${y+(big?20:16)}" style="font-family:Inter;font-weight:800;font-size:${big?58:46}px;fill:${big?T.fg:k===2?T.dim:T.text}">${d}</text>`;
+      g+=k===2?`<text x="${NX+44}" y="${y+12}" style="font-weight:700;font-size:32px;fill:${T.dim}">${d}</text>`
+        :`<text x="${NX+44}" y="${y+(big?20:16)}" style="font-family:Inter;font-weight:800;font-size:${big?58:46}px;fill:${big?T.fg:T.text}">${d}</text>`;
       const tx=NX+(big?250:206);
       g+=`<text x="${tx}" y="${y-6}" class="ev" ${big?`style="fill:${T.text};font-weight:700"`:''}>${a}</text>`;
       g+=`<text x="${tx}" y="${y+36}" class="ev" ${big?`style="fill:${T.text};font-weight:700"`:''}>${b}</text>`;
@@ -92,16 +92,17 @@ POST({
     g+=`<circle cx="${sp.at(-1)[0]}" cy="${sp.at(-1)[1]}" r="5" fill="${T.red}"/>`;
     // 2 創辦
     y=375;
-    g+=box(y,180);
-    g+=`<text x="${RX+24}" y="${y+86}" style="font-family:Inter;font-size:72px;font-weight:800;fill:${T.text}">1993</text>`;
-    g+=`<text x="${RX+28}" y="${y+146}" class="lb">黃仁勳共同創辦 NVIDIA</text>`;
+    g+=box(y,205);
+    g+=`<text x="${RX+24}" y="${y+92}" style="font-weight:900;fill:${T.text}"><tspan style="font-family:Inter;font-size:84px;font-weight:800">33</tspan><tspan dx="10" style="font-size:52px">年</tspan></text>`;
+    g+=`<text x="${RX+28}" y="${y+144}" class="lb">黃仁勳自 <tspan style="font-family:Inter">1993</tspan> 年</text>`;
+    g+=`<text x="${RX+28}" y="${y+182}" class="lb">共同創辦並領導 NVIDIA</text>`;
     // 3 接班狀態
-    y=580;
+    y=605;
     g+=box(y,200);
     g+=`<rect x="${RX+28}" y="${y+26}" width="148" height="38" rx="4" fill="${T.text}" fill-opacity="0.1" stroke="${T.dim}" stroke-opacity="0.6"/>`;
     g+=`<circle cx="${RX+48}" cy="${y+45}" r="6" fill="${T.dim}"/><text x="${RX+64}" y="${y+54}" style="font-size:24px;font-weight:700;fill:${T.dim};letter-spacing:2px">官方狀態</text>`;
-    g+=`<text x="${RX+26}" y="${y+124}" style="font-size:46px;font-weight:900;fill:${T.text}">接班安排未公開</text>`;
-    g+=`<text x="${RX+28}" y="${y+172}" class="lb">董事會尚未正式宣布</text>`;
+    g+=`<text x="${RX+26}" y="${y+124}" style="font-size:44px;font-weight:900;fill:${T.text}">尚未宣布<tspan style="font-weight:700;fill:${T.dim}">撤換決定</tspan></text>`;
+    g+=`<text x="${RX+28}" y="${y+172}" class="lb">接班安排未公開</text>`;
     g+=`</g>`;
     g+=`<style>.ti2{fill:${T.text};font-size:76px;font-weight:900;letter-spacing:1px}.ev{fill:${T.dim};font-size:31px;font-weight:500}.lb{fill:${T.dim};font-size:29px;font-weight:500}</style>`;
     return g;
