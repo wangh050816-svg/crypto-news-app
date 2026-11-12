@@ -14,6 +14,7 @@ const face=img('jensen-huang-stanford-2026.jpg');
 const month=[226.32,228.52,221.30,217.23,214.13,217.09,216.47,221.97,212.21,210.96,216.00,217.94,215.38,213.66,204.64,202.06,206.69,200.13,181.60,186.64,178.67,168.89,173.73,159.51];
 const spark=[202.06,206.69,200.13,181.60,186.64,178.67,168.89,173.73,159.51]; // 11/2–11/11 收盤＋盤後
 
+const DOWN=30; // 前景（標題、時間軸、數據模組）往下移的距離
 POST({
   caption:'Nvidia 董事會傳出準備撤換黃仁勳？目前仍是媒體報導，董事會尚未正式宣布。',
   theme:'bulletin',width:1600,height:900,scale:2.4, // 輸出 3840×2160
@@ -40,6 +41,7 @@ POST({
     // 人物
     g+=`<image href="${face}" x="610" y="-10" width="660" height="880" preserveAspectRatio="xMidYMid slice" opacity="0.62"/>`;
     g+=`<rect x="610" y="0" width="660" height="900" fill="url(#fadeL)"/><rect x="610" y="0" width="660" height="900" fill="url(#fadeB)"/><rect x="610" y="0" width="660" height="900" fill="url(#fadeR)"/>`;
+    g+=`<g transform="translate(0,${DOWN})">`; // 前景內容整體下移
     // 標籤與標題
     const L=80;
     g+=`<rect x="${L}" y="58" width="6" height="26" fill="${T.fg}"/>`;
@@ -100,6 +102,7 @@ POST({
     g+=`<circle cx="${RX+48}" cy="${y+45}" r="6" fill="${T.dim}"/><text x="${RX+64}" y="${y+54}" style="font-size:24px;font-weight:700;fill:${T.dim};letter-spacing:2px">官方狀態</text>`;
     g+=`<text x="${RX+26}" y="${y+124}" style="font-size:46px;font-weight:900;fill:${T.text}">接班安排未公開</text>`;
     g+=`<text x="${RX+28}" y="${y+172}" class="lb">董事會尚未正式宣布</text>`;
+    g+=`</g>`;
     g+=`<style>.ti2{fill:${T.text};font-size:76px;font-weight:900;letter-spacing:1px}.ev{fill:${T.dim};font-size:31px;font-weight:500}.lb{fill:${T.dim};font-size:29px;font-weight:500}</style>`;
     return g;
   },
