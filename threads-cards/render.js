@@ -14,6 +14,7 @@ const THEMES={
   wine:{page:'#2a1412',bg:'#5a2a26',fg:'#e4554c',fill:'rgba(228,85,76,.55)',text:'#f3e6e4',dim:'#d9bcb8',grid:'#e9d3d0'},
   navy:{page:'#0f1626',bg:'#1c2a46',fg:'#5aa9ff',fill:'rgba(90,169,255,.45)',text:'#e8eef8',dim:'#b8c6dc',grid:'#d0dbec'},
   forest:{page:'#0f1a14',bg:'#1e3528',fg:'#55d68a',fill:'rgba(85,214,138,.42)',text:'#e6f3eb',dim:'#b6d3c1',grid:'#cfe6d8'},
+  bulletin:{page:'#101114',bg:'#101114',fg:'#F5A332',fill:'rgba(245,163,50,.18)',text:'#ffffff',dim:'#b4b9c2',grid:'#222428',red:'#e5484d'},
   ink:{page:'#0b0b0b',bg:'#1b1b1d',fg:'#f2a33a',fill:'rgba(242,163,58,.45)',text:'#f1f1f1',dim:'#bdbdbd',grid:'#d8d8d8'},
 };
 
@@ -56,7 +57,7 @@ for(const n of spec.notes||[]) n.lines.forEach((l,i)=>svg+=`<text x="${sx(n.at[0
 if(spec.draw) svg=spec.draw(T);
 
 const html=`<!doctype html><html><head><meta charset="utf-8">
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;600;700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>body{margin:0;background:${T.page}}#card{width:${W}px;height:${H}px;background:${T.bg};border-radius:44px;overflow:hidden}
 svg{font-family:Inter,"Noto Sans TC","DejaVu Sans",sans-serif}.ax{fill:${T.dim};font-size:22px}.sl{font-size:22px;font-weight:600;letter-spacing:.5px}
 .nt{fill:${T.text};font-size:32px}.ti{fill:${T.text};font-size:${spec.titleSize||38}px;font-weight:700}.ft{fill:${T.dim};font-size:21px}</style></head><body>
@@ -66,7 +67,7 @@ ${spec.title?`<text x="${W/2}" y="${spec.titleY||86}" class="ti" text-anchor="mi
 </svg></div></body></html>`;
 
 (async()=>{
-  const b=await chromium.launch(),p=await b.newPage({viewport:{width:W,height:H}});
+  const b=await chromium.launch(),p=await b.newPage({viewport:{width:W,height:H},deviceScaleFactor:spec.scale||1});
   await p.setContent(html,{waitUntil:'networkidle'});await p.evaluate(()=>document.fonts.ready);
   await p.locator('#card').screenshot({path:path.join(out,'card.png'),omitBackground:true});
   await b.close();
