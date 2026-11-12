@@ -15,6 +15,7 @@ const THEMES={
   navy:{page:'#0f1626',bg:'#1c2a46',fg:'#5aa9ff',fill:'rgba(90,169,255,.45)',text:'#e8eef8',dim:'#b8c6dc',grid:'#d0dbec'},
   forest:{page:'#0f1a14',bg:'#1e3528',fg:'#55d68a',fill:'rgba(85,214,138,.42)',text:'#e6f3eb',dim:'#b6d3c1',grid:'#cfe6d8'},
   bulletin:{page:'#101114',bg:'#101114',fg:'#F5A332',fill:'rgba(245,163,50,.18)',text:'#ffffff',dim:'#b4b9c2',grid:'#222428',red:'#e5484d'},
+  research:{page:'#151618',bg:'#151618',fg:'#F5A332',fill:'rgba(245,163,50,.18)',text:'#ffffff',dim:'#b4b9c2',grid:'#27292D',red:'#e5484d'},
   ink:{page:'#0b0b0b',bg:'#1b1b1d',fg:'#f2a33a',fill:'rgba(242,163,58,.45)',text:'#f1f1f1',dim:'#bdbdbd',grid:'#d8d8d8'},
 };
 
