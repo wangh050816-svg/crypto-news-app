@@ -3,7 +3,7 @@
 // stats: [[小標, 大字, 說明]], line: 選填的參考線 {v, text}
 module.exports=({bars,range,ticks,fmt,stats,line})=>T=>{
   let g='';
-  const X0=170,X1=990,Y0=700,Y1=200,[lo,hi]=range;
+  const X0=170,X1=980,Y0=700,Y1=200,[lo,hi]=range;
   const y=v=>Y0-(v-lo)/(hi-lo)*(Y0-Y1);
   for(const v of ticks){
     g+=`<line x1="${X0}" x2="${X1}" y1="${y(v)}" y2="${y(v)}" stroke="${T.grid}" stroke-opacity="${v===0?0.6:0.13}" stroke-width="2"/>`;
@@ -23,12 +23,12 @@ module.exports=({bars,range,ticks,fmt,stats,line})=>T=>{
     g+=`<text x="${bx+bw/2}" y="${Y0+44}" class="ax" text-anchor="middle">${lab}</text>`;
   });
   stats.forEach(([a,b,c],i)=>{
-    const x=1060,yy=150+i*200,w=490,h=175;
+    const x=1040,yy=150+i*205,w=520,h=185;
     g+=`<rect x="${x}" y="${yy}" width="${w}" height="${h}" rx="22" fill="${T.text}" fill-opacity="0.07" stroke="${T.grid}" stroke-opacity="0.25"/>`;
-    g+=`<text x="${x+32}" y="${yy+50}" class="sm">${a}</text>`;
-    g+=`<text x="${x+32}" y="${yy+118}" class="big" fill="${i===0?T.fg:T.text}">${b}</text>`;
-    g+=`<text x="${x+32}" y="${yy+156}" class="sm">${c}</text>`;
+    g+=`<text x="${x+32}" y="${yy+48}" class="sm">${a}</text>`;
+    g+=`<text x="${x+32}" y="${yy+122}" class="big" fill="${i===0?T.fg:T.text}">${b}</text>`;
+    g+=`<text x="${x+32}" y="${yy+164}" class="sm">${c}</text>`;
   });
-  g+=`<style>.vl{font-size:34px;font-weight:700}.sm{fill:${T.dim};font-size:23px}.big{font-size:52px;font-weight:700}</style>`;
+  g+=`<style>.vl{font-size:40px;font-weight:700}.sm{fill:${T.dim};font-size:29px}.big{font-size:58px;font-weight:700}.ax{font-size:28px!important}</style>`;
   return g;
 };
