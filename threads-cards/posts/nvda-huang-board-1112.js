@@ -100,9 +100,6 @@ POST({
     g+=`<circle cx="${RX+48}" cy="${y+45}" r="6" fill="${T.dim}"/><text x="${RX+64}" y="${y+54}" style="font-size:24px;font-weight:700;fill:${T.dim};letter-spacing:2px">官方狀態</text>`;
     g+=`<text x="${RX+26}" y="${y+124}" style="font-size:46px;font-weight:900;fill:${T.text}">接班安排未公開</text>`;
     g+=`<text x="${RX+28}" y="${y+172}" class="lb">董事會尚未正式宣布</text>`;
-    // 底部可信度標示
-    g+=`<line x1="${L}" x2="1520" y1="822" y2="822" stroke="${T.text}" stroke-opacity="0.14"/>`;
-    g+=`<text x="800" y="866" text-anchor="middle" style="font-size:29px;fill:${T.dim}"><tspan fill="${T.fg}" font-weight="700">⚠ </tspan>以上涉及人事異動之內容仍屬<tspan fill="${T.text}" font-weight="700">媒體報導</tspan>，尚待官方確認。</text>`;
     g+=`<style>.ti2{fill:${T.text};font-size:76px;font-weight:900;letter-spacing:1px}.ev{fill:${T.dim};font-size:31px;font-weight:500}.lb{fill:${T.dim};font-size:29px;font-weight:500}</style>`;
     return g;
   },
