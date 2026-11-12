@@ -13,11 +13,14 @@ POST({
   footer:['',''],
   draw:T=>{
     let g=`<defs>
-      <linearGradient id="fadeL" x1="0" x2="1"><stop offset="0" stop-color="${T.bg}"/><stop offset="0.32" stop-color="${T.bg}" stop-opacity="0"/></linearGradient>
-      <linearGradient id="fadeB" y1="0" y2="1" x1="0" x2="0"><stop offset="0.6" stop-color="${T.bg}" stop-opacity="0"/><stop offset="1" stop-color="${T.bg}"/></linearGradient>
-      <linearGradient id="fadeR" x1="0" x2="1"><stop offset="0.72" stop-color="${T.bg}" stop-opacity="0"/><stop offset="1" stop-color="${T.bg}"/></linearGradient>
-      <radialGradient id="vig" cx="0.6" cy="0.4" r="0.8"><stop offset="0.5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.55"/></radialGradient>
+      <linearGradient id="fadeL" x1="0" x2="1"><stop offset="0" stop-color="${T.bg}"/><stop offset="0.3" stop-color="${T.bg}" stop-opacity="0"/></linearGradient>
+      <linearGradient id="fadeB" y1="0" y2="1" x1="0" x2="0"><stop offset="0.72" stop-color="${T.bg}" stop-opacity="0"/><stop offset="1" stop-color="${T.bg}"/></linearGradient>
+      <linearGradient id="fadeR" x1="0" x2="1"><stop offset="0.8" stop-color="${T.bg}" stop-opacity="0"/><stop offset="1" stop-color="${T.bg}" stop-opacity="0.85"/></linearGradient>
+      <radialGradient id="halo" cx="0.5" cy="0.4" r="0.5"><stop offset="0" stop-color="#3a3d43" stop-opacity="0.85"/><stop offset="0.6" stop-color="#25272b" stop-opacity="0.5"/><stop offset="1" stop-color="#101114" stop-opacity="0"/></radialGradient>
+      <radialGradient id="lift" cx="0.25" cy="0.55" r="0.6"><stop offset="0" stop-color="#1c1e22"/><stop offset="1" stop-color="#101114" stop-opacity="0"/></radialGradient>
+      <filter id="sh" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#000" flood-opacity="0.55"/></filter>
     </defs>`;
+    g+=`<rect width="1600" height="900" fill="url(#lift)"/><ellipse cx="1010" cy="360" rx="470" ry="440" fill="url(#halo)"/>`;
     // 背景：左下 K 線、右上星點（裝飾）
     let k='';{let s=17,v=0;const r=()=>(s=(s*16807)%2147483647)/2147483647;
       for(let i=0;i<34;i++){const x=20+i*18;v+=(r()-.42)*14;const o=870-v-i*1.2,c=o-(r()-.45)*26,hi=Math.min(o,c)-r()*14,lo=Math.max(o,c)+r()*14;
@@ -26,10 +29,9 @@ POST({
     const star=(cx,cy,R)=>{let p=[];for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?R*0.42:R;p.push(`${(cx+rr*Math.cos(a)).toFixed(1)},${(cy+rr*Math.sin(a)).toFixed(1)}`)}return `<polygon points="${p.join(' ')}" fill="#fff"/>`;};
     let st='';[[1180,40],[1250,92],[1330,34],[1410,80],[1490,36],[1560,90],[1300,150]].forEach(([x,y])=>st+=star(x,y,16));
     // 人物
-    g+=`<image href="${face}" x="700" y="0" width="620" height="900" preserveAspectRatio="xMidYMin slice" opacity="0.92"/>`;
+    g+=`<image href="${face}" x="700" y="0" width="620" height="900" preserveAspectRatio="xMidYMin slice" opacity="1"/>`;
     ['fadeL','fadeB','fadeR'].forEach(id=>g+=`<rect x="700" y="0" width="620" height="900" fill="url(#${id})"/>`);
     g+=`<g opacity="0.08">${st}</g>`;
-    g+=`<rect width="1600" height="900" fill="url(#vig)"/>`;
     // 標籤與標題
     const L=66;
     g+=`<rect x="${L}" y="60" width="7" height="26" rx="3" fill="${T.fg}"/>`;
@@ -42,7 +44,7 @@ POST({
       g+=`<line x1="${X0}" x2="${X1}" y1="${yv(t)}" y2="${yv(t)}" stroke="${T.text}" stroke-opacity="${t===0?0.45:0.16}" stroke-width="${t===0?2:1.2}"/>`;
       g+=`<text x="${X0-20}" y="${yv(t)+9}" text-anchor="end" style="font-family:Inter;font-size:26px;fill:${T.dim}">${t===0?'0':t.toFixed(1)}%</text>`;
     });
-    const bar=(x,w,y,fill)=>{const r=14;return `<path d="M${x} ${B}V${y+r}Q${x} ${y} ${x+r} ${y}H${x+w-r}Q${x+w} ${y} ${x+w} ${y+r}V${B}Z" fill="${fill}"/>`;};
+    const bar=(x,w,y,fill)=>{const r=14;return `<path filter="url(#sh)" d="M${x} ${B}V${y+r}Q${x} ${y} ${x+r} ${y}H${x+w-r}Q${x+w} ${y} ${x+w} ${y+r}V${B}Z" fill="${fill}"/>`;};
     [[1.3,'+1.3%','9 月實際',249,208,T.fg,T.fg],[0.4,'+0.4%','10 月預估',572,222,'#8d8f94',T.text]].forEach(([v,lab,a,x,w,fill,col])=>{
       const y=yv(v);
       g+=bar(x,w,y,fill);
@@ -51,7 +53,7 @@ POST({
     });
     // 右側卡片
     const RX=1134, RW=438, RH=197;
-    const card=y=>`<rect x="${RX}" y="${y}" width="${RW}" height="${RH}" rx="22" fill="#1d1e21" fill-opacity="0.82" stroke="#ffffff" stroke-opacity="0.13" stroke-width="1.5"/>`;
+    const card=y=>`<rect x="${RX}" y="${y}" width="${RW}" height="${RH}" rx="22" fill="#2a2c31" fill-opacity="0.86" stroke="#ffffff" stroke-opacity="0.2" stroke-width="1.5" filter="url(#sh)"/><rect x="${RX+1}" y="${y+1}" width="${RW-2}" height="60" rx="21" fill="#ffffff" fill-opacity="0.025"/>`;
     let y=134;
     g+=card(y)+`<text x="${RX+32}" y="${y+52}" class="lb">公布時間</text>`;
     g+=`<text x="${RX+28}" y="${y+124}" style="font-family:Inter;font-size:62px;font-weight:700;fill:${T.fg}">11/13<tspan dx="16">21:30</tspan></text>`;
@@ -64,7 +66,7 @@ POST({
     g+=card(y)+`<text x="${RX+32}" y="${y+52}" class="lb">核心 PPI 預估</text>`;
     g+=`<text x="${RX+30}" y="${y+128}" style="font-size:60px;font-weight:900;fill:${T.text}">月增 <tspan style="font-family:Inter;font-size:66px;font-weight:700">0.3%</tspan></text>`;
     g+=`<text x="${RX+32}" y="${y+174}" class="sb">扣除食品與能源</text>`;
-    g+=`<style>.lb{fill:${T.dim};font-size:29px;font-weight:500}.sb{fill:${T.text};font-size:31px;font-weight:500}</style>`;
+    g+=`<style>.lb{fill:#c3c7ce;font-size:29px;font-weight:500}.sb{fill:${T.text};font-size:31px;font-weight:500}</style>`;
     return g;
   },
 });
