@@ -4,9 +4,9 @@
 // 10 月 PPI 月增預估 0.4%、年增預估 6.6%（Dow Jones 共識：stocktitan、CoinEdition、TradingKey）；另有日曆列年增 6.1%，屬少數
 // 核心 PPI 月增預估 0.3%（CoinEdition、TradingKey、Investing.com）
 // 公布時間 11/13（五）8:30 ET = 台灣 21:30（financecalendar、thriveinmarkets 13:30 UTC）
-// 人物照：Christopher J. Waller, Federal Reserve Governor（Fed 理事會官方肖像，Wikimedia Commons，公有領域）；已轉灰階
+// 人物照：Federal Reserve Board 2022 (52379257721).jpg（2022/9/23 Fed Listens 活動，Federalreserve Flickr，Wikimedia Commons，公有領域），裁出 Waller；已轉灰階
 // 背景 K 線與星點為裝飾，不是數據
-const face='data:image/jpeg;base64,'+require('fs').readFileSync(__dirname+'/../assets/christopher-waller-bright.jpg').toString('base64');
+const face='data:image/jpeg;base64,'+require('fs').readFileSync(__dirname+'/../assets/christopher-waller-fedlistens.jpg').toString('base64');
 POST({
   caption:'美國 10 月 PPI 明晚公布，市場關注通膨是否降溫，以及聯準會 12 月的升息幅度。',
   theme:'bulletin',width:1600,height:900,scale:2.4, // 輸出 3840×2160
