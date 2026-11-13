@@ -11,13 +11,6 @@ const dec = n => { const s = String(n); return s.includes('.') ? s.split('.')[1]
 const fmtP = (n, d) => Number(n).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
 const hitOf = o => (o.result && o.result.startsWith('TP') ? +o.result.slice(2) : 0);
 
-// ── 統計（只數分析結果，不算報酬）
-const N = D.ideas.length;
-const full = D.ideas.filter(o => hitOf(o) === o.tp.length).length;
-const anyTp = D.ideas.filter(o => hitOf(o) > 0).length;
-const sl = D.ideas.filter(o => o.result === 'SL').length;
-const pending = D.ideas.filter(o => !o.result).length;
-
 function card(o, i) {
   const d = Math.max(dec(o.entry[0]), dec(o.entry[1]), dec(o.sl), ...o.tp.map(dec));
   const mid = (o.entry[0] + o.entry[1]) / 2, risk = Math.abs(mid - o.sl);
@@ -38,8 +31,6 @@ function card(o, i) {
   </div>`;
 }
 
-const kpi = (k, en, v, cls = '') => `<div class="k"><div class="kv ${cls}">${v}</div><div class="kk">${k}<span>${en}</span></div></div>`;
-
 const html = `<!doctype html><html><head><meta charset="utf-8">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -49,7 +40,7 @@ body{width:1080px;height:1350px;background:var(--bg);color:var(--text);font-fami
 #c{position:relative;width:1080px;height:1350px;padding:48px 64px 0;
   background:radial-gradient(900px 500px at 100% 0%,rgba(79,209,197,.07),transparent 60%),radial-gradient(700px 600px at 0% 100%,rgba(159,214,255,.05),transparent 60%),var(--bg)}
 #c::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:36px 36px;pointer-events:none}
-.hd{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:22px;border-bottom:1px solid var(--line2);margin-bottom:24px}
+.hd{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:22px;border-bottom:1px solid var(--line2);margin-bottom:30px}
 .brand{display:flex;align-items:center;gap:12px;font-family:'Noto Sans TC';font-weight:700;font-size:22px;letter-spacing:.32em;margin-bottom:14px}
 h1{font-family:'Noto Sans TC';font-weight:900;font-size:60px;letter-spacing:.06em;line-height:1}
 .en{font-size:16px;letter-spacing:.42em;color:var(--ice);margin-top:14px;font-weight:600}
@@ -58,32 +49,23 @@ h1{font-family:'Noto Sans TC';font-weight:900;font-size:60px;letter-spacing:.06e
 .sec{display:flex;align-items:center;gap:14px;font-size:15px;letter-spacing:.18em;color:var(--dim);font-weight:500;margin-bottom:14px}
 .sec b{font-family:'IBM Plex Mono';color:var(--acc);font-weight:500;letter-spacing:.05em}
 .sec i{flex:1;height:1px;background:var(--line)}
-.kpis{display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr;border:1px solid var(--line);border-radius:4px;background:rgba(16,26,44,.7);margin-bottom:12px}
-.k{padding:18px 22px;border-right:1px solid var(--line)}.k:last-child{border-right:0}
-.kv{font-family:'IBM Plex Mono';font-size:54px;font-weight:600;line-height:1;color:var(--text)}
-.kv small{font-size:28px;color:var(--mute);font-weight:500}
-.kv.acc{color:var(--acc)}.kv.neg{color:var(--neg)}.kv.mute{color:var(--mute)}
-.kk{font-family:'Noto Sans TC';font-size:17px;color:var(--dim);margin-top:12px}
-.kk span{display:block;font-family:'Inter';font-size:11px;letter-spacing:.24em;color:var(--mute);margin-top:4px}
-.disc{font-size:14px;color:var(--mute);margin-bottom:22px;letter-spacing:.03em}
-.disc b{color:var(--dim);font-weight:500}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.card{border:1px solid var(--line);border-radius:4px;padding:18px 20px 16px;background:rgba(16,26,44,.55)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;height:calc(1350px - 48px - 200px - 30px - 150px)}
+.card{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:4px;padding:22px 26px 20px;background:rgba(16,26,44,.55)}
 .ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .idx{font-family:'IBM Plex Mono';font-size:15px;color:var(--mute)}
-.side{font-size:13px;font-weight:700;letter-spacing:.08em;padding:4px 10px;border-radius:2px}
+.side{font-size:15px;font-weight:700;letter-spacing:.08em;padding:4px 10px;border-radius:2px}
 .side.long{color:var(--pos);border:1px solid rgba(79,209,197,.55)}.side.short{color:var(--neg);border:1px solid rgba(224,122,122,.55)}
 .body{display:flex;gap:10px;align-items:flex-start}.info{flex:1}
-.pair{font-family:'IBM Plex Mono';font-size:40px;font-weight:600;line-height:1}
-.pair small{font-size:17px;color:var(--mute);font-weight:400}
-.lev{font-size:14px;color:var(--dim);margin:8px 0 10px}
-.row{display:flex;align-items:baseline;font-size:15px;padding:5px 0;border-top:1px solid var(--line)}
-.row span{color:var(--dim);width:44px;flex:none}
-.row b{font-family:'IBM Plex Mono';font-weight:500;font-size:18px;flex:1}
+.pair{font-family:'IBM Plex Mono';font-size:50px;font-weight:600;line-height:1}
+.pair small{font-size:20px;color:var(--mute);font-weight:400}
+.lev{font-size:16px;color:var(--dim);margin:10px 0 14px}
+.row{display:flex;align-items:baseline;font-size:17px;padding:9px 0;border-top:1px solid var(--line)}
+.row span{color:var(--dim);width:52px;flex:none}
+.row b{font-family:'IBM Plex Mono';font-weight:500;font-size:22px;flex:1}
 .row b.neg{color:var(--neg)}
 .row b i{font-style:normal;color:var(--pos);font-size:15px;margin-left:6px}
-.row em{font-style:normal;font-family:'IBM Plex Mono';font-size:14px;color:var(--ice)}
-.st{font-size:15px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line2);letter-spacing:.04em;font-weight:500}
+.row em{font-style:normal;font-family:'IBM Plex Mono';font-size:16px;color:var(--ice)}
+.st{font-size:17px;margin-top:auto;padding-top:14px;border-top:1px solid var(--line2);letter-spacing:.04em;font-weight:500}
 .st.mute{color:var(--mute)}.st.pos{color:var(--pos)}.st.neg{color:var(--neg)}
 .ft{position:absolute;left:64px;right:64px;bottom:34px;display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid var(--line2);padding-top:16px;font-size:15px;color:var(--dim);line-height:1.7}
 .ft b{color:var(--text);font-weight:500}
@@ -97,15 +79,6 @@ h1{font-family:'Noto Sans TC';font-weight:900;font-size:60px;letter-spacing:.06e
     </div>
     <div class="meta">統計期間<b>${D.period ? esc(D.period) : '待確認'}</b>${D.issue ? esc(D.issue) + ' · 週報' : ''}</div>
   </div>
-
-  <div class="sec"><b>01</b>本週市場分析回顧<i></i>ANALYSIS REVIEW</div>
-  <div class="kpis">
-    ${kpi('觸及最終止盈', 'FINAL TP REACHED', `${full}<small>/${N}</small>`, 'acc')}
-    ${kpi('分析機會', 'SETUPS', N)}
-    ${kpi('觸及止盈', 'TP HIT', anyTp, anyTp ? 'acc' : 'mute')}
-    ${kpi(pending ? '待確認' : '觸及止損', pending ? 'PENDING' : 'STOP HIT', pending || sl, sl ? 'neg' : 'mute')}
-  </div>
-  <div class="disc">以下為社群公開之分析規劃與後續走勢，<b>非正式報單、不代表實際交易報酬</b>。卡片 R 值為規劃盈虧比（進場區間中值，止損距離 = 1R）。</div>
 
   <div class="grid">${D.ideas.map(card).join('')}</div>
 
