@@ -18,28 +18,6 @@ const anyTp = D.ideas.filter(o => hitOf(o) > 0).length;
 const sl = D.ideas.filter(o => o.result === 'SL').length;
 const pending = D.ideas.filter(o => !o.result).length;
 
-// ── 價格階梯：止盈統一畫在上方、止損在下方，方向一致好比較
-function ladder(o, hit) {
-  const W = 118, H = 236, top = 14, bot = H - 14;
-  const long = o.side === '多';
-  const all = [o.sl, ...o.entry, ...o.tp], mn = Math.min(...all), mx = Math.max(...all);
-  const y = v => { const t = (v - mn) / (mx - mn); return long ? bot - t * (bot - top) : top + t * (bot - top); };
-  const x0 = 34, x1 = W - 6;
-  const eA = y(o.entry[0]), eB = y(o.entry[1]);
-  let s = `<line x1="${x0 + 12}" y1="${top}" x2="${x0 + 12}" y2="${bot}" stroke="var(--line2)" stroke-width="2"/>`;
-  s += `<rect x="${x0}" y="${Math.min(eA, eB) - 3}" width="${x1 - x0}" height="${Math.abs(eA - eB) + 6}" fill="rgba(159,214,255,.22)" stroke="var(--ice)" stroke-width="1"/>`;
-  s += `<text x="${x0 - 6}" y="${(eA + eB) / 2 + 5}" text-anchor="end" class="lt">進場</text>`;
-  s += `<line x1="${x0}" y1="${y(o.sl)}" x2="${x1}" y2="${y(o.sl)}" stroke="var(--neg)" stroke-width="2" stroke-dasharray="5 4"/><text x="${x0 - 6}" y="${y(o.sl) + 5}" text-anchor="end" class="lt" fill="var(--neg)">SL</text>`;
-  o.tp.forEach((p, k) => {
-    const ok = k < hit;
-    s += `<line x1="${x0}" y1="${y(p)}" x2="${x1}" y2="${y(p)}" stroke="${ok ? 'var(--pos)' : 'var(--dim)'}" stroke-width="2"/>`;
-    s += `<text x="${x0 - 6}" y="${y(p) + 5}" text-anchor="end" class="lt" fill="${ok ? 'var(--pos)' : 'var(--dim)'}">TP${k + 1}</text>`;
-  });
-  if (hit) { const yt = y(o.tp[hit - 1]), ym = (eA + eB) / 2;
-    s += `<line x1="${x0 + 12}" y1="${ym}" x2="${x0 + 12}" y2="${yt + 6}" stroke="var(--pos)" stroke-width="4"/><path d="M${x0 + 4} ${yt + 12} L${x0 + 12} ${yt} L${x0 + 20} ${yt + 12} Z" fill="var(--pos)"/>`; }
-  return `<svg class="lad" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${s}</svg>`;
-}
-
 function card(o, i) {
   const d = Math.max(dec(o.entry[0]), dec(o.entry[1]), dec(o.sl), ...o.tp.map(dec));
   const mid = (o.entry[0] + o.entry[1]) / 2, risk = Math.abs(mid - o.sl);
@@ -55,7 +33,7 @@ function card(o, i) {
       <div class="row"><span>進場</span><b>${fmtP(lo, d)}–${fmtP(hi, d)}</b></div>
       <div class="row"><span>止損</span><b class="neg">${fmtP(o.sl, d)}</b></div>
       ${o.tp.map((p, k) => `<div class="row"><span>TP${k + 1}</span><b>${fmtP(p, d)}${k < hit ? '<i>✓</i>' : ''}</b><em>${(Math.abs(p - mid) / risk).toFixed(2)}R</em></div>`).join('')}
-    </div>${ladder(o, hit)}</div>
+    </div></div>
     <div class="st ${st[0]}">● ${st[1]}</div>
   </div>`;
 }
@@ -105,7 +83,6 @@ h1{font-family:'Noto Sans TC';font-weight:900;font-size:60px;letter-spacing:.06e
 .row b.neg{color:var(--neg)}
 .row b i{font-style:normal;color:var(--pos);font-size:15px;margin-left:6px}
 .row em{font-style:normal;font-family:'IBM Plex Mono';font-size:14px;color:var(--ice)}
-.lad .lt{font:500 12px 'IBM Plex Mono';fill:var(--dim)}
 .st{font-size:15px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line2);letter-spacing:.04em;font-weight:500}
 .st.mute{color:var(--mute)}.st.pos{color:var(--pos)}.st.neg{color:var(--neg)}
 .ft{position:absolute;left:64px;right:64px;bottom:34px;display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid var(--line2);padding-top:16px;font-size:15px;color:var(--dim);line-height:1.7}
