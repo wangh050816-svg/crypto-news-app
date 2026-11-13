@@ -51,7 +51,8 @@ function idea(o, i) {
   const mid = (o.entry[0] + o.entry[1]) / 2, risk = Math.abs(mid - o.sl);
   const lo = Math.min(...o.entry), hi = Math.max(...o.entry);
   const long = o.side === '多';
-  const status = o.result ? (o.result === 'SL' ? ['neg', '觸及止損'] : o.result === '未觸發' ? ['mute', '未觸發進場'] : ['pos', '觸及 ' + o.result])
+  const hit = o.result && o.result.startsWith('TP') ? +o.result.slice(2) : 0;
+  const status = o.result ? (o.result === 'SL' ? ['neg', '觸及止損'] : o.result === '未觸發' ? ['mute', '未觸發進場'] : ['pos', +o.result.slice(2) === o.tp.length ? `止盈全數達標 TP1–TP${o.tp.length}` : '觸及 ' + o.result])
                           : ['mute', '後續走勢待確認'];
   return `<div class="idea">
     <div class="ih"><span class="idx">0${i + 1}</span><span class="side ${long ? 'long' : 'short'}">${long ? 'LONG 做多' : 'SHORT 做空'}</span></div>
@@ -59,7 +60,7 @@ function idea(o, i) {
     <div class="lev">市價 · ${o.lev}x · 倉位 5%</div>
     <div class="row"><span>進場</span><b>${fmtP(lo, d)}–${fmtP(hi, d)}</b></div>
     <div class="row"><span>止損</span><b class="tneg">${fmtP(o.sl, d)}</b></div>
-    <div class="tps">${o.tp.map((p, k) => `<div class="row"><span>TP${k + 1}</span><b>${fmtP(p, d)}</b><em>${(Math.abs(p - mid) / risk).toFixed(2)}R</em></div>`).join('')}</div>
+    <div class="tps">${o.tp.map((p, k) => `<div class="row${k < hit ? ' hit' : ''}"><span>TP${k + 1}</span><b>${fmtP(p, d)}${k < hit ? ' <i>✓</i>' : ''}</b><em>${(Math.abs(p - mid) / risk).toFixed(2)}R</em></div>`).join('')}</div>
     <div class="st ${status[0]}">● ${status[1]}</div>
   </div>`;
 }
@@ -128,6 +129,7 @@ h1{font-family:'Noto Sans TC';font-weight:900;font-size:60px;letter-spacing:.06e
 .row span{color:var(--dim);width:42px;flex:none}
 .row b{font-family:'IBM Plex Mono';font-weight:500;font-size:16px;color:var(--text);flex:1}
 .row em{font-style:normal;font-family:'IBM Plex Mono';font-size:14px;color:var(--ice)}
+.row.hit b i{font-style:normal;color:var(--pos);font-size:14px;margin-left:4px}
 .tps .row:first-child{border-top:1px solid var(--line2)}
 .st{font-size:13px;margin-top:10px;letter-spacing:.04em}
 .st.mute{color:var(--mute)}.st.pos{color:var(--pos)}.st.neg{color:var(--neg)}
@@ -164,7 +166,7 @@ h1{font-family:'Noto Sans TC';font-weight:900;font-size:60px;letter-spacing:.06e
   </div>
 
   <div class="sec"><b>03</b>本週市場分析機會<i></i>未正式報單 · 不計入績效</div>
-  <div class="secnote">右側 R 為規劃盈虧比：以進場區間中值計算，止損距離 = 1R</div>
+  <div class="secnote">${(()=>{const done=D.ideas.filter(o=>o.result&&+o.result.slice(2)===o.tp.length).length;return done?`後續走勢：<b style="color:var(--acc);font-weight:600">${done}/${D.ideas.length} 筆觸及最終止盈</b>　·　`:''})()}右側 R 為規劃盈虧比（進場區間中值，止損距離 = 1R）</div>
   <div class="ideas">${D.ideas.map(idea).join('')}</div>
 
   <div class="ft">
