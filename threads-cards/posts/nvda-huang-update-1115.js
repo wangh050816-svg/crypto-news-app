@@ -52,8 +52,8 @@ POST({
     const ev=[
       ['10/30','新加坡內政部澄清','未就間諜疑雲展開調查',0],
       ['11/8','婚外情曝光','董事會啟動調查',0],
-      ['11/12','黃仁勳辭去','執行長與董事職務',1],
-      ['11/12','新加坡補充：Alice Huang','因 Megaspeed 案受查，非間諜案',0],
+      ['11/12','黃仁勳辭去','執行長與董事職務',0],
+      ['11/12','新加坡：Alice Huang 受查','屬 Megaspeed 案，非間諜',1],
       ['最新狀態','董事會獨立調查','結果尚未公布',2],
     ];
     const NX=L+18, Y0=356, DY=98;
@@ -76,7 +76,7 @@ POST({
       const tx=NX+(big?250:206);
       g+=`<text x="${tx}" y="${y-6}" class="ev" ${big?`style="fill:${T.text};font-weight:700"`:''}>${a}</text>`;
       g+=`<text x="${tx}" y="${y+36}" class="ev" ${big?`style="fill:${T.text};font-weight:700"`:''}>${b}</text>`;
-      if(big) g+=`<rect x="${NX+500}" y="${y-18}" width="110" height="36" rx="4" fill="none" stroke="${T.fg}" stroke-width="2"/><text x="${NX+555}" y="${y+9}" text-anchor="middle" style="font-size:22px;font-weight:700;fill:${T.fg};letter-spacing:2px">官方公告</text>`;
+      if(false) g+=`<rect x="${NX+500}" y="${y-18}" width="110" height="36" rx="4" fill="none" stroke="${T.fg}" stroke-width="2"/><text x="${NX+555}" y="${y+9}" text-anchor="middle" style="font-size:22px;font-weight:700;fill:${T.fg};letter-spacing:2px">官方公告</text>`;
     });
     // 右側數據模組
     const RX=1150, RW=400;
