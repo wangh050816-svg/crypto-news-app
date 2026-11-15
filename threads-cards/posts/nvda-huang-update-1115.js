@@ -11,7 +11,7 @@
 //   Harvey C. Jones 任公司首位董事會主席 — Nvidia 8-K（SEC）、CNBC、NPR、Al Jazeera
 // 人物照：Jensen Huang Stanford 2026-04-30 010 (cropped)，攝影 Anderseidesvik，CC BY-SA 4.0（Wikimedia Commons），已轉灰階、壓暗
 const img=f=>'data:image/jpeg;base64,'+require('fs').readFileSync(__dirname+'/../assets/'+f).toString('base64');
-const face=img('jensen-huang-stanford-2026.jpg');
+const face='data:image/png;base64,'+require('fs').readFileSync(__dirname+'/../assets/jensen-huang-stanford-2026-cutout.png').toString('base64');
 // NVDA 收盤 10/12–11/11（背景大線圖用）
 const month=[226.32,228.52,221.30,217.23,214.13,217.09,216.47,221.97,212.21,210.96,216.00,217.94,215.38,213.66,204.64,202.06,206.69,200.13,181.60,186.64,178.67,168.89,173.73,159.51];
 const spark=[202.06,206.69,200.13,181.60,186.64,178.67,168.89,173.73,159.51]; // 11/2–11/11 收盤＋盤後
@@ -41,8 +41,9 @@ POST({
     const mx=i=>60+i/(month.length-1)*1480, my=v=>380+(240-v)/(240-150)*420;
     g+=`<polyline points="${month.map((v,i)=>`${mx(i).toFixed(1)},${my(v).toFixed(1)}`).join(' ')}" fill="none" stroke="${T.fg}" stroke-opacity="0.045" stroke-width="4" stroke-linejoin="round"/>`;
     // 人物
-    g+=`<image href="${face}" x="610" y="-10" width="660" height="880" preserveAspectRatio="xMidYMid slice" opacity="0.62"/>`;
-    g+=`<rect x="610" y="0" width="660" height="900" fill="url(#fadeL)"/><rect x="610" y="0" width="660" height="900" fill="url(#fadeB)"/><rect x="610" y="0" width="660" height="900" fill="url(#fadeR)"/>`;
+    g+=`<defs><radialGradient id="halo2" cx="0.5" cy="0.4" r="0.5"><stop offset="0" stop-color="#3a3d43" stop-opacity="0.8"/><stop offset="0.6" stop-color="#25272b" stop-opacity="0.45"/><stop offset="1" stop-color="#101114" stop-opacity="0"/></radialGradient></defs>`;
+    g+=`<ellipse cx="985" cy="380" rx="420" ry="420" fill="url(#halo2)"/>`;
+    g+=`<image href="${face}" x="690" y="10" width="600" height="799" preserveAspectRatio="xMidYMin meet" opacity="0.96"/>`;
     g+=`<g transform="translate(0,${DOWN})">`; // 前景內容整體下移
     // 標籤與標題
     const L=80;
@@ -53,11 +54,11 @@ POST({
     g+=`<line x1="${L}" x2="${L+120}" y1="292" y2="292" stroke="${T.fg}" stroke-width="3"/>`;
     // 時間軸
     const ev=[
-      ['10/30','新加坡內政部澄清','未就間諜疑雲展開調查',0],
-      ['11/9','婚外情曝光','董事會啟動調查',0],
-      ['11/12','黃仁勳辭去','執行長與董事職務',0],
-      ['11/12','新加坡：Alice Huang 受查','屬 Megaspeed 案，非間諜',1],
-      ['最新狀態','董事會獨立調查','結果尚未公布',2],
+      ['10/30','新加坡：無間諜調查','',0],
+      ['11/9','董事會啟動調查','',0],
+      ['11/12','黃仁勳辭職','',0],
+      ['11/12','新加坡：非間諜案','',1],
+      ['最新狀態','調查結果未公布','',2],
     ];
     const NX=L+18, Y0=356, DY=98;
     g+=`<line x1="${NX}" x2="${NX}" y1="${Y0}" y2="${Y0+DY*3}" stroke="url(#tl)" stroke-width="4"/>`;
@@ -77,8 +78,7 @@ POST({
       g+=k===2?`<text x="${NX+44}" y="${y+12}" style="font-weight:700;font-size:32px;fill:${T.dim}">${d}</text>`
         :`<text x="${NX+44}" y="${y+(big?20:16)}" style="font-family:Inter;font-weight:800;font-size:${big?58:46}px;fill:${big?T.fg:T.text}">${d}</text>`;
       const tx=NX+(big?250:206);
-      g+=`<text x="${tx}" y="${y-6}" class="ev" ${big?`style="fill:${T.text};font-weight:700"`:''}>${a}</text>`;
-      g+=`<text x="${tx}" y="${y+36}" class="ev" ${big?`style="fill:${T.text};font-weight:700"`:''}>${b}</text>`;
+      g+=`<text x="${tx}" y="${y+12}" class="ev" style="font-size:${big?40:34}px;${big?`fill:${T.text};font-weight:700`:''}">${a}</text>`;
       if(false) g+=`<rect x="${NX+500}" y="${y-18}" width="110" height="36" rx="4" fill="none" stroke="${T.fg}" stroke-width="2"/><text x="${NX+555}" y="${y+9}" text-anchor="middle" style="font-size:22px;font-weight:700;fill:${T.fg};letter-spacing:2px">官方公告</text>`;
     });
     // 右側數據模組
