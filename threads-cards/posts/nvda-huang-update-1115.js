@@ -4,7 +4,7 @@
 //   （指未就其與黃仁勳、中國情報的關係調查）— police.gov.sg、wccftech
 // 11/12 新加坡內政部補充：曾因 Megaspeed 伺服器轉出口案調查 Alice Huang，調查與間諜無關；證據不足、予以嚴厲警告並禁止入境 — Reuters（GMA 轉載）
 // 11/8 董事會宣布啟動獨立調查；黃仁勳向員工承認不忠 — CNBC、Reuters、Al Jazeera
-// 11/12 黃仁勳辭去總裁、執行長及董事職務，即日生效；財務長 Colette Kress 任臨時執行長並續任 CFO；
+// 11/11 黃仁勳辭去總裁、執行長及董事職務，即日生效（8-K 事件日 11/11，11/12 公告）；財務長 Colette Kress 任臨時執行長並續任 CFO；
 //   Harvey C. Jones 任公司首位董事會主席 — Nvidia 8-K（SEC）、CNBC、NPR、Al Jazeera
 // 人物照：Jensen Huang Stanford 2026-04-30 010 (cropped)，攝影 Anderseidesvik，CC BY-SA 4.0（Wikimedia Commons），已轉灰階、壓暗
 const img=f=>'data:image/jpeg;base64,'+require('fs').readFileSync(__dirname+'/../assets/'+f).toString('base64');
@@ -52,7 +52,7 @@ POST({
     const ev=[
       ['10/30','新加坡內政部澄清','未就間諜疑雲展開調查',0],
       ['11/8','婚外情曝光','董事會啟動調查',0],
-      ['11/12','黃仁勳辭去','執行長與董事職務',0],
+      ['11/11','黃仁勳辭去','執行長與董事職務',0],
       ['11/12','新加坡：Alice Huang 受查','屬 Megaspeed 案，非間諜',1],
       ['最新狀態','董事會獨立調查','結果尚未公布',2],
     ];
