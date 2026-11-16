@@ -29,17 +29,15 @@ POST({
     g+=`<rect x="${L}" y="60" width="7" height="26" rx="3" fill="${T.fg}"/>`;
     g+=`<text x="${L+24}" y="84" style="font-family:Inter;font-size:27px;font-weight:600;letter-spacing:1px;fill:${T.dim}">BITCOIN<tspan dx="14">|</tspan><tspan dx="14">LEGAL WATCH</tspan></text>`;
     g+=`<text x="${L-2}" y="176" style="font-size:68px;font-weight:900;fill:${T.text}">靠打官司拿走沉睡比特幣？</text>`;
-    g+=`<text x="${L-2}" y="270" style="font-size:66px;font-weight:900;fill:${T.text}">訴訟鎖定 <tspan style="font-size:80px;fill:${T.fg}"><tspan style="font-family:Inter;font-weight:800">380</tspan> 萬顆 BTC</tspan></text>`;
+    g+=`<text x="${L-2}" y="270" style="font-size:66px;font-weight:900;fill:${T.text}">訴訟鎖定 <tspan style="font-size:80px;fill:${T.fg}"><tspan style="font-family:Inter;font-weight:800">380</tspan> 萬顆</tspan></text>`;
     // 左側：380 萬顆組成
     const BX=L, BW=980, BY=470, BH=104, sat=1.096/3.8;
-    g+=`<text x="${L}" y="420" style="font-size:30px;font-weight:700;fill:${T.dim}">訴訟主張的「遺失」比特幣<tspan dx="16" style="font-weight:500">共 <tspan style="font-family:Inter">39,069</tspan> 個錢包</tspan></text>`;
+    g+=`<text x="${L}" y="420" style="font-size:30px;font-weight:700;fill:${T.dim}">訴訟主張的「遺失」比特幣</text>`;
     g+=`<rect x="${BX}" y="${BY}" width="${BW}" height="${BH}" rx="14" fill="#c9ccd1" fill-opacity="0.85" filter="url(#sh)"/>`;
     g+=`<path d="M${BX+14} ${BY}H${BX+BW*sat}V${BY+BH}H${BX+14}Q${BX} ${BY+BH} ${BX} ${BY+BH-14}V${BY+14}Q${BX} ${BY} ${BX+14} ${BY}Z" fill="url(#og)"/>`;
     g+=`<line x1="${BX+BW*sat}" x2="${BX+BW*sat}" y1="${BY-10}" y2="${BY+BH+10}" stroke="${T.bg}" stroke-width="4"/>`;
     g+=`<text x="${BX}" y="${BY+BH+80}" style="font-size:40px;font-weight:900;fill:${T.fg}">約 <tspan style="font-family:Inter;font-size:60px;font-weight:800">110</tspan> 萬顆</text>`;
     g+=`<text x="${BX}" y="${BY+BH+124}" style="font-size:30px;font-weight:500;fill:${T.text}">被認為與中本聰有關</text>`;
-    g+=`<text x="${BX+BW}" y="${BY+BH+80}" text-anchor="end" style="font-size:40px;font-weight:900;fill:#c9ccd1">其餘約 <tspan style="font-family:Inter;font-size:60px;font-weight:800">270</tspan> 萬顆</text>`;
-    g+=`<text x="${BX+BW}" y="${BY+BH+124}" text-anchor="end" style="font-size:30px;font-weight:500;fill:${T.dim}">其他沉睡錢包</text>`;
     // 右側卡片
     const RX=1134, RW=438, RH=197;
     const card=y=>`<rect x="${RX}" y="${y}" width="${RW}" height="${RH}" rx="22" fill="#2a2c31" fill-opacity="0.86" stroke="#ffffff" stroke-opacity="0.2" stroke-width="1.5" filter="url(#sh)"/><rect x="${RX+1}" y="${y+1}" width="${RW-2}" height="60" rx="21" fill="#ffffff" fill-opacity="0.025"/>`;
@@ -49,8 +47,7 @@ POST({
     g+=`<text x="${RX+32}" y="${y+174}" class="lb">法院尚未判決</text>`;
     y=351;
     g+=card(y)+`<text x="${RX+32}" y="${y+52}" class="lb">法院允許的通知方式</text>`;
-    g+=`<text x="${RX+28}" y="${y+126}" style="font-size:50px;font-weight:900;fill:${T.text}">鏈上小額轉帳</text>`;
-    g+=`<text x="${RX+32}" y="${y+174}" class="lb">直接把通知打進錢包</text>`;
+    g+=`<text x="${RX+28}" y="${y+136}" style="font-size:50px;font-weight:900;fill:${T.text}">鏈上小額轉帳</text>`;
     y=569;
     g+=card(y)+`<rect x="${RX}" y="${y}" width="${RW}" height="3" rx="1.5" fill="${T.fg}"/><text x="${RX+32}" y="${y+52}" class="lb">沉睡約 <tspan style="font-family:Inter">15</tspan> 年的錢包</text>`;
     g+=`<text x="${RX+28}" y="${y+130}" style="font-size:52px;font-weight:900;fill:${T.fg}">轉走 <tspan style="font-family:Inter;font-size:72px;font-weight:800">75</tspan> BTC</text>`;
