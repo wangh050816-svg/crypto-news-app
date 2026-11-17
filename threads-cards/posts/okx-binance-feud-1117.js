@@ -1,5 +1,6 @@
 // 徐明星 vs CZ：連續兩年 10 月大跌（與黃仁勳圖同系列版型，左上不放英文標籤，依使用者 11/17 文字）
 // 時間軸用台灣時間：2025 崩盤為美東 10/10 晚間 = 台灣 10/11 清晨；CZ 發文 11/15（X 時間戳；The Block、Crypto Times）；徐明星週日 11/15 回應（CoinDesk、Yahoo/Stocktwits）
+// 11/4 徐明星批評 CZ 對幣安 63 億美元駭客事件的回應（拿銀行比較）— Crypto Times 11/4、Blockzeit
 // 查證：
 // 2025/10/10 單日清算約 190 億美元 — Stocktwits 引述研究、CoinGlass（多家媒體）
 // 徐明星：CZ 應為兩年 10 月崩盤負責；去年批幣安 USDe 收益活動推高槓桿 — Stocktwits、Bitcoin Sistemi、Coinspectator
@@ -49,13 +50,14 @@ POST({
     // 時間軸
     const ev=[
       ['10/11','2025：清算約 190 億美元','',0],
-      ['11/15','CZ：幣安沒有拋售','',0],
+      ['11/4','徐明星批 CZ 應對駭客事件','',0],
+      ['11/15','CZ：沒拋售，自己還在買','',0],
       ['11/15','徐明星：崩盤怪 CZ','',1],
       ['最新狀態','雙方各說各話','',2],
     ];
-    const NX=L+18, Y0=380, DY=118;
-    g+=`<line x1="${NX}" x2="${NX}" y1="${Y0}" y2="${Y0+DY*2}" stroke="url(#tl)" stroke-width="4"/>`;
-    g+=`<line x1="${NX}" x2="${NX}" y1="${Y0+DY*2}" y2="${Y0+DY*3}" stroke="${T.dim}" stroke-opacity="0.5" stroke-width="3" stroke-dasharray="3 10" stroke-linecap="round"/>`;
+    const NX=L+18, Y0=356, DY=98;
+    g+=`<line x1="${NX}" x2="${NX}" y1="${Y0}" y2="${Y0+DY*3}" stroke="url(#tl)" stroke-width="4"/>`;
+    g+=`<line x1="${NX}" x2="${NX}" y1="${Y0+DY*3}" y2="${Y0+DY*4}" stroke="${T.dim}" stroke-opacity="0.5" stroke-width="3" stroke-dasharray="3 10" stroke-linecap="round"/>`;
     ev.forEach(([d,a,b,k],i)=>{
       const y=Y0+i*DY;
       if(k===1){
@@ -82,7 +84,7 @@ POST({
     g+=box(y,200)+`<rect x="${RX}" y="${y}" width="${RW}" height="3" fill="${T.fg}"/>`;
     g+=`<text x="${RX+28}" y="${y+48}" class="lb">OKX 創辦人</text>`;
     g+=`<text x="${RX+24}" y="${y+124}" style="font-size:62px;font-weight:900;fill:${T.fg}">徐明星</text>`;
-    g+=`<text x="${RX+28}" y="${y+172}" class="lb" style="fill:${T.text}">質疑幣安槓桿風險</text>`;
+    g+=`<text x="${RX+28}" y="${y+172}" class="lb" style="fill:${T.text}">質疑槓桿風險・連續開砲</text>`;
     // 2 CZ
     y=375;
     g+=box(y,205);
