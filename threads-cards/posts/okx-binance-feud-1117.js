@@ -14,7 +14,7 @@ const spark=[202.06,206.69,200.13,181.60,186.64,178.67,168.89,173.73,159.51]; //
 
 const DOWN=30; // 前景（標題、時間軸、數據模組）往下移的距離
 POST({
-  caption:'連續兩年 10 月市場大跌，幣安又被點名了？',
+  caption:'連續兩年 10 月市場大跌，幣安被點名了？',
   theme:'bulletin',width:1600,height:900,scale:2.4, // 輸出 3840×2160
   footer:['',''],
   draw:T=>{
@@ -44,7 +44,7 @@ POST({
     // 標籤與標題
     const L=80;
     g+=`<text x="${L-4}" y="168" class="ti2">連續兩年 <tspan style="font-family:Inter;font-weight:800">10</tspan> 月大跌</text>`;
-    g+=`<text x="${L-4}" y="252" class="ti2"><tspan fill="${T.fg}">幣安</tspan>又被點名？</text>`;
+    g+=`<text x="${L-4}" y="252" class="ti2"><tspan fill="${T.fg}">幣安</tspan>被點名了？</text>`;
     g+=`<line x1="${L}" x2="${L+120}" y1="292" y2="292" stroke="${T.fg}" stroke-width="3"/>`;
     // 時間軸
     const ev=[
