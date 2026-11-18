@@ -35,7 +35,7 @@ POST({
     // 標籤與標題
     const L=66;
     g+=`<text x="${L-2}" y="150" style="font-size:72px;font-weight:900;fill:${T.text}">還沒升息就先跌？</text>`;
-    g+=`<text x="${L-2}" y="246" style="font-size:66px;font-weight:900;fill:${T.text}">道瓊單日<tspan style="font-size:80px;fill:${T.fg}">重挫近 <tspan style="font-family:Inter;font-weight:800">850</tspan> 點</tspan></text>`;
+    g+=`<text x="${L-2}" y="246" style="font-size:66px;font-weight:900;fill:${T.text}">美股<tspan style="font-size:80px;fill:${T.fg}">先跌一波</tspan></text>`;
     // 柱狀圖
     const X0=168, X1=870, B=746, top=420, max=100, yv=v=>B-v/max*(B-top);
     g+=`<text x="${L}" y="318" style="font-size:30px;font-weight:700;fill:${T.dim}">12 月會議利率機率</text>`;
