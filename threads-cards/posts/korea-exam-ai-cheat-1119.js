@@ -1,4 +1,4 @@
-// 韓國稅務師榜首 AI 作弊（同系列版型，左上不放英文；中間為向量插畫：戴口罩的人＋計算機＋修正帶，非真人）
+// 韓國稅務師榜首 AI 作弊（同系列版型，左上不放英文；中間照片由使用者提供，臉部已打馬賽克，已轉灰階）
 // 查證：
 // 第 63 屆稅務師考試榜首自首，承認以微型相機拍題、交給生成式 AI 解答，計算機電路經改裝 — 헤럴드경제、서울경제、코리아타임스、주간경향
 // 第一次考試 397.5 / 400（每題 2.5 分、共 160 題 → 只錯 1 題）— 헤럴드경제、aboda
@@ -12,6 +12,7 @@ const month=[226.32,228.52,221.30,217.23,214.13,217.09,216.47,221.97,212.21,210.
 const spark=[202.06,206.69,200.13,181.60,186.64,178.67,168.89,173.73,159.51]; // 11/2–11/11 收盤＋盤後
 
 const DOWN=30; // 前景（標題、時間軸、數據模組）往下移的距離
+const photo='data:image/jpeg;base64,'+require('fs').readFileSync(__dirname+'/../assets/korea-exam-cheat-photo.jpg').toString('base64');
 POST({
   caption:'考試考到榜首，竟然是靠 AI 作弊？',
   theme:'bulletin',width:1600,height:900,scale:2.4, // 輸出 3840×2160
@@ -38,33 +39,11 @@ POST({
     // 人物
     g+=`<defs><radialGradient id="halo2" cx="0.5" cy="0.4" r="0.5"><stop offset="0" stop-color="#3a3d43" stop-opacity="0.8"/><stop offset="0.6" stop-color="#25272b" stop-opacity="0.45"/><stop offset="1" stop-color="#101114" stop-opacity="0"/></radialGradient></defs>`;
     g+=`<ellipse cx="985" cy="380" rx="420" ry="420" fill="url(#halo2)"/>`;
-    // 插畫：考卷、戴口罩的人、計算機、修正帶（非真人）
-    {const P='#e9eaec', D='#15161a';
-      // 背後考卷
-      g+=`<g opacity="0.09" transform="rotate(-8 980 260)"><rect x="830" y="90" width="330" height="430" rx="6" fill="${P}"/>${[...Array(12)].map((_,i)=>`<rect x="860" y="${130+i*30}" width="${i%3?260:180}" height="8" rx="4" fill="#666"/>`).join('')}</g>`;
-      g+=`<g opacity="0.06" transform="rotate(6 760 230)"><rect x="650" y="70" width="280" height="360" rx="6" fill="${P}"/>${[...Array(10)].map((_,i)=>`<rect x="675" y="${110+i*28}" width="${i%2?220:150}" height="7" rx="3.5" fill="#666"/>`).join('')}</g>`;
-      // 人物剪影（帽T＋口罩）
-      g+=`<defs><linearGradient id="hood" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3a3c41"/><stop offset="1" stop-color="#16171a"/></linearGradient>
-        <linearGradient id="skin" x1="0" x2="1"><stop offset="0" stop-color="#8d8f93"/><stop offset="1" stop-color="#b9bbbf"/></linearGradient></defs>`;
-      g+=`<path d="M720 640 C730 520 790 470 900 460 C1010 470 1070 520 1080 640 Z" fill="url(#hood)"/>`;
-      g+=`<path d="M840 470 L900 560 L960 470" fill="none" stroke="#55585e" stroke-width="5"/>`;
-      g+=`<rect x="872" y="395" width="56" height="80" rx="18" fill="#7e8084"/>`;
-
-      g+=`<ellipse cx="900" cy="330" rx="88" ry="104" fill="url(#skin)"/>`;
-      g+=`<path d="M806 320 C792 225 850 196 902 198 C966 198 1006 238 994 322 C984 280 960 262 930 270 C905 252 880 268 860 262 C838 270 818 285 806 320Z" fill="#26272b"/>`;
-      g+=`<path d="M822 342 Q900 320 978 342 L972 408 Q900 448 828 408Z" fill="#1d1e21"/>`;
-      g+=`<ellipse cx="866" cy="312" rx="11" ry="7" fill="#1b1c1f"/><ellipse cx="934" cy="312" rx="11" ry="7" fill="#1b1c1f"/>`;
-      g+=`<path d="M850 292 Q866 284 882 292 M918 292 Q934 284 950 292" fill="none" stroke="#2a2b2f" stroke-width="5" stroke-linecap="round"/>`;
-      g+=`<ellipse cx="812" cy="335" rx="12" ry="22" fill="#9a9ca0"/><ellipse cx="988" cy="335" rx="12" ry="22" fill="#a9abaf"/>`;
-      // 計算機
-      g+=`<g transform="rotate(10 1060 560)"><rect x="960" y="430" width="200" height="270" rx="18" fill="#2f3136" stroke="#55585e" stroke-width="3"/>
-        <rect x="980" y="452" width="160" height="58" rx="6" fill="#a9b3a2"/><text x="1128" y="496" text-anchor="end" style="font-family:Inter;font-size:36px;font-weight:700;fill:#2a2f26">397.5</text>
-        ${[...Array(16)].map((_,i)=>`<rect x="${982+(i%4)*40}" y="${528+Math.floor(i/4)*40}" width="32" height="30" rx="6" fill="${i===15?T.fg:'#4a4d53'}"/>`).join('')}</g>`;
-      // 修正帶
-      g+=`<g transform="rotate(-16 760 600)"><path d="M640 585 L840 560 Q880 556 880 588 L880 612 Q880 640 840 638 L640 640 Q620 640 620 612 Q620 588 640 585Z" fill="#e6e7e9"/>
-        <path d="M840 560 Q880 556 880 588 L880 612 Q880 640 840 638Z" fill="#3a6ad4"/>
-        <rect x="660" y="596" width="140" height="10" rx="5" fill="#c9cbcf"/><circle cx="700" cy="621" r="7" fill="${T.fg}"/></g>`;
-      g+=`<rect x="600" y="600" width="620" height="120" fill="url(#fadeB2)"/><defs><linearGradient id="fadeB2" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${T.bg}" stop-opacity="0"/><stop offset="1" stop-color="${T.bg}"/></linearGradient></defs>`;}
+    // 使用者提供的新聞照片（臉部已打馬賽克），轉灰階、邊緣淡入
+    g+=`<defs><linearGradient id="pL" x1="0" x2="1"><stop offset="0" stop-color="${T.bg}"/><stop offset="0.22" stop-color="${T.bg}" stop-opacity="0"/><stop offset="0.8" stop-color="${T.bg}" stop-opacity="0"/><stop offset="1" stop-color="${T.bg}"/></linearGradient>
+      <linearGradient id="pB" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${T.bg}" stop-opacity="0.6"/><stop offset="0.12" stop-color="${T.bg}" stop-opacity="0"/><stop offset="0.75" stop-color="${T.bg}" stop-opacity="0"/><stop offset="1" stop-color="${T.bg}"/></linearGradient></defs>`;
+    g+=`<image href="${photo}" x="560" y="0" width="660" height="880" preserveAspectRatio="xMidYMin slice" opacity="0.9"/>`;
+    g+=`<rect x="560" y="0" width="660" height="900" fill="url(#pL)"/><rect x="560" y="0" width="660" height="900" fill="url(#pB)"/>`;
     g+=`<g transform="translate(0,${DOWN})">`; // 前景內容整體下移
     // 標籤與標題
     const L=80;
