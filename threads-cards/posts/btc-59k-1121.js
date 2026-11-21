@@ -1,13 +1,13 @@
-// BTC 11/20 跌破 6 萬美元，多數報導稱 7 月以來首次（Bitcoin Magazine 寫 6 月）；Forbes 引 Coinbase 盤中低點約 57,650；CoinGecko 11/21 08:31 約 58,939（24h -5.0%）、ETH 約 1,621（-7.6%）；IBIT 11/19 流出 5.41 億創紀錄（Forbes、Cryptoticker、Cointribune）
+// BTC 11/20 跌破 6 萬後續跌，11/21（六）盤中低點各家 55,127–55,830（Cointelegraph/KuCoin 跌破 5.5 萬、Cryptorank 55.5K「2024/9 以來首次」、COINOTAG 兩年低點）；CoinGecko 小時資料低點約 55,711（11/21 14:00 台灣）；11/21 16:37 約 57,331（24h -7.5%）、ETH 約 1,617（-7.8%）；恐懼貪婪指數 12（COINOTAG、CryptoPotato 極度恐懼）
 const card=require('./lib-barcard.js');
 POST({
-  caption:'BTC 跌破 6 萬，7 月以來第一次。',
+  caption:'BTC 跌到 5.5 萬附近，2024 年 9 月以來最低。',
   theme:'ink',width:1600,height:900,
-  title:'比特幣跌破 6 萬，7 月以來第一次',titleSize:56,titleY:100,
+  title:'比特幣跌到 5.5 萬，2024 年 9 月以來最低',titleSize:52,titleY:100,
   footer:['',''],
   draw:card({
-    bars:[['BTC 24 小時',-5.0,'-5.0%',false],['ETH 24 小時',-7.6,'-7.6%',true],['Nasdaq 11/20',-5.28,'-5.28%',false]],
-    range:[-10,0],ticks:[-10,-8,-6,-4,-2,0],fmt:v=>v+'%',
-    stats:[['BTC 現在','約 5.89 萬','11/21 早上'],['盤中最低','約 5.77 萬','Coinbase 報價'],['IBIT 單日','流出 5.41 億','上市以來最多']],
+    bars:[['11/20 跌破',6.0,'6 萬',false],['11/21 低點',5.55,'約 5.5 萬',true],['現在',5.73,'約 5.73 萬',false]],
+    range:[0,7],ticks:[0,2,4,6],fmt:v=>v+' 萬',
+    stats:[['BTC 24 小時','-7.5%','11/21 傍晚'],['ETH 24 小時','-7.8%','約 1,617 美元'],['市場情緒','極度恐懼','恐懼貪婪指數約 12']],
   }),
 });
