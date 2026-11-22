@@ -29,6 +29,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add crypto_news.json line/
+          git add crypto_news.json line/ archive/
           git diff --staged --quiet || git commit -m "chore: update crypto news and LINE digest"
           git push

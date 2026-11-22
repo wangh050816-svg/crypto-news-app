@@ -4,7 +4,7 @@ import os
 import re
 import requests
 
-from line_digest import build_digest, save_digest
+from line_digest import archive_articles, build_digest, save_digest
 
 crypto_rss_urls = {
     "動區動趨 BlockTempo": "https://www.blocktempo.com/feed/",
@@ -159,9 +159,13 @@ def main():
 
     send_telegram_message(all_articles)
 
+    archive_articles(all_articles)
     digest = build_digest(all_articles)
+    if digest is None:
+        print("今天週三，LINE 社群不發文（已有籌碼快報）。")
+        return
     save_digest(digest)
-    print("LINE 社群早報已產生：line/latest.txt")
+    print("LINE 社群貼文已產生：line/latest.txt")
     send_telegram_text(digest)
 
 
