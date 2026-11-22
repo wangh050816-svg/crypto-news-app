@@ -1,0 +1,49 @@
+{
+ "date": "2026-11-22",
+ "slot": "晚間",
+ "domain": "遊戲與加密",
+ "storyId": "gta6-leak",
+ "status": "待審",
+ "publishAt": "2026-11-22T21:30:00+08:00",
+ "createdAt": "2026-11-22T21:30:00+08:00",
+ "checkedAt": "2026-11-22T21:30:00+08:00",
+ "title": "GTA 6 洩漏者發幣：漲到 1,500 萬就放 PC 版",
+ "body": "GTA 6 才上市，就有人拿 PC 版當人質，逼大家買他的幣。\n⠀⠀\n洩漏者 Cyberleek 放出 209 GB 的 Xbox 版遊戲檔，只扣住讓 PC 能跑的主程式。他說自己發的 CYBERLEEK 代幣市值衝到 1,500 萬美元，就提早放；沒衝到，11/23 照樣放。\n⠀⠀\n10 月他開價 3,000 萬，現在砍半，代幣市值卻只有 100 多萬。\n⠀⠀\n連幣圈都不買單，我猜明天 Rockstar 的律師會比主程式先到 😅",
+ "comment": "",
+ "reason": "用免費遊戲誘惑買幣的手法，明天就是期限，有時效。檔案真假還沒獨立證實。",
+ "score": 18,
+ "chart": "gta6-leak-1122",
+ "verify": {
+  "status": "可發布",
+  "updatedAt": "2026-11-22T21:30:00+08:00",
+  "unconfirmed": [
+   "洩漏檔案真假未經獨立證實",
+   "代幣市值各家 110～130 萬，波動大"
+  ],
+  "crossChecked": true,
+  "checkSources": [
+   {
+    "label": "PC Gamer：Cyberleek 是誰",
+    "url": "https://www.pcgamer.com/games/grand-theft-auto/who-is-cyberleek-what-we-know-about-the-gta-6-leaker/"
+   },
+   {
+    "label": "KuCoin：洩漏者把主程式綁 1,500 萬市值",
+    "url": "https://www.kucoin.com/news/flash/gta-6-leaker-ties-pc-executable-release-to-15m-cyberleek-goal"
+   }
+  ]
+ },
+ "sources": [
+  {
+   "label": "Decrypt：GTA 6 洩漏者用 PC 版綁 1,500 萬代幣",
+   "url": "https://decrypt.co/383756/gta-6-leaker-dangles-pc-port-15-million-crypto-pump"
+  },
+  {
+   "label": "PC Gamer：Cyberleek 是誰",
+   "url": "https://www.pcgamer.com/games/grand-theft-auto/who-is-cyberleek-what-we-know-about-the-gta-6-leaker/"
+  },
+  {
+   "label": "KuCoin：洩漏者把主程式綁 1,500 萬市值",
+   "url": "https://www.kucoin.com/news/flash/gta-6-leaker-ties-pc-executable-release-to-15m-cyberleek-goal"
+  }
+ ]
+}

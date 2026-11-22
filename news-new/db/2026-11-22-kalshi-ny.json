@@ -1,0 +1,49 @@
+{
+ "date": "2026-11-22",
+ "slot": "晚間",
+ "domain": "預測市場與監管",
+ "storyId": "kalshi-ny",
+ "status": "待審",
+ "publishAt": "2026-11-22T21:30:00+08:00",
+ "createdAt": "2026-11-22T21:30:00+08:00",
+ "checkedAt": "2026-11-22T21:30:00+08:00",
+ "title": "Kalshi 週一聽證：紐約禁令可能讓它全國關站",
+ "body": "估值 220 億美元的預測市場 Kalshi，可能被一張州法院禁令關掉。\n⠀⠀\n紐約檢察長要求禁止 Kalshi 在紐約無照經營賭博，法官台灣時間 11/24 凌晨 00:30 開聽證。Kalshi 說總部就在紐約，禁令下來等於全國關站、所有部位平倉；檢察長則說沒有要關掉全部用戶。\n⠀⠀\n聯邦法官上週五已經駁回 CFTC 第二次緊急阻擋。\n⠀⠀\n聯邦說它歸我管，州說它是賭場。你站哪邊？",
+ "comment": "",
+ "reason": "有明確時間點的監管事件，結果會影響整個預測市場賽道。",
+ "score": 18,
+ "chart": "kalshi-ny-1122",
+ "verify": {
+  "status": "可發布",
+  "updatedAt": "2026-11-22T21:30:00+08:00",
+  "unconfirmed": [
+   "禁令範圍由法官決定，尚未裁定",
+   "220 億估值為媒體報導"
+  ],
+  "crossChecked": true,
+  "checkSources": [
+   {
+    "label": "CoinDesk：Kalshi 搶在紐約禁令前爭取陳述",
+    "url": "https://www.coindesk.com/policy/2026/11/20/kalshi-races-to-get-ahead-of-new-york-order-that-could-shut-down-exchange"
+   },
+   {
+    "label": "Crypto Briefing：Kalshi 紐約聽證",
+    "url": "https://cryptobriefing.com/kalshi-new-york-hearing-shutdown-order/"
+   }
+  ]
+ },
+ "sources": [
+  {
+   "label": "The Block：Kalshi 週一聽證",
+   "url": "https://www.theblock.co/news/regulation/2026-11-21-kalshi-faces-monday-hearing-on-new-york-order-it-says-would-shut-down-its-exchange-nationwide-444813"
+  },
+  {
+   "label": "CoinDesk：Kalshi 搶在紐約禁令前爭取陳述",
+   "url": "https://www.coindesk.com/policy/2026/11/20/kalshi-races-to-get-ahead-of-new-york-order-that-could-shut-down-exchange"
+  },
+  {
+   "label": "Crypto Briefing：Kalshi 紐約聽證",
+   "url": "https://cryptobriefing.com/kalshi-new-york-hearing-shutdown-order/"
+  }
+ ]
+}

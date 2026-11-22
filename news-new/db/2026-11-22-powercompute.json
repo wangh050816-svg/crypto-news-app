@@ -1,0 +1,48 @@
+{
+ "date": "2026-11-22",
+ "slot": "晚間",
+ "domain": "加密礦業",
+ "storyId": "powercompute",
+ "status": "待審",
+ "publishAt": "2026-11-22T21:30:00+08:00",
+ "createdAt": "2026-11-22T21:30:00+08:00",
+ "checkedAt": "2026-11-22T21:30:00+08:00",
+ "title": "礦商賣 267 顆 BTC 還債，市值只剩 100 萬",
+ "body": "一家上市礦商賣掉 267 顆比特幣還清債務，現在整間公司市值大約 100 萬美元。\n⠀⠀\nPowerCompute 9 月請貸方賣幣，還掉約 2,200 萬美元本金，債務從 2,370 萬降到 125 萬。但帳上現金只剩約 65 萬，財報還掛著「持續經營疑慮」，股價約 0.4 美元。\n⠀⠀\n債是還完了，可是挖礦的本錢也一起賣掉了。\n⠀⠀\n比特幣在 6 萬附近，這種小礦商撐得過這個冬天嗎？",
+ "comment": "",
+ "reason": "幣價下跌壓力傳到礦商的具體案例，有人物有反轉。",
+ "score": 18,
+ "chart": "powercompute-1122",
+ "verify": {
+  "status": "可發布",
+  "updatedAt": "2026-11-22T21:30:00+08:00",
+  "unconfirmed": [
+   "數字來自媒體引述 10-Q，未直接核對原始申報"
+  ],
+  "crossChecked": true,
+  "checkSources": [
+   {
+    "label": "TokenPost：PowerCompute 賣 267 BTC 還債",
+    "url": "https://www.tokenpost.com/news/business/61838"
+   },
+   {
+    "label": "PANews：持續經營疑慮仍在",
+    "url": "https://panews.io/articles/01a1f779-89de-757e-9138-ef74922b4b5b"
+   }
+  ]
+ },
+ "sources": [
+  {
+   "label": "CoinDesk：礦商賣 267 BTC 還 2,200 萬債",
+   "url": "https://www.coindesk.com/markets/2026/11/20/this-bitcoin-miner-sold-267-btc-to-clear-usd22-million-debt-it-still-may-not-survive"
+  },
+  {
+   "label": "TokenPost：PowerCompute 賣 267 BTC 還債",
+   "url": "https://www.tokenpost.com/news/business/61838"
+  },
+  {
+   "label": "PANews：持續經營疑慮仍在",
+   "url": "https://panews.io/articles/01a1f779-89de-757e-9138-ef74922b4b5b"
+  }
+ ]
+}

@@ -1,0 +1,40 @@
+{
+ "date": "2026-11-22",
+ "slot": "晚間",
+ "domain": "AI 與金融",
+ "storyId": "citi-ai-agent",
+ "status": "待審",
+ "publishAt": "2026-11-22T21:30:00+08:00",
+ "createdAt": "2026-11-22T21:30:00+08:00",
+ "checkedAt": "2026-11-22T21:30:00+08:00",
+ "title": "花旗新條款：AI 代理闖禍，算你的",
+ "body": "你讓 AI 幫你管銀行帳戶，它轉錯錢，花旗說算你的。\n⠀⠀\n花旗 11 月改了線上使用者協議：外部 AI 代理用你的帳密做的任何事，都算你授權。AI 不聽指令、超出權限，甚至帳密被駭外洩，都一樣。花旗自家的 AI 工具不在此限。\n⠀⠀\n摩根大通、美銀 10 月就有類似規定，PNC 這週也改了約。\n⠀⠀\n我的做法：銀行帳密不要交給任何外部 AI，要用就用銀行自己的。",
+ "comment": "",
+ "reason": "AI 代理是熱門題材，這則直接影響一般人，實用性高。",
+ "score": 18,
+ "chart": "citi-ai-agent-1122",
+ "verify": {
+  "status": "可發布",
+  "updatedAt": "2026-11-22T21:30:00+08:00",
+  "unconfirmed": [
+   "聯邦消費者保護規定是否仍適用，監管機關尚未說明"
+  ],
+  "crossChecked": true,
+  "checkSources": [
+   {
+    "label": "Decrypt：花旗說 AI 代理出事由客戶負責",
+    "url": "https://decrypt.co/383677/citi-customers-responsible-ai-banking-agents-rogue-hack"
+   }
+  ]
+ },
+ "sources": [
+  {
+   "label": "TechCrunch：更多銀行說用 AI 代理後果自負",
+   "url": "https://techcrunch.com/2026/11/18/more-banks-says-customers-using-ai-agents-are-on-their-own-even-if-they-get-hacked/"
+  },
+  {
+   "label": "Decrypt：花旗說 AI 代理出事由客戶負責",
+   "url": "https://decrypt.co/383677/citi-customers-responsible-ai-banking-agents-rogue-hack"
+  }
+ ]
+}

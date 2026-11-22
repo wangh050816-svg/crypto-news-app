@@ -1,0 +1,41 @@
+{
+ "date": "2026-11-22",
+ "slot": "晚間",
+ "domain": "金融資安",
+ "storyId": "bank-leak",
+ "status": "待審",
+ "publishAt": "2026-11-22T21:30:00+08:00",
+ "createdAt": "2026-11-22T21:30:00+08:00",
+ "checkedAt": "2026-11-22T21:30:00+08:00",
+ "title": "Visa、萬事達、摩根大通客戶資料被公開",
+ "body": "Visa、萬事達、摩根大通，同一週被同一個勒索集團公開客戶資料。\n⠀⠀\n勒索集團 n0n 說三家沒在 48 小時內付錢，就把資料放出來。三家都說自家系統沒被駭，被駭的是外包廠商：Visa 說沒有卡號外洩，萬事達是部分持卡人的 email，摩根大通是姓名和 email。\n⠀⠀\n大銀行的牆再高，後門還是外包廠商。\n⠀⠀\n有在這幾家開戶的，這陣子收到「帳戶異常」的信先別點。",
+ "comment": "",
+ "reason": "大品牌資安事件，結尾有實用提醒。",
+ "score": 18,
+ "chart": "bank-leak-1122",
+ "verify": {
+  "status": "可發布",
+  "updatedAt": "2026-11-22T21:30:00+08:00",
+  "unconfirmed": [
+   "外洩規模各家說法不同",
+   "被駭外包廠商未公開"
+  ],
+  "crossChecked": true,
+  "checkSources": [
+   {
+    "label": "Cybersecurity Dive：摩根大通、Visa 確認外包廠商被駭",
+    "url": "https://www.cybersecuritydive.com/news/jpmorgan-visa-customer-data-leaked-third-party-hacks/875333/"
+   }
+  ]
+ },
+ "sources": [
+  {
+   "label": "Decrypt：駭客公開 Visa、萬事達、摩根大通資料",
+   "url": "https://decrypt.co/383663/hackers-leak-visa-mastercard-jpmorgan-data"
+  },
+  {
+   "label": "Cybersecurity Dive：摩根大通、Visa 確認外包廠商被駭",
+   "url": "https://www.cybersecuritydive.com/news/jpmorgan-visa-customer-data-leaked-third-party-hacks/875333/"
+  }
+ ]
+}

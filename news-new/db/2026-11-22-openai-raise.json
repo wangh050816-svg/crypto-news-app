@@ -1,0 +1,48 @@
+{
+ "date": "2026-11-22",
+ "slot": "晚間",
+ "domain": "AI",
+ "storyId": "openai-raise",
+ "status": "待審",
+ "publishAt": "2026-11-22T21:30:00+08:00",
+ "createdAt": "2026-11-22T21:30:00+08:00",
+ "checkedAt": "2026-11-22T21:30:00+08:00",
+ "title": "OpenAI 想募 300 億，只拿到一半",
+ "body": "OpenAI 想募 300 億美元，最後只拿到一半。\n⠀⠀\nCNBC 報導，OpenAI 用 1.25 兆美元估值募到約 150 億。原本想募最多 300 億、估值開 1.4 兆，10 月底已經降到 200 億，最後還是沒達標。\n⠀⠀\n同一週，Anthropic 上市一口氣募了 813 億。\n⠀⠀\n投資人不是不想買 AI，是開始挑了。我接下來會看 OpenAI 的 IPO 時間表有沒有往後延。",
+ "comment": "",
+ "reason": "AI 資金面轉向的訊號，和 Anthropic 上市形成對比。",
+ "score": 18,
+ "chart": "openai-raise-1122",
+ "verify": {
+  "status": "可發布",
+  "updatedAt": "2026-11-22T21:30:00+08:00",
+  "unconfirmed": [
+   "OpenAI 未正式公告，募資尚未結案"
+  ],
+  "crossChecked": true,
+  "checkSources": [
+   {
+    "label": "Dataconomy：OpenAI 以 1.25 兆估值募 150 億",
+    "url": "https://dataconomy.com/2026/11/13/openai-raises-15-billion-at-125-trillion-valuation/"
+   },
+   {
+    "label": "MLQ：CNBC 報導 OpenAI 募資",
+    "url": "https://mlq.ai/news/openai-raises-15-billion-at-a-125-trillion-valuation-about-half-its-original-target-cnbc-reports/"
+   }
+  ]
+ },
+ "sources": [
+  {
+   "label": "Yahoo：OpenAI 只募到想要的一半",
+   "url": "https://finance.yahoo.com/markets/stocks/articles/openai-raised-only-15-billion-123354575.html"
+  },
+  {
+   "label": "Dataconomy：OpenAI 以 1.25 兆估值募 150 億",
+   "url": "https://dataconomy.com/2026/11/13/openai-raises-15-billion-at-125-trillion-valuation/"
+  },
+  {
+   "label": "MLQ：CNBC 報導 OpenAI 募資",
+   "url": "https://mlq.ai/news/openai-raises-15-billion-at-a-125-trillion-valuation-about-half-its-original-target-cnbc-reports/"
+  }
+ ]
+}
