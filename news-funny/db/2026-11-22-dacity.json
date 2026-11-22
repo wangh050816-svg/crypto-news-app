@@ -1,0 +1,49 @@
+{
+ "date": "2026-11-22",
+ "slot": "晚間",
+ "domain": "遊戲與加密",
+ "storyId": "dacity",
+ "status": "待審",
+ "publishAt": "2026-11-22T22:00:00+08:00",
+ "createdAt": "2026-11-22T22:00:00+08:00",
+ "checkedAt": "2026-11-22T22:00:00+08:00",
+ "title": "GTA 6 遊戲裡的假幣，現實被炒到 1,800 萬",
+ "body": "GTA 6 裡有一個虛構的加密貨幣，現實中真的有人把它炒到 1,800 萬美元。\n⠀⠀\n遊戲裡的假幣叫 DacityCoin，代號 DCTY。Solana 上一個同代號的迷因幣，遊戲上市當天一天漲了 150 多倍。有人 10 月花 307 美元買進，最後賣了 20.2 萬，大約 660 倍。\n⠀⠀\nRockstar 從頭到尾沒發過任何幣，Solana 上的 GTA 主題代幣卻有 2 萬多個。\n⠀⠀\n在幣圈，連遊戲裡的道具都能上市。",
+ "comment": "",
+ "reason": "遊戲＋迷因幣的荒謬故事，話題性高。",
+ "score": 18,
+ "chart": "dacity-1122",
+ "verify": {
+  "status": "可發布",
+  "updatedAt": "2026-11-22T22:00:00+08:00",
+  "unconfirmed": [
+   "部分媒體寫成獲利 6.6 萬美元，與 66,000% 混淆",
+   "迷因幣流動性很薄，市值波動大"
+  ],
+  "crossChecked": true,
+  "checkSources": [
+   {
+    "label": "crypto.news：307 美元變 202,278",
+    "url": "https://crypto.news/gta-6-dcty-meme-coin-trade/"
+   },
+   {
+    "label": "TheStreet：代號混淆讓交易者賺 66,000%",
+    "url": "https://www.thestreet.com/crypto/markets/gta-6-memecoin-confusion-delivers-trader-a-stunning-66000-gain"
+   }
+  ]
+ },
+ "sources": [
+  {
+   "label": "Yahoo：GTA 6 虛構幣變 1,800 萬迷因幣",
+   "url": "https://finance.yahoo.com/markets/crypto/articles/grand-theft-crypto-gta-6-125900247.html"
+  },
+  {
+   "label": "crypto.news：307 美元變 202,278",
+   "url": "https://crypto.news/gta-6-dcty-meme-coin-trade/"
+  },
+  {
+   "label": "TheStreet：代號混淆讓交易者賺 66,000%",
+   "url": "https://www.thestreet.com/crypto/markets/gta-6-memecoin-confusion-delivers-trader-a-stunning-66000-gain"
+  }
+ ]
+}

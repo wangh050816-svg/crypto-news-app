@@ -1,0 +1,48 @@
+{
+ "date": "2026-11-22",
+ "slot": "晚間",
+ "domain": "加密與 AI",
+ "storyId": "ant-tokens",
+ "status": "待審",
+ "publishAt": "2026-11-22T22:00:00+08:00",
+ "createdAt": "2026-11-22T22:00:00+08:00",
+ "checkedAt": "2026-11-22T22:00:00+08:00",
+ "title": "Anthropic 上市當天，24 分鐘冒出 4 種代幣",
+ "body": "Anthropic 上市當天，幣圈 24 分鐘內就冒出 4 種「Anthropic 代幣」。\n⠀⠀\nBackpack、Ondo、xStocks、Securitize 四家搶著推出，大約 90 分鐘就在 Solana 上成交約 2,900 萬美元。\n⠀⠀\n問題是，四家沒有一家是 Anthropic 發的，也沒有一家拿到它背書。有的能換成真股票，有的只是跟著價格漲跌，持有人也不是登記股東。\n⠀⠀\n公司還在敲鐘，幣圈已經把它做成四種版本了。",
+ "comment": "",
+ "reason": "AI 熱度＋幣圈速度的荒謬對比。",
+ "score": 18,
+ "chart": "ant-tokens-1122",
+ "verify": {
+  "status": "可發布",
+  "updatedAt": "2026-11-22T22:00:00+08:00",
+  "unconfirmed": [
+   "各家產品結構不同，權利要看條款"
+  ],
+  "crossChecked": true,
+  "checkSources": [
+   {
+    "label": "Yahoo：Ondo、Securitize、xStocks 搶著代幣化",
+    "url": "https://finance.yahoo.com/markets/crypto/articles/ondo-securitize-robinhood-xstocks-rush-064627230.html"
+   },
+   {
+    "label": "Bankless：買鏈上 ANT 到底買到什麼",
+    "url": "https://www.bankless.com/read/what-you-own-when-you-buy-ant-onchain"
+   }
+  ]
+ },
+ "sources": [
+  {
+   "label": "Solana Compass：四家在上市日推出 Anthropic 代幣",
+   "url": "https://solanacompass.com/news/tokenized-anthropic-ant-goes-live-on-solana-on-ipo-day-from-backpack-ondo-xstocks-and-securitize"
+  },
+  {
+   "label": "Yahoo：Ondo、Securitize、xStocks 搶著代幣化",
+   "url": "https://finance.yahoo.com/markets/crypto/articles/ondo-securitize-robinhood-xstocks-rush-064627230.html"
+  },
+  {
+   "label": "Bankless：買鏈上 ANT 到底買到什麼",
+   "url": "https://www.bankless.com/read/what-you-own-when-you-buy-ant-onchain"
+  }
+ ]
+}
