@@ -1,0 +1,43 @@
+📊 幣圈早報｜11/22（日）
+
+💰 主流幣行情（24h）
+BTC  $60,823  🟢▲0.86%
+ETH  $1,709  🟢▲1.26%
+SOL  $70.29  🔴▼0.46%
+BNB  $556.55  🟢▲1.61%
+XRP  $0.9238  🔴▼0.67%
+
+😱 恐懼貪婪指數：11｜極度恐懼（昨日 12，-1）
+
+📰 今日重點新聞
+
+1️⃣ 【🚨 資安事件】Chainflip 竊損上修至 1,200 萬鎂！祭 10% 賞金望駭客還錢
+　└ Chainflip Labs 公布金庫遭竊的完整清單，確認被搬走 122.86 枚比特幣、520.22 枚以太
+🔗 https://www.blocktempo.com/chainflip-revised-12m-hack-loss-offers-10-percent-bounty-deadline/
+
+2️⃣ 【⚖️ 監管政策】Hyperliquid 想進美國？CFTC 主席給兩條路：註冊或結盟
+　└ CFTC 主席 Michael Selig 在華府論壇上為鏈上衍生品平台劃出路徑：自己取得交易所牌照，或與已註
+🔗 https://www.blocktempo.com/cftc-selig-hyperliquid-backpack-onchain-venues-us-entry-licensing-rules/
+
+3️⃣ 【₿ 比特幣】摩根士丹利逢低加碼 799 枚 BTC，MSBT 比特幣 ETF 持倉升至 12,448 枚
+　└ 摩根士丹利旗下現貨比特幣 ETF「MSBT」在市場急跌時再度進場，單筆斥資約 4,749 萬美元買進 799
+🔗 https://www.blocktempo.com/morgan-stanley-msbt-buys-799-bitcoin-holdings-12448/
+
+4️⃣ 【₿ 比特幣】Bitcoin's quantum security challenge extends to bridges, custodians and millions of coins（英文）
+🔗 https://www.coindesk.com/tech/2026/11/22/bitcoin-s-quantum-security-challenge-extends-to-bridges-custodians-and-millions-of-coins
+
+5️⃣ 【₿ 比特幣】Bitcoin rebounds above $60,000 after $1.8 billion crypto liquidation wave（英文）
+🔗 https://www.coindesk.com/markets/2026/11/21/bitcoin-bounces-9-from-two-year-low-to-retake-usd60-000-as-traders-eye-monday-s-stock-open
+
+6️⃣ 【Ξ 以太坊】Ether treasury firm BTCS warns SEC its $54 million Aave loan could be liquidated（英文）
+🔗 https://www.coindesk.com/markets/2026/11/21/ether-treasury-firm-btcs-warns-sec-its-usd54-million-aave-loan-could-be-liquidated
+
+7️⃣ 【⚖️ 監管政策】XRP falls 10% as long bets unwind and ETF assets slip below $1 billion（英文）
+🔗 https://www.coindesk.com/markets/2026/11/21/xrp-falls-10-as-long-bets-unwind-and-etf-assets-slip-below-usd1-billion
+
+8️⃣ 【₿ 比特幣】Bitcoin tanks below $57,000 for the first time in two years, and its not alone（英文）
+🔗 https://www.coindesk.com/markets/2026/11/21/bitcoin-tanks-below-usd57-000-for-the-first-time-in-two-years-and-its-not-alone
+
+━━━━━━━━━━
+💬 今天你怎麼看？歡迎留言討論
+⚠️ 以上資訊整理自公開新聞，僅供參考，不構成投資建議，請自行評估風險。

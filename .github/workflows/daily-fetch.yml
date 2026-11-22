@@ -25,10 +25,10 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python fetch_news.py
 
-      - name: Commit updated crypto_news.json
+      - name: Commit updated news and LINE digest
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add crypto_news.json
-          git diff --staged --quiet || git commit -m "chore: update crypto_news.json"
+          git add crypto_news.json line/
+          git diff --staged --quiet || git commit -m "chore: update crypto news and LINE digest"
           git push

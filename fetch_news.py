@@ -4,6 +4,8 @@ import os
 import re
 import requests
 
+from line_digest import build_digest, save_digest
+
 crypto_rss_urls = {
     "動區動趨 BlockTempo": "https://www.blocktempo.com/feed/",
     "鏈新聞 ABMedia": "https://www.abmedia.io/feed",
@@ -13,10 +15,24 @@ crypto_rss_urls = {
 
 # 純英文/數字關鍵字用完整單字邊界比對，避免 "ai" 誤中 chain/remain/gain 之類的字
 CATEGORY_KEYWORDS = {
+    "資安事件": ["exploit", "hack", "hacked", "hacker", "drain", "drained", "stolen", "phishing",
+             "駭客", "漏洞", "被盜", "盜走", "攻擊", "詐騙"],
     "Bitcoin": ["bitcoin", "btc", "比特幣"],
-    "Ethereum": ["ethereum", "eth", "以太坊"],
-    "DeFi": ["defi", "去中心化金融", "uniswap"],
+    "Ethereum": ["ethereum", "eth", "ether", "以太坊"],
+    "監管政策": ["sec", "cftc", "regulation", "regulator", "regulatory", "licensing", "license",
+             "lawmakers", "bill", "etf", "stablecoin", "tokenized", "cbdc",
+             "監管", "法案", "金管會", "牌照", "穩定幣", "立法", "央行"],
+    "DeFi": ["defi", "去中心化金融", "uniswap", "aave", "dex", "lending", "staking", "質押"],
+    "山寨幣": ["solana", "sol", "xrp", "bnb", "dogecoin", "doge", "monero", "xmr", "token",
+            "altcoin", "memecoin", "代幣", "山寨幣", "迷因幣"],
+    "加密市場": ["crypto", "cryptocurrency", "blockchain", "web3", "liquidation", "exchange",
+             "binance", "coinbase", "加密", "幣圈", "區塊鏈", "交易所", "清算"],
     "AI": ["ai", "人工智慧", "海力士", "nvidia", "輝達", "晶片"],
+}
+
+FEED_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/120.0 Safari/537.36"
 }
 
 TELEGRAM_MAX_LEN = 4000  # Telegram 單則訊息上限 4096，留一點緩衝
@@ -28,8 +44,15 @@ def _keyword_matches(keyword, text_lower):
     return keyword in text_lower
 
 
+def _strip_feed_footer(summary):
+    # 動區每則摘要結尾都帶「…區塊鏈新聞媒體」、CoinTelegraph 帶 "The post ... appeared first on"，
+    # 不先拿掉的話每篇都會被誤判成加密新聞
+    summary = re.sub(r"<[^>]+>", " ", summary)
+    return re.split(r"〈|這篇文章最早發佈於|The post ", summary)[0]
+
+
 def classify_text(title, summary):
-    text = (title + " " + summary).lower()
+    text = (title + " " + _strip_feed_footer(summary)).lower()
     for category, keywords in CATEGORY_KEYWORDS.items():
         if any(_keyword_matches(k, text) for k in keywords):
             return category
@@ -39,8 +62,14 @@ def classify_text(title, summary):
 def fetch_articles():
     all_articles = []
     for source, url in crypto_rss_urls.items():
-        feed = feedparser.parse(url)
-        for entry in feed.entries[:5]:
+        try:
+            resp = requests.get(url, headers=FEED_HEADERS, timeout=20)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"{source} 抓取失敗，略過：{e}")
+            continue
+        feed = feedparser.parse(resp.content)
+        for entry in feed.entries[:8]:
             summary = getattr(entry, "summary", "")
             category = classify_text(entry.title, summary)
             all_articles.append({
@@ -67,6 +96,24 @@ def _chunk_message_lines(lines, max_len=TELEGRAM_MAX_LEN):
     if current:
         chunks.append(current)
     return chunks
+
+
+def send_telegram_text(text):
+    """把 LINE 早報原文推到 Telegram（純文字，方便手機長按複製貼到 LINE 社群）。"""
+    bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
+    chat_id = os.getenv("TELEGRAM_CHAT_ID")
+    if not bot_token or not chat_id:
+        print("未偵測到 Telegram 設定，跳過發送 LINE 早報。")
+        return
+    telegram_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+    for chunk in _chunk_message_lines(text.split("\n\n")):
+        response = requests.post(telegram_url, json={
+            "chat_id": chat_id,
+            "text": chunk.strip(),
+            "disable_web_page_preview": True,
+        })
+        if response.status_code != 200:
+            print(f"LINE 早報推送失敗，狀態碼: {response.status_code}, 錯誤訊息: {response.text}")
 
 
 def send_telegram_message(news_list):
@@ -111,6 +158,11 @@ def main():
     print("新聞資料擷取與分類完成！")
 
     send_telegram_message(all_articles)
+
+    digest = build_digest(all_articles)
+    save_digest(digest)
+    print("LINE 社群早報已產生：line/latest.txt")
+    send_telegram_text(digest)
 
 
 if __name__ == "__main__":
