@@ -292,6 +292,7 @@ def draw_marks(im):
             while xx < xe:
                 d.line((xx, y, min(xx + 18, xe), y), fill=GOLD + (al,), width=4); xx += 30
             lx, ly = min(x2, W - 30) - m['img'].width, y - m['img'].height + 4   # 標籤放在線右端上方，不超出畫面
+            if m.get('lpos') == 'left': lx = max(x1, 30) + 8   # 右端有東西時，標籤改放左端
         else:                      # 金色圈圈標在轉折點
             x, y = src2screen(*m['at']); r = 26 + 10 * (1 - min((st - m['t0']) / .3, 1))
             d.ellipse((x - r, y - r, x + r, y + r), outline=GOLD + (al,), width=5)
