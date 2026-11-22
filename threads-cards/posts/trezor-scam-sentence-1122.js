@@ -1,4 +1,4 @@
-// 加拿大男子 Trenton Johnston 假冒客服騙走 185 BTC（同系列版型，左上不放英文；無授權照片，中間改用比例條：損失 vs 交出）
+// 加拿大男子 Trenton Johnston 假冒客服騙走 185 BTC（同系列版型，左上不放英文；無授權照片，中間不放圖（使用者覺得圖太多））
 // 查證：
 // 2026/3 與共犯假冒 Google 技術支援、Trezor 人員，騙走加州受害者約 185 BTC（當時約 1,300 萬美元）— Yahoo News Canada、Coin Edition、Crypto Times、KuCoin
 // 用來買藍寶堅尼 Aventador SVJ、兩台 BMW、珠寶、租私人飛機；在 Discord 炫耀 — Yahoo、ICObench、KuCoin
@@ -37,15 +37,7 @@ POST({
     // 人物
     g+=`<defs><radialGradient id="halo2" cx="0.5" cy="0.4" r="0.5"><stop offset="0" stop-color="#3a3d43" stop-opacity="0.8"/><stop offset="0.6" stop-color="#25272b" stop-opacity="0.45"/><stop offset="1" stop-color="#101114" stop-opacity="0"/></radialGradient></defs>`;
     g+=`<ellipse cx="985" cy="380" rx="420" ry="420" fill="url(#halo2)"/>`;
-    // 中間：損失 1,300 萬 vs 交出 380 萬（直立比例柱）
-    {const B=740, H=430, x1=790, x2=970, w=140, k=H/1300;
-      const col=(x,v,fill,lab,cap,c2)=>{const h=v*k,y=B-h;return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="12" fill="${fill}"/>`+
-        `<text x="${x+w/2}" y="${y-22}" text-anchor="middle" style="font-size:30px;font-weight:900;fill:${c2}"><tspan style="font-family:Inter;font-size:48px;font-weight:800">${lab}</tspan> 萬</text>`+
-        `<text x="${x+w/2}" y="${B+44}" text-anchor="middle" style="font-size:28px;font-weight:700;fill:${T.text}">${cap}</text>`;};
-      g+=`<line x1="${x1-30}" x2="${x2+w+30}" y1="${B}" y2="${B}" stroke="#fff" stroke-opacity="0.35" stroke-width="2"/>`;
-      g+=col(x1,1300,T.fg,'1,300','受害者損失',T.fg);
-      g+=col(x2,380,'#8d9097','380','認罪後交出',T.text);
-      g+=`<text x="${(x1+x2+w)/2}" y="${B+86}" text-anchor="middle" style="font-size:24px;fill:${T.dim}">單位：美元</text>`;}
+    // 中間不放圖，只留背景
     g+=`<g transform="translate(0,${DOWN})">`; // 前景內容整體下移
     // 標籤與標題
     const L=80;
