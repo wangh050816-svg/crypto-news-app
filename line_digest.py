@@ -34,9 +34,6 @@ WEEKDAYS = "一二三四五六日"
 COINS = [  # (CoinGecko id, 顯示代號)
     ("bitcoin", "BTC"),
     ("ethereum", "ETH"),
-    ("solana", "SOL"),
-    ("binancecoin", "BNB"),
-    ("ripple", "XRP"),
 ]
 
 FNG_ZH = {
@@ -58,7 +55,7 @@ CATEGORY_LABEL = {
     "加密市場": "📈 市場動態",
 }
 
-MAX_NEWS = 8          # 一則 LINE 訊息不要太長，8 則剛好一個手機畫面多一點
+MAX_NEWS = 3          # 一則 LINE 訊息保持精簡
 MAX_AGE_HOURS = 36    # 只收最近一天半的新聞
 MAX_AI = 2            # AI／科技新聞最多放幾則，避免蓋過幣圈新聞
 GENERIC_WORDS = {
@@ -177,7 +174,7 @@ def _rotate(items, now):
     return items[now.isocalendar()[1] % len(items)]
 
 
-DISCLAIMER = "⚠️ 以上資訊僅供參考，不構成投資建議，請自行評估風險。"
+DISCLAIMER = "⚠️ 僅供參考，非投資建議"
 
 
 def _news_lines(news, with_summary=True):
@@ -249,29 +246,27 @@ def build_monday(articles, now):
     if coins:
         chg = {c["symbol"].upper(): c["price_change_percentage_7d_in_currency"] for c in coins}
         lines.append("💰 主流幣近 7 天")
-        for sym in ("BTC", "ETH", "SOL", "BNB", "XRP"):
+        for sym in ("BTC", "ETH"):
             if sym in chg:
                 arrow = "🟢▲" if chg[sym] >= 0 else "🔴▼"
                 lines.append(f"{sym}  {arrow}{abs(chg[sym]):.1f}%")
         ranked = sorted(coins, key=lambda c: c["price_change_percentage_7d_in_currency"], reverse=True)
-        lines += ["", "🚀 市值前 100 漲最多（僅列數據，不代表推薦）"]
-        for c in ranked[:3]:
-            lines.append(f"・{c['name']}（{c['symbol'].upper()}）+{c['price_change_percentage_7d_in_currency']:.1f}%")
-        lines += ["", "🧊 市值前 100 跌最多"]
-        for c in ranked[::-1][:3]:
-            lines.append(f"・{c['name']}（{c['symbol'].upper()}）{c['price_change_percentage_7d_in_currency']:.1f}%")
-        up = sum(1 for c in coins if c["price_change_percentage_7d_in_currency"] >= 0)
-        lines += ["", f"📊 前 100 大（不含穩定幣）上漲 {up} 檔、下跌 {len(coins) - up} 檔", ""]
+        top, bottom = ranked[0], ranked[-1]
+        lines += [
+            f"🚀 前 100 大漲最多：{top['symbol'].upper()} +{top['price_change_percentage_7d_in_currency']:.1f}%",
+            f"🧊 前 100 大跌最多：{bottom['symbol'].upper()} {bottom['price_change_percentage_7d_in_currency']:.1f}%",
+            "",
+        ]
 
     fng = _get_json("https://api.alternative.me/fng/?limit=8")
     try:
         now_v, week_v = int(fng["data"][0]["value"]), int(fng["data"][7]["value"])
         emoji, zh = FNG_ZH.get(fng["data"][0]["value_classification"], ("📉", ""))
-        lines += [f"{emoji} 市場情緒：{now_v}（{zh}），一週前是 {week_v}", ""]
+        lines += [f"{emoji} 市場情緒 {now_v}（{zh}），一週前 {week_v}", ""]
     except (TypeError, KeyError, IndexError, ValueError):
         pass
 
-    lines += ["━━━━━━━━━━", "💬 上週你有操作嗎？留言分享你的心得", DISCLAIMER]
+    lines += ["💬 上週你有操作嗎？", DISCLAIMER]
     return "\n".join(lines)
 
 
@@ -280,8 +275,7 @@ def build_monday(articles, now):
 def build_tuesday(articles, now):
     title, body, point = _rotate(LESSONS, now)
     lines = _header("📚", "新手小教室", now)
-    lines += [f"❓ {title}", "", body, "", f"💡 重點：{point}", "",
-              "━━━━━━━━━━", "💬 還有哪些名詞看不懂？留言告訴我們，下次來講！"]
+    lines += [f"❓ {title}", "", body, "", f"💡 {point}"]
     return "\n".join(lines)
 
 
@@ -290,15 +284,9 @@ def build_tuesday(articles, now):
 def build_thursday(articles, now):
     title, body = _rotate(SCAM_TIPS, now)
     lines = _header("🛡️", "防詐小提醒", now)
-    lines += [f"⚠️ {title}", "", body, ""]
-    week = [a for a in load_week_articles(now) if a.get("category") == "資安事件"]
-    news = pick_news(week, now, max_age_hours=24 * 7, max_news=3)
-    if news:
-        lines.append("🚨 本週資安事件")
-        lines += _news_lines(news, with_summary=False)
-        lines.append("")
-    lines += ["━━━━━━━━━━", "💬 你有收過可疑訊息嗎？分享出來讓大家一起避開",
-              "📞 遇到詐騙請撥 165 反詐騙專線"]
+    lines += [f"⚠️ {title}", "", body]
+    if "165" not in body:
+        lines += ["", "📞 遇到詐騙請撥 165"]
     return "\n".join(lines)
 
 
@@ -308,10 +296,9 @@ def build_friday(articles, now, prices=None, fng=None):
     prices = fetch_prices() if prices is None else prices
     fng = fetch_fear_greed() if fng is None else fng
 
-    lines = _header("📊", "週五新聞精選", now)
+    lines = _header("📊", "週五幣圈快訊", now)
 
     if prices:
-        lines.append("💰 主流幣行情（24h）")
         for sym, p, chg in prices:
             arrow = "🟢▲" if chg >= 0 else "🔴▼"
             lines.append(f"{sym}  {_fmt_price(p)}  {arrow}{abs(chg):.2f}%")
@@ -320,17 +307,17 @@ def build_friday(articles, now, prices=None, fng=None):
     if fng:
         value, cls, prev = fng
         emoji, zh = FNG_ZH.get(cls, ("📉", cls))
-        diff = value - prev
-        trend = f"（昨日 {prev}，{'+' if diff >= 0 else ''}{diff}）"
-        lines += [f"{emoji} 恐懼貪婪指數：{value}｜{zh}{trend}", ""]
+        lines += [f"{emoji} 恐懼貪婪指數 {value}（{zh}）", ""]
 
     news = pick_news(articles, now)
     if news:
-        lines.append("📰 今日重點新聞")
-        lines += _news_lines(news)
+        lines.append("📰 今日重點")
+        for i, a in enumerate(news):
+            tag = "" if _is_chinese(a["title"]) else "（英文）"
+            lines += [f"{NUM_EMOJI[i]} {a['title']}{tag}", f"🔗 {clean_link(a['link'])}"]
         lines.append("")
 
-    lines += ["━━━━━━━━━━", "💬 今天你怎麼看？歡迎留言討論", DISCLAIMER]
+    lines.append(DISCLAIMER)
     return "\n".join(lines)
 
 
@@ -340,32 +327,29 @@ def build_saturday(articles, now):
     title, body = _rotate(FUN_FACTS, now)
     question, options = _rotate(POLLS, now)
     lines = _header("🎲", "週末冷知識", now)
-    lines += [f"🤓 {title}", "", body, "", "━━━━━━━━━━", f"🗳️ 本週小調查：{question}"]
+    lines += [f"🤓 {title}", body, "", f"🗳️ {question}（留言回數字）"]
     lines += [f"{NUM_EMOJI[i]} {o}" for i, o in enumerate(options)]
-    lines += ["", "留言回覆數字就好，下週公布大家的選擇！"]
     return "\n".join(lines)
 
 
 # ---------- 週日：一週新聞回顧 ----------
 
 def build_sunday(articles, now):
+    """本週 3 件事：每個分類最多一則，只放標題，不放連結。"""
     week = load_week_articles(now) or articles
-    lines = _header("🗞️", "一週新聞回顧", now)
-    order = ["Bitcoin", "Ethereum", "監管政策", "資安事件", "DeFi", "山寨幣", "加密市場"]
-    shown = 0
+    order = ["Bitcoin", "資安事件", "監管政策", "Ethereum", "DeFi", "山寨幣", "加密市場"]
+    picked = []
     for cat in order:
-        items = [a for a in week if a.get("category") == cat]
-        news = pick_news(items, now, max_age_hours=24 * 7, max_news=2)
-        if not news:
-            continue
-        lines += ([] if shown == 0 else [""]) + [CATEGORY_LABEL[cat]]
-        for a in news:
-            tag = "" if _is_chinese(a["title"]) else "（英文）"
-            lines += [f"・{a['title']}{tag}", f"  🔗 {clean_link(a['link'])}"]
-            shown += 1
-        if shown >= 10:
+        news = pick_news([a for a in week if a.get("category") == cat], now,
+                         max_age_hours=24 * 7, max_news=1)
+        picked += news
+        if len(picked) >= 3:
             break
-    lines += ["", "━━━━━━━━━━", "💬 這週你最關注哪一則？", DISCLAIMER]
+    lines = _header("🗞️", f"本週幣圈 {len(picked)} 件事", now)
+    for i, a in enumerate(picked):
+        tag = "" if _is_chinese(a["title"]) else "（英文）"
+        lines.append(f"{NUM_EMOJI[i]} {a['title']}{tag}")
+    lines += ["", "💬 這週你最關注哪一則？"]
     return "\n".join(lines)
 
 
