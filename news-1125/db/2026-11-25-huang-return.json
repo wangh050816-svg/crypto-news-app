@@ -1,0 +1,57 @@
+{
+ "date": "2026-11-25",
+ "slot": "晚間",
+ "domain": "AI 與美股",
+ "storyId": "huang-return",
+ "status": "待審",
+ "publishAt": "2026-11-25T21:00:00+08:00",
+ "createdAt": "2026-11-25T21:00:00+08:00",
+ "checkedAt": "2026-11-25T21:00:00+08:00",
+ "title": "黃仁勳回鍋：每天心理治療 1.5 小時，川普說願意特赦",
+ "body": "黃仁勳回到輝達第一天，就跟全公司說，他現在每天做一個半小時的心理治療。\n⠀⠀\n他 11/12 因婚外情報導辭職，11 天後被董事會請回來。回任後第一場員工大會，他說這是他這輩子第二難的會議，「最難的那場，是跟我太太談」。\n⠀⠀\n同一天川普受訪說，必要的話他願意特赦黃仁勳，「但我不認為會需要」。據《華爾街日報》，司法部說他根本不是調查對象。\n⠀⠀\n人還沒被起訴，總統先把特赦準備好，這劇本 Netflix 都不敢這樣寫。",
+ "comment": "",
+ "reason": "大人物＋荒謬發言，延續黃仁勳事件的追蹤。",
+ "score": 19,
+ "chart": "huang-return-1125",
+ "verify": {
+  "status": "可發布",
+  "updatedAt": "2026-11-25T21:00:00+08:00",
+  "unconfirmed": [
+   "「跟太太談」引言來自 WIRED 取得的講話內容（經動區轉述）",
+   "司法部說法來自《華爾街日報》報導"
+  ],
+  "crossChecked": true,
+  "checkSources": [
+   {
+    "label": "CoinDesk：川普願意特赦黃仁勳",
+    "url": "https://www.coindesk.com/policy/2026/11/24/trump-says-he-s-willing-to-give-nvidia-s-huang-a-pardon-doesn-t-think-he-needs-one"
+   },
+   {
+    "label": "Cointelegraph：川普願意特赦黃仁勳，但說不需要",
+    "url": "https://cointelegraph.com/news/trump-willing-to-pardon-jensen-huang-but-says-it-wont-be-necessary"
+   },
+   {
+    "label": "動區：黃仁勳首場員工大會（引述 WIRED）",
+    "url": "https://www.blocktempo.com/nvidia-huang-first-all-hands-apology-therapy-denies-trump-succession/"
+   }
+  ]
+ },
+ "sources": [
+  {
+   "label": "TechCrunch：黃仁勳在員工大會說他在接受心理治療",
+   "url": "https://techcrunch.com/2026/11/24/in-all-hands-meeting-jensen-huang-thanks-white-house-and-says-hes-in-therapy/"
+  },
+  {
+   "label": "CoinDesk：川普願意特赦黃仁勳",
+   "url": "https://www.coindesk.com/policy/2026/11/24/trump-says-he-s-willing-to-give-nvidia-s-huang-a-pardon-doesn-t-think-he-needs-one"
+  },
+  {
+   "label": "Cointelegraph：川普願意特赦黃仁勳，但說不需要",
+   "url": "https://cointelegraph.com/news/trump-willing-to-pardon-jensen-huang-but-says-it-wont-be-necessary"
+  },
+  {
+   "label": "動區：黃仁勳首場員工大會（引述 WIRED）",
+   "url": "https://www.blocktempo.com/nvidia-huang-first-all-hands-apology-therapy-denies-trump-succession/"
+  }
+ ]
+}

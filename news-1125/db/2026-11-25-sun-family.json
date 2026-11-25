@@ -1,0 +1,49 @@
+{
+ "date": "2026-11-25",
+ "slot": "晚間",
+ "domain": "加密人物",
+ "storyId": "sun-family",
+ "status": "待審",
+ "publishAt": "2026-11-25T21:00:00+08:00",
+ "createdAt": "2026-11-25T21:00:00+08:00",
+ "checkedAt": "2026-11-25T21:00:00+08:00",
+ "title": "孫宇晨爸爸賣 Tron 股票，買家董事跟他媽媽同名",
+ "body": "孫宇晨的爸爸賣了 1.15 億美元的 Tron 股票，其中一個買家的董事，名字跟孫宇晨的媽媽一樣。\n⠀⠀\n孫爸的公司 11/19 賣出 Tron Inc. 股票，平分給三家公司，每家剛好 4.9%，都卡在 5% 申報門檻底下。\n⠀⠀\nProtos 查到其中一家的董事叫 Jinmei Li，跟孫媽在舊申報文件裡的名字一樣，但還沒證實是同一人。\n⠀⠀\n爸爸賣、可能是媽媽買，這大概是幣圈最溫馨的一筆交易 🙃",
+ "comment": "",
+ "reason": "大人物＋家族劇情，標題本身就是笑點。關鍵在「同名未證實」要寫清楚。",
+ "score": 19,
+ "chart": "sun-family-1125",
+ "verify": {
+  "status": "可發布",
+  "updatedAt": "2026-11-25T21:00:00+08:00",
+  "unconfirmed": [
+   "董事 Jinmei Li 是否為孫宇晨母親，只有同名，未證實",
+   "成交價各家寫法略有出入，以申報的 1.65 美元為準"
+  ],
+  "crossChecked": true,
+  "checkSources": [
+   {
+    "label": "MLQ：Weike Sun 以每股 1.65 美元賣 1.151 億股票",
+    "url": "https://mlq.ai/news/tron-inc-director-weike-sun-sells-1151-million-of-stock-to-three-buyers-at-165-a-share/"
+   },
+   {
+    "label": "Investing.com：Tron 大額內部人賣股",
+    "url": "https://www.investing.com/news/stock-market-news/mondays-insider-activity-biglari-leads-buys-tron-sees-major-sale-93CH-5048393"
+   }
+  ]
+ },
+ "sources": [
+  {
+   "label": "Protos：孫宇晨的爸爸把 Tron 股票賣給他媽媽？",
+   "url": "https://protos.com/is-justin-suns-dad-selling-tron-inc-shares-to-justin-suns-mom/"
+  },
+  {
+   "label": "MLQ：Weike Sun 以每股 1.65 美元賣 1.151 億股票",
+   "url": "https://mlq.ai/news/tron-inc-director-weike-sun-sells-1151-million-of-stock-to-three-buyers-at-165-a-share/"
+  },
+  {
+   "label": "Investing.com：Tron 大額內部人賣股",
+   "url": "https://www.investing.com/news/stock-market-news/mondays-insider-activity-biglari-leads-buys-tron-sees-major-sale-93CH-5048393"
+  }
+ ]
+}
