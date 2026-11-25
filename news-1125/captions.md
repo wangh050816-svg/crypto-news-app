@@ -27,3 +27,15 @@ Protos 查到其中一家的董事叫 Jinmei Li，跟孫媽在舊申報文件裡
 來源：[TechCrunch](https://techcrunch.com/2026/11/24/in-all-hands-meeting-jensen-huang-thanks-white-house-and-says-hes-in-therapy/)、[CoinDesk](https://www.coindesk.com/policy/2026/11/24/trump-says-he-s-willing-to-give-nvidia-s-huang-a-pardon-doesn-t-think-he-needs-one)、[Cointelegraph](https://cointelegraph.com/news/trump-willing-to-pardon-jensen-huang-but-says-it-wont-be-necessary)、[動區](https://www.blocktempo.com/nvidia-huang-first-all-hands-apology-therapy-denies-trump-succession/)
 
 ---
+
+## 網紅擲硬幣決定放空，當天黃仁勳就回來了（togi-coin-1125.png）
+
+一個網紅交易員擲硬幣決定放空，結果同一天，黃仁勳回來了。
+⠀⠀
+美國網紅 Togi 11/23 開直播，幾乎全倉押標普 500 當天到期的選擇權。他本來買漲，直播中擲硬幣，硬幣說空，他就全部換成買跌。
+⠀⠀
+開盤前輝達宣布黃仁勳回任，標普當天漲 4.73%。事後他在 X 說輸了 70 萬美元，「最痛的不是輸錢，是錯過本來該賺到的」。
+⠀⠀
+硬幣沒有錯，錯的是把身家交給硬幣。
+
+來源：[Togi 本人 X 貼文](https://x.com/ShaneStoffer/status/2124901951133393202)、[ChainCatcher](https://x.com/ChainCatcher_/status/2125132229835911195)、[KuCoin](https://www.kucoin.com/news/community/NVDA/6b047b619278e40007d93562)、[題材來源](https://www.instagram.com/p/DgIXKktH9yT/)

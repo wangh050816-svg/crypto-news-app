@@ -1,0 +1,53 @@
+{
+ "date": "2026-11-25",
+ "slot": "晚間",
+ "domain": "美股與交易",
+ "storyId": "togi-coin",
+ "status": "待審",
+ "publishAt": "2026-11-25T22:30:00+08:00",
+ "createdAt": "2026-11-25T22:30:00+08:00",
+ "checkedAt": "2026-11-25T22:30:00+08:00",
+ "title": "網紅擲硬幣決定放空，當天黃仁勳就回來了",
+ "body": "一個網紅交易員擲硬幣決定放空，結果同一天，黃仁勳回來了。\n⠀⠀\n美國網紅 Togi 11/23 開直播，幾乎全倉押標普 500 當天到期的選擇權。他本來買漲，直播中擲硬幣，硬幣說空，他就全部換成買跌。\n⠀⠀\n開盤前輝達宣布黃仁勳回任，標普當天漲 4.73%。事後他在 X 說輸了 70 萬美元，「最痛的不是輸錢，是錯過本來該賺到的」。\n⠀⠀\n硬幣沒有錯，錯的是把身家交給硬幣。",
+ "comment": "",
+ "reason": "使用者指定題材（IG 科幣託），人物＋離譜決策＋反轉，故事型。",
+ "score": 19,
+ "chart": "togi-coin-1125",
+ "verify": {
+  "status": "可發布",
+  "updatedAt": "2026-11-25T22:30:00+08:00",
+  "unconfirmed": [
+   "損失金額只有本人 X 貼文說 70 萬，其他貼文說 30～62 萬",
+   "科幣託寫的「再匯入 15 萬」查無第二來源，未寫入"
+  ],
+  "crossChecked": true,
+  "checkSources": [
+   {
+    "label": "ChainCatcher：Togi 直播擲硬幣改做空遇上黃仁勳回歸",
+    "url": "https://x.com/ChainCatcher_/status/2125132229835911195"
+   },
+   {
+    "label": "KuCoin：Togi 在輝達消息前幾小時轉空",
+    "url": "https://www.kucoin.com/news/community/NVDA/6b047b619278e40007d93562"
+   }
+  ]
+ },
+ "sources": [
+  {
+   "label": "Togi 本人 X 貼文：輸 70 萬不是最痛的",
+   "url": "https://x.com/ShaneStoffer/status/2124901951133393202"
+  },
+  {
+   "label": "ChainCatcher：Togi 直播擲硬幣改做空遇上黃仁勳回歸",
+   "url": "https://x.com/ChainCatcher_/status/2125132229835911195"
+  },
+  {
+   "label": "KuCoin：Togi 在輝達消息前幾小時轉空",
+   "url": "https://www.kucoin.com/news/community/NVDA/6b047b619278e40007d93562"
+  },
+  {
+   "label": "題材來源：科幣託 IG",
+   "url": "https://www.instagram.com/p/DgIXKktH9yT/"
+  }
+ ]
+}
