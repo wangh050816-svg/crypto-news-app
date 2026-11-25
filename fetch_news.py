@@ -8,8 +8,19 @@ crypto_rss_urls = {
     "動區動趨 BlockTempo": "https://www.blocktempo.com/feed/",
     "鏈新聞 ABMedia": "https://www.abmedia.io/feed",
     "CoinDesk": "https://www.coindesk.com/arc/outboundfeeds/rss/",
-    "CoinTelegraph": "https://cointelegraph.com/rss"
+    "CoinTelegraph": "https://cointelegraph.com/rss",
+    "Decrypt": "https://decrypt.co/feed",
+    "The Block": "https://www.theblock.co/rss.xml",
+    "Blockworks": "https://blockworks.co/feed",
+    "DL News": "https://www.dlnews.com/arc/outboundfeeds/rss/",
+    "The Defiant": "https://thedefiant.io/api/feed",
+    "Protos": "https://protos.com/feed/",
+    "Bitcoin.com News": "https://news.bitcoin.com/feed/",
+    "CryptoSlate": "https://cryptoslate.com/feed/",
 }
+
+ARTICLES_PER_SOURCE = 20   # 存進 crypto_news.json 的每個來源篇數（題材庫）
+TELEGRAM_PER_SOURCE = 5    # 推到 Telegram 的每個來源篇數，避免洗版
 
 # 純英文/數字關鍵字用完整單字邊界比對，避免 "ai" 誤中 chain/remain/gain 之類的字
 CATEGORY_KEYWORDS = {
@@ -38,9 +49,17 @@ def classify_text(title, summary):
 
 def fetch_articles():
     all_articles = []
+    seen_links = set()
     for source, url in crypto_rss_urls.items():
         feed = feedparser.parse(url)
-        for entry in feed.entries[:5]:
+        if not feed.entries:
+            print(f"{source} 抓不到文章：{getattr(feed, 'bozo_exception', '沒有內容')}")
+            continue
+        for entry in feed.entries[:ARTICLES_PER_SOURCE]:
+            link = getattr(entry, "link", "")
+            if link in seen_links:
+                continue
+            seen_links.add(link)
             summary = getattr(entry, "summary", "")
             category = classify_text(entry.title, summary)
             all_articles.append({
@@ -110,7 +129,14 @@ def main():
         json.dump(all_articles, f, ensure_ascii=False, indent=2)
     print("新聞資料擷取與分類完成！")
 
-    send_telegram_message(all_articles)
+    per_source = {}
+    telegram_list = []
+    for item in all_articles:
+        n = per_source.get(item["source"], 0)
+        if n < TELEGRAM_PER_SOURCE:
+            telegram_list.append(item)
+            per_source[item["source"]] = n + 1
+    send_telegram_message(telegram_list)
 
 
 if __name__ == "__main__":
