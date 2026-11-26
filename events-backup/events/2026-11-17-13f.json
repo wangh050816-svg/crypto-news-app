@@ -1,0 +1,17 @@
+{
+  "actual": "新建倉 Bending Spoons 約 6.89 億；美銀 -5.7%；Lennar 約翻倍；Delta 加碼",
+  "at": "2026-11-17T08:00:00+08:00",
+  "consensus": "市場預期續賣美國銀行",
+  "dateStatus": "confirmed",
+  "detail": "SEC 截止美東 11/16，多在收盤後上傳；台灣 11/17 清晨起可查",
+  "impact": "mid",
+  "name": "波克夏等 13F 持股報告（Q3）",
+  "preheatReady": true,
+  "prior": "",
+  "source": {
+    "label": "SEC EDGAR",
+    "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001067983&type=13F"
+  },
+  "status": "confirmed",
+  "updatedAt": "2026-11-17T00:45:00Z"
+}

@@ -1,0 +1,17 @@
+{
+  "actual": "",
+  "at": "2026-11-17T19:00:00+08:00",
+  "consensus": "",
+  "dateStatus": "confirmed",
+  "detail": "盤前公布，時間依慣例（約 06:00 ET）",
+  "impact": "mid",
+  "name": "Home Depot、Disney 財報（盤前）",
+  "preheatReady": false,
+  "prior": "",
+  "source": {
+    "label": "Schaeffer's：下週財報",
+    "url": "https://www.schaeffersresearch.com/content/news/2026/11/12/the-week-ahead-dow-earnings-fomc-meeting-minutes"
+  },
+  "status": "tbc",
+  "updatedAt": "2026-11-15T11:40:00Z"
+}

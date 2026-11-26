@@ -1,0 +1,17 @@
+{
+  "actual": "",
+  "at": "2026-11-26T22:30:00+08:00",
+  "consensus": "",
+  "dateStatus": "confirmed",
+  "detail": "11/26 感恩節美股休市（依慣例）；加密市場照常但流動性偏薄",
+  "impact": "low",
+  "name": "感恩節：美股休市",
+  "preheatReady": false,
+  "prior": "",
+  "source": {
+    "label": "NYSE 休市日",
+    "url": "https://www.nyse.com/markets/hours-calendars"
+  },
+  "status": "tbc",
+  "updatedAt": "2026-11-15T11:40:00Z"
+}

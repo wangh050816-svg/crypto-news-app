@@ -1,0 +1,15 @@
+{
+  "actual": "市場解讀暗示更多升息（Motley Fool）",
+  "at": "2026-11-19T03:00:00+08:00",
+  "detail": "Fed 官方行事曆：11/18 2:00 p.m. ET",
+  "impact": "high",
+  "name": "FOMC 10 月會議紀要",
+  "preheat": "11/18（三）18:00 前後",
+  "preheatReady": false,
+  "source": {
+    "label": "Fed 11 月行事曆",
+    "url": "https://www.federalreserve.gov/newsevents/2026-november.htm"
+  },
+  "status": "done",
+  "updatedAt": "2026-11-19T00:55:00Z"
+}

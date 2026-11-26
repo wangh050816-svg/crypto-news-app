@@ -1,0 +1,18 @@
+{
+  "actual": "月增 0.3%、年增 6.5%；核心月增 0.3%、年增 5.0%",
+  "at": "2026-11-13T21:30:00+08:00",
+  "consensus": "月增 0.4%、年增 6.6%；核心月增 0.3%",
+  "dateStatus": "已確認",
+  "detail": "BLS 行事曆再確認 11/13 8:30 ET；預估沿用 Continuum、Stocktitan（Dow Jones），當日未找到新的共識更新",
+  "impact": "high",
+  "name": "美國 10 月 PPI",
+  "preheat": "11/12（四）20:00 前後",
+  "preheatReady": true,
+  "prior": "9 月月增 1.3%、年增 6.3%",
+  "source": {
+    "label": "BLS：PPI 新聞稿（2026 年 10 月）",
+    "url": "https://www.bls.gov/news.release/archives/ppi_11132026.htm"
+  },
+  "status": "confirmed",
+  "updatedAt": "2026-11-13T14:50:00Z"
+}

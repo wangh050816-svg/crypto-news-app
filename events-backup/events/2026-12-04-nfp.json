@@ -1,0 +1,17 @@
+{
+  "actual": "",
+  "at": "2026-12-04T21:30:00+08:00",
+  "consensus": "",
+  "dateStatus": "confirmed",
+  "detail": "BLS 行事曆：12/4 08:30 ET；公布後 20 分鐘有自動更新排程",
+  "impact": "high",
+  "name": "美國 11 月非農",
+  "preheatReady": false,
+  "prior": "",
+  "source": {
+    "label": "BLS Employment Situation 發布排程",
+    "url": "https://www.bls.gov/schedule/news_release/empsit.htm"
+  },
+  "status": "confirmed",
+  "updatedAt": "2026-11-22T11:45:00Z"
+}

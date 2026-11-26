@@ -1,0 +1,15 @@
+{
+  "actual": "月增 0.2%；控制組 +0.6%",
+  "at": "2026-11-17T21:30:00+08:00",
+  "dateStatus": "confirmed",
+  "detail": "10 月預告零售銷售；RBC 預估月增 0.1%（市場共識未查到統一數字）；9 月前值各家說法不一",
+  "impact": "mid",
+  "name": "美國 10 月零售銷售",
+  "preheatReady": false,
+  "source": {
+    "label": "Census 零售發布行事曆",
+    "url": "https://census.gov/retail/release_schedule.html"
+  },
+  "status": "done",
+  "updatedAt": "2026-11-18T00:55:00Z"
+}

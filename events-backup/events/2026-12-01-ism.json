@@ -1,0 +1,17 @@
+{
+  "actual": "",
+  "at": "2026-12-01T23:00:00+08:00",
+  "consensus": "",
+  "dateStatus": "tbc",
+  "detail": "依慣例每月第一個工作日 10:00 ET；未取得官方行事曆確認",
+  "impact": "mid",
+  "name": "美國 11 月 ISM 製造業",
+  "preheatReady": false,
+  "prior": "",
+  "source": {
+    "label": "ISM",
+    "url": "https://www.ismworld.org/"
+  },
+  "status": "tbc",
+  "updatedAt": "2026-11-22T11:45:00Z"
+}

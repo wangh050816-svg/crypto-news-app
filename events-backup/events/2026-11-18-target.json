@@ -1,0 +1,17 @@
+{
+  "actual": "",
+  "at": "2026-11-18T19:00:00+08:00",
+  "consensus": "",
+  "dateStatus": "confirmed",
+  "detail": "盤前公布，時間依慣例；同日 21:30 新屋開工",
+  "impact": "mid",
+  "name": "Target、TJX、Lowe's 財報（盤前）",
+  "preheatReady": false,
+  "prior": "",
+  "source": {
+    "label": "Opening Bell：零售財報週",
+    "url": "https://www.openingbelldailynews.com/p/stock-market-week-ahead-retail-earnings-nov-14-2026"
+  },
+  "status": "tbc",
+  "updatedAt": "2026-11-15T11:40:00Z"
+}

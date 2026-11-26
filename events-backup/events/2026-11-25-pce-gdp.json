@@ -1,0 +1,17 @@
+{
+  "actual": "PCE 月增 0.3%、年增 3.8%；核心月增 0.3%、年增 3.3%；Q3 GDP 4.3%（初值 3.4%）",
+  "at": "2026-11-25T21:30:00+08:00",
+  "consensus": "整體 PCE 年增約 3.8%、核心約 3.2–3.3%；GDP 預估 3.4–3.7%（RBC、Admiral Markets、Cleveland Fed nowcast）",
+  "dateStatus": "confirmed",
+  "detail": "BEA 已公布：個人所得 +0.7%、儲蓄率 4.1%；GDI 4.4%；Q3 PCE 物價 2.1%、核心 2.5% 未修正；下次 12/23",
+  "impact": "high",
+  "name": "美國 10 月 PCE＋Q3 GDP 第二次估計",
+  "preheatReady": true,
+  "prior": "PCE 3.6%、核心 3.1%（9 月）；GDP 初值 3.4%",
+  "source": {
+    "label": "BEA：個人所得與支出，2026 年 10 月",
+    "url": "https://www.bea.gov/news/2026/personal-income-and-outlays-october-2026"
+  },
+  "status": "confirmed",
+  "updatedAt": "2026-11-25T14:05:00Z"
+}

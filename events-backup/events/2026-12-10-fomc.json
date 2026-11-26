@@ -1,0 +1,14 @@
+{
+  "at": "2026-12-10T03:00:00+08:00",
+  "detail": "12/8–9 會議，現行 3.75%–4.00%",
+  "impact": "high",
+  "name": "FOMC 利率決議",
+  "preheatReady": false,
+  "prior": "3.75%–4.00%",
+  "source": {
+    "label": "Fed FOMC 行事曆",
+    "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+  },
+  "status": "confirmed",
+  "updatedAt": "2026-11-09T05:37:27Z"
+}

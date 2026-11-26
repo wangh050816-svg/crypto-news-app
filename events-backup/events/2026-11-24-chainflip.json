@@ -1,0 +1,15 @@
+{
+  "actual": "",
+  "at": "2026-11-24T02:38:00+08:00",
+  "dateStatus": "confirmed",
+  "detail": "11/23 18:38 UTC 前歸還 90%、保留 10% 賞金視為白帽（Chainflip Labs 聲明，據多家報導）",
+  "impact": "low",
+  "name": "Chainflip 要求駭客歸還期限",
+  "preheatReady": false,
+  "source": {
+    "label": "Bitcoinist",
+    "url": "https://bitcoinist.com/chainflip-suffers-12m-crypto-hack-and-offers-attacker-10-bounty"
+  },
+  "status": "confirmed",
+  "updatedAt": "2026-11-22T11:45:00Z"
+}

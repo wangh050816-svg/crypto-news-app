@@ -1,0 +1,17 @@
+{
+  "actual": "",
+  "at": "2026-11-25T21:30:00+08:00",
+  "consensus": "",
+  "dateStatus": "tbc",
+  "detail": "感恩節當週依慣例提前到週三公布",
+  "impact": "mid",
+  "name": "初領失業金（感恩節週提前）",
+  "preheatReady": false,
+  "prior": "",
+  "source": {
+    "label": "DOL",
+    "url": "https://www.dol.gov/ui/data.pdf"
+  },
+  "status": "tbc",
+  "updatedAt": "2026-11-15T11:40:00Z"
+}

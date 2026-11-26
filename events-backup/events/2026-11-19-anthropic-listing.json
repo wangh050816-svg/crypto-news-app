@@ -1,0 +1,17 @@
+{
+  "actual": "開盤 111.50、收 97.17（+17%）",
+  "at": "2026-11-19T22:30:00+08:00",
+  "consensus": "",
+  "dateStatus": "confirmed",
+  "detail": "定價 83 美元後 11/19 Nasdaq 交易，代號 ANT；開盤時間依慣例，實際開始交易會更晚",
+  "impact": "high",
+  "name": "Anthropic 在 Nasdaq 上市交易（ANT）",
+  "preheatReady": false,
+  "prior": "",
+  "source": {
+    "label": "Stockanalysis（Bloomberg）",
+    "url": "https://stockanalysis.com/news/anthropic-ipo-multiple-times-oversubscribed/"
+  },
+  "status": "done",
+  "updatedAt": "2026-11-20T00:55:00Z"
+}

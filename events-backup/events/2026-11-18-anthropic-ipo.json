@@ -1,0 +1,15 @@
+{
+  "actual": "定價 83 美元（高於 70–78 區間）；CNBC：募資逾 813 億美元，史上最大",
+  "at": "2026-11-19T06:00:00+08:00",
+  "dateStatus": "報導時間，公司未公告",
+  "detail": "區間 70–78 美元、8.25 億股；CNBC：美東 11/18 晚間定價、11/19 交易（ANT）；有單一來源稱可能高於 80 美元（未證實）；台灣時間約 11/19 清晨",
+  "impact": "high",
+  "name": "Anthropic IPO 定價（美東 11/18）",
+  "preheatReady": false,
+  "source": {
+    "label": "Stockanalysis（Bloomberg）",
+    "url": "https://stockanalysis.com/news/anthropic-ipo-multiple-times-oversubscribed/"
+  },
+  "status": "done",
+  "updatedAt": "2026-11-19T00:55:00Z"
+}

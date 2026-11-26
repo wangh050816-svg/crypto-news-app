@@ -1,0 +1,17 @@
+{
+  "actual": "",
+  "at": "2026-11-19T20:00:00+08:00",
+  "consensus": "",
+  "dateStatus": "tbc",
+  "detail": "多數來源寫 11/19 盤前，Yahoo 列 11/16，日期待確認；時間依慣例",
+  "impact": "mid",
+  "name": "Walmart 財報（盤前）",
+  "preheatReady": false,
+  "prior": "",
+  "source": {
+    "label": "StockTitan：11/16 當週財報",
+    "url": "https://www.stocktitan.net/articles/earnings-calendar-week-of-november-16-2026"
+  },
+  "status": "tbc",
+  "updatedAt": "2026-11-15T11:40:00Z"
+}
