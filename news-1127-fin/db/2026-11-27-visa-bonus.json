@@ -1,0 +1,48 @@
+{
+ "date": "2026-11-27",
+ "slot": "晚間",
+ "domain": "美股",
+ "storyId": "visa-bonus",
+ "status": "待審",
+ "publishAt": "2026-11-27T22:30:00+08:00",
+ "createdAt": "2026-11-27T22:30:00+08:00",
+ "checkedAt": "2026-11-27T22:30:00+08:00",
+ "title": "Visa 執行長的績效獎金，兩關輸給美國公債",
+ "body": "Visa 給執行長的「績效」獎金，有兩關比買美國公債還好過。\n⠀⠀\n董事會發給執行長 McInerney 價值約 5,000 萬美元的選擇權，股價要過 500、550、600 美元三關才能拿。從授予時約 402 美元算，7 年內要到 500 和 550，年化只要漲 3.2% 和 4.6%。\n⠀⠀\n美國 10 年期公債現在殖利率約 4.9%。\n⠀⠀\n躺著買公債都贏的目標，叫做績效？",
+ "comment": "",
+ "reason": "用簡單算數拆穿高層薪酬，反差強。",
+ "score": 18,
+ "chart": "visa-bonus-1127-4k",
+ "verify": {
+  "status": "可發布",
+  "updatedAt": "2026-11-27T22:30:00+08:00",
+  "unconfirmed": [
+   "授予日股價 402.25 美元與 10 年期殖利率 4.92% 來自 Protos；年化報酬率為自行驗算"
+  ],
+  "crossChecked": true,
+  "checkSources": [
+   {
+    "label": "GuruFocus：Visa 授予執行長 5,000 萬績效選擇權",
+    "url": "https://www.gurufocus.com/news/9216176/visa-v-grants-50-million-performance-stock-option-to-ceo-ryan-mcinerney"
+   },
+   {
+    "label": "MLQ：Visa 執行長績效選擇權",
+    "url": "https://mlq.ai/news/visa-grants-ceo-ryan-mcinerney-a-50-million-performance-stock-option/"
+   }
+  ]
+ },
+ "sources": [
+  {
+   "label": "Protos：Visa 執行長績效獎金輸給公債",
+   "url": "https://protos.com/visa-ceo-can-earn-37m-performance-bonus-underperforming-treasuries/"
+  },
+  {
+   "label": "GuruFocus：Visa 授予執行長 5,000 萬績效選擇權",
+   "url": "https://www.gurufocus.com/news/9216176/visa-v-grants-50-million-performance-stock-option-to-ceo-ryan-mcinerney"
+  },
+  {
+   "label": "MLQ：Visa 執行長績效選擇權",
+   "url": "https://mlq.ai/news/visa-grants-ceo-ryan-mcinerney-a-50-million-performance-stock-option/"
+  }
+ ]
+}

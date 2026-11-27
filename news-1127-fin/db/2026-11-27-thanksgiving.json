@@ -1,0 +1,46 @@
+{
+ "date": "2026-11-27",
+ "slot": "晚間",
+ "domain": "美國經濟",
+ "storyId": "thanksgiving",
+ "status": "待審",
+ "publishAt": "2026-11-27T22:30:00+08:00",
+ "createdAt": "2026-11-27T22:30:00+08:00",
+ "checkedAt": "2026-11-27T22:30:00+08:00",
+ "title": "美國感恩節大餐今年貴了 6%，火雞漲最多",
+ "body": "美國感恩節一桌 10 人份的大餐，今年要 58.63 美元，比去年貴 6%。\n⠀⠀\n美國農業局聯合會每年都算一次，這是 2022 年以來第一次漲。最大功臣是火雞，16 磅冷凍火雞要 23.68 美元，貴了約 10%。\n⠀⠀\n不過超市廣告價便宜很多，美國農業部統計冷凍火雞平均每磅只要 0.96 美元，比調查的 1.48 美元低。\n⠀⠀\n一年一次的火雞指數，今年寫著：通膨還沒走。",
+ "comment": "",
+ "reason": "節日應景、數字簡單，適合輕鬆貼文。",
+ "score": 18,
+ "chart": "thanksgiving-1127-4k",
+ "verify": {
+  "status": "可發布",
+  "updatedAt": "2026-11-27T22:30:00+08:00",
+  "unconfirmed": [],
+  "crossChecked": true,
+  "checkSources": [
+   {
+    "label": "IBTimes：10 人份 58.63 美元、火雞漲 10%",
+    "url": "https://www.ibtimes.co.uk/us-thanksgiving-dinner-cost-turkey-prices-rise-1835069"
+   },
+   {
+    "label": "Farm and Dairy：感恩節大餐成本上升",
+    "url": "https://www.farmanddairy.com/news/cost-of-thanksgiving-dinner-increases-according-to-american-farm-bureau-survey/937387.html"
+   }
+  ]
+ },
+ "sources": [
+  {
+   "label": "美國農業局聯合會：2026 感恩節大餐成本",
+   "url": "https://www.fb.org/intel/markets/thanksgiving-dinner-cost-ticks-upward-in-2026"
+  },
+  {
+   "label": "IBTimes：10 人份 58.63 美元、火雞漲 10%",
+   "url": "https://www.ibtimes.co.uk/us-thanksgiving-dinner-cost-turkey-prices-rise-1835069"
+  },
+  {
+   "label": "Farm and Dairy：感恩節大餐成本上升",
+   "url": "https://www.farmanddairy.com/news/cost-of-thanksgiving-dinner-increases-according-to-american-farm-bureau-survey/937387.html"
+  }
+ ]
+}
