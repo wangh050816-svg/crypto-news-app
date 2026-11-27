@@ -1,0 +1,48 @@
+{
+ "date": "2026-11-27",
+ "slot": "晚間",
+ "domain": "加密與私募",
+ "storyId": "ripple-two-prices",
+ "status": "待審",
+ "publishAt": "2026-11-27T22:00:00+08:00",
+ "createdAt": "2026-11-27T22:00:00+08:00",
+ "checkedAt": "2026-11-27T22:00:00+08:00",
+ "title": "同一天、同一檔股票，一家估 90、一家估 300",
+ "body": "同一天、同一檔股票，一家基金估一股 90 美元，另一家估 300 美元。\n⠀⠀\n兩檔向 SEC 申報的基金都持有 Ripple 的私募股票，結算日都是 9/30。C1 Fund 用二級市場價格，估一股 90.10 美元，比買進成本虧約 42%；Private Shares Fund 照 3 月募資價，估 300 美元。\n⠀⠀\n同一張股票，估值差了 233%。\n⠀⠀\n沒上市的股票值多少，原來要看你問哪一家 🙃",
+ "comment": "",
+ "reason": "數字反差大、一眼看懂。",
+ "score": 18,
+ "chart": "ripple-two-prices-1127-4k",
+ "verify": {
+  "status": "可發布",
+  "updatedAt": "2026-11-27T22:00:00+08:00",
+  "unconfirmed": [
+   "兩檔基金都列為 Level 3 資產，估值依據未完全揭露"
+  ],
+  "crossChecked": true,
+  "checkSources": [
+   {
+    "label": "KuCoin：兩份 SEC 申報估 Ripple 90 與 300",
+    "url": "https://www.kucoin.com/news/flash/ripple-shares-valued-at-90-and-300-in-separate-sec-filings"
+   },
+   {
+    "label": "Coin Edition：Ripple 估值分歧",
+    "url": "https://coinedition.com/ripple-share-valuations-diverge-as-sec-filings-reveal-90-and-300-estimates/"
+   }
+  ]
+ },
+ "sources": [
+  {
+   "label": "Protos：Ripple 9/30 同時值 90.10 和 300 美元",
+   "url": "https://protos.com/ripple-was-worth-both-90-10-and-300-per-share-on-september-30/"
+  },
+  {
+   "label": "KuCoin：兩份 SEC 申報估 Ripple 90 與 300",
+   "url": "https://www.kucoin.com/news/flash/ripple-shares-valued-at-90-and-300-in-separate-sec-filings"
+  },
+  {
+   "label": "Coin Edition：Ripple 估值分歧",
+   "url": "https://coinedition.com/ripple-share-valuations-diverge-as-sec-filings-reveal-90-and-300-estimates/"
+  }
+ ]
+}

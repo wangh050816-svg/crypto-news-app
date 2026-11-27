@@ -1,0 +1,46 @@
+{
+ "date": "2026-11-27",
+ "slot": "晚間",
+ "domain": "AI",
+ "storyId": "chatgpt-limit",
+ "status": "待審",
+ "publishAt": "2026-11-27T22:00:00+08:00",
+ "createdAt": "2026-11-27T22:00:00+08:00",
+ "checkedAt": "2026-11-27T22:00:00+08:00",
+ "title": "ChatGPT 修好一個 bug，額度用得快 40%",
+ "body": "ChatGPT 修好一個 bug，你的額度就用得快 40%。\n⠀⠀\nOpenAI 11/17 推出 GPT-6.2，主打更省額度。後來官方承認，上線時計費算錯，幫大部分用戶算便宜了。修正之後，用 Astra 會快 40% 碰到上限，Sol 快 25%。\n⠀⠀\n補償是多送一次額度重置，已經多用的不追收。\n⠀⠀\n原來上週覺得變好用，是因為算錯錢 😅",
+ "comment": "",
+ "reason": "AI 用戶切身相關，好笑又實用。",
+ "score": 18,
+ "chart": "chatgpt-limit-1127-4k",
+ "verify": {
+  "status": "可發布",
+  "updatedAt": "2026-11-27T22:00:00+08:00",
+  "unconfirmed": [],
+  "crossChecked": true,
+  "checkSources": [
+   {
+    "label": "BleepingComputer：GPT-6.2 Astra 額度快 40% 用完",
+    "url": "https://www.bleepingcomputer.com/news/artificial-intelligence/openai-warns-gpt-62-astra-will-hit-usage-limits-40-percent-faster-because-it-fixed-a-bug/"
+   },
+   {
+    "label": "Yahoo Tech：GPT-6.2 蜜月期結束",
+    "url": "https://tech.yahoo.com/ai/chatgpt/articles/chatgpts-gpt-6-2-honeymoon-115059332.html"
+   }
+  ]
+ },
+ "sources": [
+  {
+   "label": "Decrypt：OpenAI 修好計費錯誤",
+   "url": "https://decrypt.co/384053/openai-fixes-chatgpt-billing-error-promises-to-make-it-40-worse"
+  },
+  {
+   "label": "BleepingComputer：GPT-6.2 Astra 額度快 40% 用完",
+   "url": "https://www.bleepingcomputer.com/news/artificial-intelligence/openai-warns-gpt-62-astra-will-hit-usage-limits-40-percent-faster-because-it-fixed-a-bug/"
+  },
+  {
+   "label": "Yahoo Tech：GPT-6.2 蜜月期結束",
+   "url": "https://tech.yahoo.com/ai/chatgpt/articles/chatgpts-gpt-6-2-honeymoon-115059332.html"
+  }
+ ]
+}

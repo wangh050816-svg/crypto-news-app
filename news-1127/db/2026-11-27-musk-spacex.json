@@ -1,0 +1,48 @@
+{
+ "date": "2026-11-27",
+ "slot": "晚間",
+ "domain": "AI 與科技",
+ "storyId": "musk-spacex",
+ "status": "待審",
+ "publishAt": "2026-11-27T22:00:00+08:00",
+ "createdAt": "2026-11-27T22:00:00+08:00",
+ "checkedAt": "2026-11-27T22:00:00+08:00",
+ "title": "馬斯克：SpaceX 未來能值全球經濟 100 萬倍",
+ "body": "馬斯克說，SpaceX 有一天可能值全球經濟的 100 萬倍。\n⠀⠀\n換算下來大約是 1.2 億兆美元，數字大到後面要接 19 個零。條件是人類真的移居多個星球，還要收集到太陽百萬分之一的能量。他自己也承認，這些目標「荒謬地難」。\n⠀⠀\n同一天 SpaceX 宣布，要送美國每個小孩 2 股，公司出一股、馬斯克自己出一股。\n⠀⠀\n先別算 1.2 億兆了，台灣小孩能不能也排一下 😂",
+ "comment": "",
+ "reason": "大人物＋誇張數字，IG 好轉發。",
+ "score": 18,
+ "chart": "musk-spacex-1127-4k",
+ "verify": {
+  "status": "可發布",
+  "updatedAt": "2026-11-27T22:00:00+08:00",
+  "unconfirmed": [
+   "全球經濟規模各家用 118～128 兆美元，換算值有差"
+  ],
+  "crossChecked": true,
+  "checkSources": [
+   {
+    "label": "Benzinga：SpaceX 可能值全球經濟 100 萬倍",
+    "url": "https://www.benzinga.com/news/space/26/11/63661925/elon-musk-says-spacex-could-be-worth-a-million-times-the-global-economy-if-it-makes-life-multiplanetary-recommends-holding-on-to-your-shares"
+   },
+   {
+    "label": "TheStreet：馬斯克送美國小孩 SpaceX 股票",
+    "url": "https://thestreet.com/crypto/markets/musk-gives-american-kids-a-ticket-on-the-spacex-rocket"
+   }
+  ]
+ },
+ "sources": [
+  {
+   "label": "Decrypt：馬斯克說 SpaceX 可能值 118 quintillion",
+   "url": "https://decrypt.co/384043/elon-musk-says-multiplanetary-spacex-could-be-worth-118-quintillion-yes-quintillion"
+  },
+  {
+   "label": "Benzinga：SpaceX 可能值全球經濟 100 萬倍",
+   "url": "https://www.benzinga.com/news/space/26/11/63661925/elon-musk-says-spacex-could-be-worth-a-million-times-the-global-economy-if-it-makes-life-multiplanetary-recommends-holding-on-to-your-shares"
+  },
+  {
+   "label": "TheStreet：馬斯克送美國小孩 SpaceX 股票",
+   "url": "https://thestreet.com/crypto/markets/musk-gives-american-kids-a-ticket-on-the-spacex-rocket"
+  }
+ ]
+}
